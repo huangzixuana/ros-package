@@ -1,0 +1,420 @@
+<?xml version="1.0"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by
+Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="kuka">
+  <xacro:macro name="kuka_kr210r3100">
+    <link
+      name="base_arm">
+      <inertial>
+        <origin
+          xyz="-0.046792 -2.4833E-06 0.1118"
+          rpy="0 0 0" />
+        <mass
+          value="63.694" />
+        <inertia
+          ixx="1.9816"
+          ixy="-0.00022278"
+          ixz="0.12967"
+          iyy="2.6234"
+          iyz="-0.00047715"
+          izz="4.0355" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/base_arm.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/base_arm.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link
+      name="link_1">
+      <inertial>
+        <origin
+          xyz="-0.015271 0.0092735 0.22938"
+          rpy="0 0 0" />
+        <mass
+          value="74.64" />
+        <inertia
+          ixx="2.5544"
+          ixy="-0.30146"
+          ixz="-0.11033"
+          iyy="4.6863"
+          iyz="-0.090657"
+          izz="3.9517" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_1.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_1.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="joint_a1"
+      type="revolute">
+      <origin
+        xyz="0 0 0.2256"
+        rpy="0 0 0" />
+      <parent
+        link="base_arm" />
+      <child
+        link="link_1" />
+      <axis
+        xyz="0 0 -1" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="100"
+        velocity="1" />
+    </joint>
+    <link
+      name="link_2">
+      <inertial>
+        <origin
+          xyz="0.0060316 -0.25673 0.52514"
+          rpy="0 0 0" />
+        <mass
+          value="112.47" />
+        <inertia
+          ixx="24.191"
+          ixy="0.012257"
+          ixz="-0.037881"
+          iyy="23.941"
+          iyz="2.2406"
+          izz="2.0581" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_2.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_2.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="joint_a2"
+      type="revolute">
+      <origin
+        xyz="0.35 0.01 0.4494"
+        rpy="0 1.5708 0" />
+      <parent
+        link="link_1" />
+      <child
+        link="link_2" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="100"
+        velocity="1" />
+    </joint>
+    <link
+      name="link_3">
+      <inertial>
+        <origin
+          xyz="0.40596 0.14888 -0.027566"
+          rpy="0 0 0" />
+        <mass
+          value="71.698" />
+        <inertia
+          ixx="0.74839"
+          ixy="-0.43326"
+          ixz="0.30488"
+          iyy="11.857"
+          iyz="0.037727"
+          izz="11.701" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_3.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_3.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="joint_a3"
+      type="revolute">
+      <origin
+        xyz="0 -0.178 1.35"
+        rpy="0 -1.5708 0" />
+      <parent
+        link="link_2" />
+      <child
+        link="link_3" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="100"
+        velocity="1" />
+    </joint>
+    <link
+      name="link_4">
+      <inertial>
+        <origin
+          xyz="0.13208 -0.0013537 5.4292E-06"
+          rpy="0 0 0" />
+        <mass
+          value="3.4928" />
+        <inertia
+          ixx="0.0085457"
+          ixy="0.00080274"
+          ixz="-6.414E-08"
+          iyy="0.037366"
+          iyz="1.2283E-07"
+          izz="0.036882" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_4.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_4.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="joint_a4"
+      type="revolute">
+      <origin
+        xyz="1.1445 0.168 -0.041"
+        rpy="0 0 0" />
+      <parent
+        link="link_3" />
+      <child
+        link="link_4" />
+      <axis
+        xyz="-1 0 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="100"
+        velocity="1" />
+    </joint>
+    <link
+      name="link_5">
+      <inertial>
+        <origin
+          xyz="0.05431 -0.003334 1.9525E-05"
+          rpy="0 0 0" />
+        <mass
+          value="11.495" />
+        <inertia
+          ixx="0.11957"
+          ixy="-0.027144"
+          ixz="-1.9336E-05"
+          iyy="0.11876"
+          iyz="1.3862E-05"
+          izz="0.17596" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_5.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_5.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="joint_a5"
+      type="revolute">
+      <origin
+        xyz="0.2555 -0.0345 0"
+        rpy="0 0 0" />
+      <parent
+        link="link_4" />
+      <child
+        link="link_5" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="100"
+        velocity="1" />
+    </joint>
+    <link
+      name="link_6">
+      <inertial>
+        <origin
+          xyz="0.0051257 1.2397E-05 -3.8679E-05"
+          rpy="0 0 0" />
+        <mass
+          value="0.64081" />
+        <inertia
+          ixx="0.0038456"
+          ixy="1.5725E-07"
+          ixz="-9.686E-08"
+          iyy="0.0019693"
+          iyz="3.2586E-08"
+          izz="0.0019665" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_6.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/kr210r3100/link_6.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="joint_a6"
+      type="revolute">
+      <origin
+        xyz="0.221 0.0345 0"
+        rpy="0 0 0" />
+      <parent
+        link="link_5" />
+      <child
+        link="link_6" />
+      <axis
+        xyz="-1 0 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="100"
+        velocity="1" />
+    </joint>
+
+    <link name="tool0">
+      <visual>
+        <origin xyz="0.075 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="2.0 1.380 0.15" />
+        </geometry>
+        <material name="yellow">
+          <color rgba="1 0.4 0 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0.075 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="2.0  1.380 0.15" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="link_6-tool0" type="fixed">
+      <parent link="link_6" />
+      <child link="tool0" />
+      <origin xyz="0 0 0" rpy="0 -1.5708 0" />
+    </joint>
+  </xacro:macro>
+</robot>

@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<robot name="frontec_kuka2700" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find lt_description)/urdf/inc/_d455.urdf.xacro" />
+    <xacro:include filename="$(find lt_description)/urdf/inc/_rplidar.xacro" />
+    <xacro:include filename="$(find lt_description)/urdf/inc/_fltk_chassis.urdf.xacro" />
+    <xacro:include filename="$(find lt_description)/urdf/inc/_kuka_kr210_r2700_dh.xacro" />
+    
+
+    <xacro:property name="rplidar_offset_x" value="0.63" />
+    <xacro:property name="rplidar_offset_y" value="0" />
+    <xacro:property name="rplidar_offset_z" value="0" />
+
+    <xacro:property name="camera_offset_x" value="0.7155" />
+    <xacro:property name="camera_offset_y" value="0" />
+    <xacro:property name="camera_offset_z" value="0.13306" />
+    <xacro:property name="camera_offset_roll" value="0" />
+    <xacro:property name="camera_offset_pitch" value="${radians(-90)}" />
+    <xacro:property name="camera_offset_yaw" value="${radians(180)}" />
+    <xacro:arg name="use_nominal_extrinsics" default="false" />
+    <xacro:arg name="camera_name" default="camera" />
+    <xacro:fltk_chassis/>
+
+
+    <xacro:kuka_kr210_r2700_dh/>
+    <!-- <link name="base_arm" /> -->
+       
+    <joint name="base_camera_joint" type="fixed">
+        <origin xyz="${camera_offset_x} ${camera_offset_y} ${camera_offset_z}"
+            rpy="${camera_offset_roll} ${camera_offset_pitch} ${camera_offset_yaw}" />
+        <parent link="link_6" />
+        <child link="base_camera" />
+    </joint>
+    <link name="base_camera" />
+
+    <xacro:sensor_d455 parent="base_camera"
+        use_nominal_extrinsics="$(arg use_nominal_extrinsics)"
+        name="$(arg camera_name)">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:sensor_d455>
+  
+    
+    <link name="base_footprint" />
+    <joint name="base_link_foot" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="base_footprint" />
+        <child link="base_link" />
+    </joint>
+
+    <link name="base_link" />
+    
+    <joint name="base_link_arm" type="fixed">
+        <origin xyz="0 0 1.3" rpy="0 0 0" />
+        <!-- <origin xyz="0 0 0.683" rpy="0 0 0" /> -->
+        <parent link="base_link" />
+        <child link="base_arm" />
+    </joint>
+
+    <joint name="base_car_sim" type="fixed">
+        <origin xyz="0 0 0.0" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="base_car" />
+    </joint>
+
+    <!-- rplidar -->
+    <joint name="rplidar_joint" type="fixed">
+        <origin xyz="${rplidar_offset_x} ${rplidar_offset_y} ${rplidar_offset_z}" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="base_lidar" />
+    </joint>
+    <xacro:rplidar name="base_lidar" />
+</robot>

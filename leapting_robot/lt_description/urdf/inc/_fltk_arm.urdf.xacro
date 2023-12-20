@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by
+Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fltk">
+  <xacro:macro name="fltk_arm">
+    <xacro:property name="M_PI" value="3.1415926536" />
+
+
+    <link name="base_arm">
+      <inertial>
+        <origin xyz="-0.027804 0.00039112 0.14035" rpy="0 0 0" />
+        <mass value="1150" />
+        <inertia ixx="89.282" ixy="-0.47721" ixz="0.85562" iyy="107.51" iyz="0.0067576" izz="172.02" />
+      </inertial>
+    </link>
+    <link
+      name="link_1">
+      <inertial>
+        <origin
+          xyz="-0.038532 0.00031076 0.061545"
+          rpy="0 0 0" />
+        <mass
+          value="1148.5" />
+        <inertia
+          ixx="0.38649"
+          ixy="3.2982E-07"
+          ixz="0.077014"
+          iyy="0.84179"
+          iyz="6.2797E-08"
+          izz="1.0418" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/link_1.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0 0 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/link_1.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link
+      name="link_2">
+      <inertial>
+        <origin
+          xyz="0.73386 1.7422E-05 0.21971"
+          rpy="0 0 0" />
+        <mass
+          value="0.01" />
+        <inertia
+          ixx="0.60775"
+          ixy="2.5753E-05"
+          ixz="0.65079"
+          iyy="6.5754"
+          iyz="2.5149E-05"
+          izz="6.0337" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/link_2.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0 0 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/link_2.STL" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="joint_1" type="revolute">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="base_arm" />
+      <child link="link_1" />
+      <axis xyz="0 0 1" />
+      <limit lower="${-M_PI}" upper="${M_PI}" effort="50" velocity="3" />
+    </joint>
+    <joint
+      name="joint_2"
+      type="revolute">
+      <origin
+        xyz="-0.223 0 0.2"
+        rpy="0 0 0" />
+      <parent
+        link="link_1" />
+      <child
+        link="link_2" />
+      <axis
+        xyz="0 -1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="50"
+        velocity="1" />
+    </joint>
+    <link
+      name="link_3">
+      <inertial>
+        <origin
+          xyz="0.41036 -0.00038561 0.017617"
+          rpy="0 0 0" />
+        <mass
+          value="0.001" />
+        <inertia
+          ixx="0.034164"
+          ixy="-6.4762E-16"
+          ixz="0.072661"
+          iyy="2.3943"
+          iyz="4.1276E-17"
+          izz="2.3855" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/link_3.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0 0 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/link_3.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="joint_3"
+      type="revolute">
+      <origin
+        xyz="1.62 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="link_2" />
+      <child
+        link="link_3" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="50"
+        velocity="1" />
+    </joint>
+    <link
+      name="link_4">
+      <inertial>
+        <origin
+          xyz="0.14343 9.3444E-05 0.0049773"
+          rpy="0 0 0" />
+        <mass
+          value="0.001" />
+        <inertia
+          ixx="0.49848"
+          ixy="5.816E-08"
+          ixz="-0.00090809"
+          iyy="0.42455"
+          iyz="-0.00020404"
+          izz="0.088342" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/link_4.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0 0 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/link_4.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="joint_4"
+      type="revolute">
+      <origin
+        xyz="1.05 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="link_3" />
+      <child
+        link="link_4" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="50"
+        velocity="1" />
+    </joint>
+    <link
+      name="tool0">
+      <inertial>
+        <origin
+          xyz="0.11659 -1.3221E-06 0.11912"
+          rpy="0 0 0" />
+        <mass
+          value="0.001" />
+        <inertia
+          ixx="6.0742"
+          ixy="6.6928E-08"
+          ixz="-6.0573E-07"
+          iyy="5.7333"
+          iyz="-0.00035241"
+          izz="0.61403" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 ${M_PI/2} 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/tool0.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/tool0.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="joint_5"
+      type="fixed">
+      <origin
+        xyz="0.3073 0 0"
+        rpy="0 ${-M_PI/2} 0" />
+      <parent
+        link="link_4" />
+      <child
+        link="tool0" />
+      <axis
+        xyz="0 0 0" />
+    </joint>
+
+
+    <transmission name="a1_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_1">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="a1_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    <transmission name="a2_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_2">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="a2_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    <transmission name="a3_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_3">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="a3_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    <transmission name="a4_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_4">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="a4_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    <gazebo>
+      <plugin name="ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/</robotNamespace>
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      </plugin>
+    </gazebo>
+
+    <xacro:macro name="arm_gazebo" params="link">
+      <gazebo reference="${link}">
+        <!-- <material>Gazebo/White</material> -->
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+      </gazebo>
+    </xacro:macro>
+    <xacro:arm_gazebo link="base_arm" />
+    <xacro:arm_gazebo link="link_1" />
+    <xacro:arm_gazebo link="link_2" />
+    <xacro:arm_gazebo link="link_3" />
+    <xacro:arm_gazebo link="link_4" />
+  </xacro:macro>
+</robot>

@@ -1,0 +1,310 @@
+<?xml version="1.0"?>
+<robot name="arm" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="frontec_arm">
+
+    <xacro:property name="M_PI" value="3.1415926536" />
+
+    <!-- Defining the colors used in this robot -->
+    <material name="Black">
+      <color rgba="0 0 0 1" />
+    </material>
+    <material name="White">
+      <color rgba="1 1 1 1" />
+    </material>
+    <material name="Blue">
+      <color rgba="0 0 1 1" />
+    </material>
+    <material name="Red">
+      <color rgba="1 0 0 1" />
+    </material>
+
+    <!-- base_arm properties -->
+    <!--  <xacro:property name="base_arm_length" value="1.235" />
+  <xacro:property name="base_arm_width" value="2.3" />
+  <xacro:property name="base_arm_height" value="0.615" />
+  <xacro:property name="base_arm_mass" value="100" /> -->
+
+    <!-- link1 properties -->
+    <xacro:property name="link1_radius" value="0.1" />
+    <xacro:property name="link1_length" value="0.270" />
+    <xacro:property name="link1_mass" value="1000" />
+
+    <!-- link2 properties -->
+    <xacro:property name="link2_radius" value="0.08" />
+    <xacro:property name="link2_length" value="1.624" />
+    <xacro:property name="link2_mass" value="1" />
+
+    <!-- link3 properties -->
+    <xacro:property name="link3_radius" value="0.05" />
+    <xacro:property name="link3_length" value="1.050" /> <!-- 1.047 -->
+    <xacro:property name="link3_mass" value="0.1" />
+
+    <!-- link4 properties -->
+    <xacro:property name="link4_radius" value="0.04" />
+    <xacro:property name="link4_length" value="0.344" /> <!-- 0.129 / 0.024 -->
+    <xacro:property name="link4_mass" value="0.01" />
+
+    <!-- tool0 properties -->
+    <xacro:property name="tool0_length" value="2.0" />
+    <xacro:property name="tool0_width" value="0.4" />
+    <xacro:property name="tool0_height" value="0.2" />
+    <xacro:property name="tool0_mass" value="0.001" />
+
+
+    <link name="base_arm">
+      <inertial>
+        <origin xyz="-0.027804 0.00039112 0.14035" rpy="0 0 0" />
+        <mass value="1150" />
+        <inertia ixx="89.282" ixy="-0.47721" ixz="0.85562" iyy="107.51" iyz="0.0067576" izz="172.02" />
+      </inertial>
+    </link>
+
+    <link name="link_1">
+      <inertial>
+        <origin xyz="0 0 ${link1_length/2}" rpy="0 0 0" />
+        <mass value="${link1_mass}" />
+        <inertia ixx="${link1_mass*(link1_radius*link1_radius*3+link1_length*link1_length)/12}"
+          ixy="0.0" ixz="0.0"
+          iyy="${link1_mass*(link1_radius*link1_radius*3+link1_length*link1_length)/12}" iyz="0.0"
+          izz="${link1_mass*link1_radius*link1_radius/2}" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 ${link1_length/2}" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://lt_description/meshes/frontec_arm/link_1.STL" />
+
+          <!-- <cylinder radius="${link1_radius}" length="${link1_length}" /> -->
+          <!-- <mesh filename="package://bringup/urdf/link1.STL" scale="1 1 1" /> -->
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${link1_length/2}" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${link1_radius}" length="${link1_length}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="joint_1" type="revolute">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="base_arm" />
+      <child link="link_1" />
+      <axis xyz="0 0 1" />
+      <limit lower="${-M_PI}" upper="${M_PI}" effort="100" velocity="3" />
+    </joint>
+
+    <link name="link_2">
+      <inertial>
+        <origin xyz="0 0 ${link2_length/2}" rpy="0 0 0" />
+        <mass value="${link2_mass}" />
+        <inertia ixx="${link2_mass*(link2_radius*link2_radius*3+link2_length*link2_length)/12}"
+          ixy="0.0" ixz="0.0"
+          iyy="${link2_mass*(link2_radius*link2_radius*3+link2_length*link2_length)/12}" iyz="0.0"
+          izz="${link2_mass*link2_radius*link2_radius/2}" />
+      </inertial>
+      <visual>
+        <!-- <origin xyz="0 0 ${link2_length/2}" rpy="0 0 0" /> -->
+        <origin xyz="0 0 0" rpy="0 ${-M_PI/2} 0" />
+        <geometry>
+          <mesh filename="package://lt_description/meshes/frontec_arm/link_2.STL" />
+          <!-- <cylinder radius="${link2_radius}" length="${link2_length}" /> -->
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${link2_length/2}" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${link2_radius}" length="${link2_length}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_2" type="revolute">
+      <origin xyz="-0.223 0 ${link1_length}" rpy="0 0.38746 0" />
+      <parent link="link_1" />
+      <child link="link_2" />
+      <axis xyz="0 1 0" />
+      <limit lower="-0.40" upper="0.249" effort="100" velocity="3" />
+    </joint>
+
+    <link name="link_3">
+      <inertial>
+        <origin xyz="0 0 ${link3_length/2}" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="0 ${-M_PI/2} 0" />
+      <mass
+          value="${link3_mass}" />
+      <inertia
+          ixx="${link3_mass*(link3_radius*link3_radius*3+link3_length*link3_length)/12}" ixy="0.0"
+          ixz="0.0" iyy="${link3_mass*(link3_radius*link3_radius*3+link3_length*link3_length)/12}"
+          iyz="0.0" izz="${link3_mass*link3_radius*link3_radius/2}" /> /> </inertial>
+      <visual>
+        <!-- <origin xyz="0 0 ${link3_length/2}" rpy="0 0 0" /> -->
+        <origin xyz="0 0 0" rpy="0 ${-M_PI/2} 0" />
+        <geometry>
+          <!-- <cylinder radius="${link3_radius}" length="${link3_length}" /> -->
+          <mesh filename="package://lt_description/meshes/frontec_arm/link_3.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${link3_length/2}" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${link3_radius}" length="${link3_length}" />
+        </geometry>
+      </collision>
+    </link>
+
+
+    <joint name="joint_3" type="revolute">
+      <origin xyz="0 0 ${link2_length}" rpy="0 ${M_PI/2} 0" />
+      <parent link="link_2" />
+      <child link="link_3" />
+      <axis xyz="0 1 0" />
+      <limit lower="-0.425" upper="0.433" effort="100" velocity="3" />
+    </joint>
+
+    <link name="link_4">
+      <inertial>
+        <origin xyz="0 0 ${link4_length/2}" rpy="0 0 0" />
+        <mass value="${link4_mass}" />
+        <inertia ixx="${link4_mass*(link4_radius*link4_radius*3+link4_length*link4_length)/12}"
+          ixy="0.0" ixz="0.0"
+          iyy="${link4_mass*(link4_radius*link4_radius*3+link4_length*link4_length)/12}" iyz="0.0"
+          izz="${link4_mass*link4_radius*link4_radius/2}" />
+      </inertial>
+      <visual>
+        <!-- <origin xyz="0 0 0" rpy="0 0 0" /> -->
+        <origin xyz="0 0 0" rpy="0 ${-M_PI/2} 0" />
+        <geometry>
+          <mesh filename="package://lt_description/meshes/frontec_arm/link_4.STL" />
+          <!-- <cylinder radius="${link4_radius}" length="${link4_length}" /> -->
+        </geometry>
+        <material name="Blue">
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${link4_length/2}" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${link4_radius}" length="${link4_length}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint_4" type="revolute">
+      <origin xyz="0 0 ${link3_length}" rpy="0 0 0" />
+      <parent link="link_3" />
+      <child link="link_4" />
+      <axis xyz="0 1 0" />
+      <limit lower="0.133" upper="0.95" effort="100" velocity="3" />
+    </joint>
+
+    <link name="tool0">
+      <inertial>
+        <origin xyz="0 0 ${tool0_height/2}" rpy="0 0 0" />
+        <mass value="${tool0_mass}" />
+        <inertia ixx="${tool0_mass*(tool0_height*tool0_height+tool0_length*tool0_length)/12}"
+          ixy="0.0" ixz="0.0"
+          iyy="${tool0_mass*(tool0_width*tool0_width+tool0_length*tool0_length)/12}" iyz="0.0"
+          izz="${tool0_mass*(tool0_height*tool0_height+tool0_width*tool0_width)/12}" />
+      </inertial>
+      <visual>
+        <!-- <origin xyz="0 0 ${tool0_height/2}" rpy="0 0 0" /> -->
+        <origin xyz="0 0 0" rpy="0 ${M_PI/2} 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_arm/tool0.STL" />
+          <!-- <box size="${tool0_length} ${tool0_width} ${tool0_height}" /> -->
+        </geometry>
+        <material name="yellow">
+          <color rgba="1 1 0 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${tool0_height/2}" rpy="0 0 0" />
+        <geometry>
+          <box size="${tool0_length} ${tool0_width} ${tool0_height}" />
+        </geometry>
+        <material name="yellow">
+          <color rgba="1 0.4 0 1" />
+        </material>
+      </collision>
+    </link>
+    <joint name="joint_tool0" type="fixed">
+      <origin xyz="-0.045 0 ${link4_length}" rpy="0 ${M_PI} 0" />
+      <parent link="link_4" />
+      <child link="tool0" />
+    </joint>
+
+    <!-- <xacro:include filename="$(find realsense2_description)/urdf/_d455.urdf.xacro" />
+    <xacro:sensor_d455 parent="tool0" >
+    <origin xyz="0 -0.3 0" rpy="${-M_PI/2} ${M_PI/2} 0"/>
+  </xacro:sensor_d455> -->
+
+    <!-- Transmissions for ROS Control -->
+
+    <transmission name="a1_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_1">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="a1_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    <transmission name="a2_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_2">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="a2_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    <transmission name="a3_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_3">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="a3_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    <transmission name="a4_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_4">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="a4_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+
+    <gazebo>
+      <plugin name="ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/</robotNamespace>
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      </plugin>
+    </gazebo>
+
+
+    <xacro:macro name="arm_gazebo" params="link">
+      <gazebo reference="${link}">
+        <!-- <material>Gazebo/White</material> -->
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+      </gazebo>
+    </xacro:macro>
+    <xacro:arm_gazebo link="base_arm" />
+    <xacro:arm_gazebo link="link_1" />
+    <xacro:arm_gazebo link="link_2" />
+    <xacro:arm_gazebo link="link_3" />
+    <xacro:arm_gazebo link="link_4" />
+
+  </xacro:macro>
+</robot>

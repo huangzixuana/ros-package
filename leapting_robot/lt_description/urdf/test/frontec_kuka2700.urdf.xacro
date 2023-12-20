@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot name="frontec_kuka3100" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find lt_description)/urdf/inc/kuka_kr210_r2700_2.xacro" />
+    <!-- <xacro:include filename="$(find realsense2_description)/urdf/_d455.urdf.xacro" /> -->
+    <xacro:include filename="$(find lt_description)/urdf/inc/_d455.urdf.xacro" />
+    <xacro:include filename="$(find lt_description)/urdf/inc/_fltk_chassis.urdf.xacro" />
+    <xacro:include filename="$(find lt_description)/urdf/inc/_rplidar.xacro" />
+
+    <xacro:property name="rplidar_offset_x" value="0.63" />
+    <xacro:property name="rplidar_offset_y" value="0" />
+    <xacro:property name="rplidar_offset_z" value="0" />
+
+    <xacro:property name="camera_offset_x" value="-0.048" />
+    <xacro:property name="camera_offset_y" value="-0.713" />
+    <xacro:property name="camera_offset_z" value="0.011" />
+    <xacro:property name="camera_offset_roll" value="1.57" />
+    <xacro:property name="camera_offset_pitch" value="1.57" />
+    <xacro:property name="camera_offset_yaw" value="0" />
+    <xacro:arg name="use_nominal_extrinsics" default="false" />
+    <xacro:arg name="camera_name" default="cam" />
+
+    <xacro:kuka_kr210_r2700_2/>
+    <xacro:fltk_chassis/>
+
+    <link name="base_footprint" />
+    <joint name="base_link_foot" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="base_footprint" />
+        <child link="base_link" />
+    </joint>
+
+    <!-- base link -->
+    <link name="base_link" />
+    <joint name="base_link_arm" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="base_arm" />
+    </joint>
+
+
+    <!-- car_sim -->
+    <joint name="base_car_sim" type="fixed">
+        <origin xyz="0 0 -1.0" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="base_car" />
+    </joint>
+
+
+</robot>

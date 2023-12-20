@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by
+Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="kuka">
+  <xacro:macro name="fltk_chassis">
+    <link
+      name="base_car">
+      <inertial>
+        <origin
+          xyz="-0.2101 0.0047786 0.73046"
+          rpy="0 0 0" />
+        <mass
+          value="50" />
+        <inertia
+          ixx="11.839"
+          ixy="0.015223"
+          ixz="-0.27458"
+          iyy="18.598"
+          iyz="0.00057857"
+          izz="27.727" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/base_car.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.17647 0.84314 0 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/base_car.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link
+      name="front_left_link">
+      <inertial>
+        <origin
+          xyz="1.6586E-05 -0.017 5.2837E-05"
+          rpy="0 0 0" />
+        <mass
+          value="1" />
+        <inertia
+          ixx="0.017961"
+          ixy="3.3743E-14"
+          ixz="-2.5695E-08"
+          iyy="0.034858"
+          iyz="4.2535E-17"
+          izz="0.017961" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/front_left_link.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/front_left_link.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="front_left_joint"
+      type="fixed">
+      <origin
+        xyz="0.86399 0.586 0.22089"
+        rpy="0 0 0" />
+      <parent
+        link="base_car" />
+      <child
+        link="front_left_link" />
+      <axis
+        xyz="0 1 0" />
+    </joint>
+    <link
+      name="back_left_link">
+      <inertial>
+        <origin
+          xyz="1.7523E-07 -0.0068093 1.1967E-08"
+          rpy="0 0 0" />
+        <mass
+          value="1" />
+        <inertia
+          ixx="0.016442"
+          ixy="-1.7785E-10"
+          ixz="6.7542E-10"
+          iyy="0.03281"
+          iyz="1.458E-11"
+          izz="0.016442" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/back_left_link.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.77647 0.75686 0.73725 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/back_left_link.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="back_left_joint"
+      type="fixed">
+      <origin
+        xyz="-0.848 0.57511 0.25044"
+        rpy="0 0 0" />
+      <parent
+        link="base_car" />
+      <child
+        link="back_left_link" />
+      <axis
+        xyz="0 1 0" />
+    </joint>
+    <link
+      name="front_right_link">
+      <inertial>
+        <origin
+          xyz="1.1478E-05 0.016922 6.6613E-16"
+          rpy="0 0 0" />
+        <mass
+          value="1" />
+        <inertia
+          ixx="0.017961"
+          ixy="3.374E-14"
+          ixz="-2.5695E-08"
+          iyy="0.034858"
+          iyz="4.3245E-17"
+          izz="0.017961" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/front_right_link.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/front_right_link.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="front_right_joint"
+      type="fixed">
+      <origin
+        xyz="0.864 -0.58592 0.22094"
+        rpy="0 0 0" />
+      <parent
+        link="base_car" />
+      <child
+        link="front_right_link" />
+      <axis
+        xyz="0 1 0" />
+    </joint>
+    <link
+      name="back_right_link">
+      <inertial>
+        <origin
+          xyz="-2.3012E-08 0.010809 -1.745E-07"
+          rpy="0 0 0" />
+        <mass
+          value="1" />
+        <inertia
+          ixx="0.016442"
+          ixy="2.0221E-12"
+          ixz="-1.2787E-09"
+          iyy="0.03281"
+          iyz="-1.7999E-10"
+          izz="0.016442" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/back_right_link.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.77647 0.75686 0.73725 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://lt_description/meshes/frontec_base/back_right_link.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="back_right_joint"
+      type="fixed">
+      <origin
+        xyz="-0.848 -0.57911 0.25044"
+        rpy="0 0 0" />
+      <parent
+        link="base_car" />
+      <child
+        link="back_right_link" />
+      <axis
+        xyz="0 1 0" />
+    </joint>
+
+  </xacro:macro>
+</robot>
