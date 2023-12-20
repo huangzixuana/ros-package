@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/hzx/catkin_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/hzx/catkin_ws/src/kr3100/kuka_gazebo/include/**",
+        "/home/hzx/catkin_ws/src/leapting_robot/lt_planner/include/**",
+        "/home/hzx/catkin_ws/src/obstacle_detection_node/include/**",
+        "/home/hzx/catkin_ws/src/path_to_goal/include/**",
+        "/home/hzx/catkin_ws/src/teb_local_planner/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
