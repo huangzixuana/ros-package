@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/hzx/leapting/ros_org/install/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/hzx/leapting/ros_org/install/share/fixed_global_planner/include/**",
+        "/home/hzx/leapting/ros_org/install/share/mixed_planner/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
