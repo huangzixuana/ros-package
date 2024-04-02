@@ -3,12 +3,13 @@
 #include <ackermann_msgs/AckermannDrive.h>
 #include <yaml-cpp/yaml.h>
 #include <fstream>
+#include <ros/package.h>
 
 double theta;
 double prev_angular_z = 0;
 double maxtheta;
 double deltatheta;
-std::string config_file_path = "/home/hzx/catkin_ws/src/hzx/joy_to_ackermann/config/ackermann.yaml";
+std::string config_file_path;
 ros::Publisher ackermann_pub;
 
 void saveThetaToYaml(double theta, const std::string& file_path) {
@@ -79,6 +80,9 @@ int main(int argc, char **argv)
 
   ros::NodeHandle nh;
   ros::NodeHandle ph("~");
+
+  std::string package_path = ros::package::getPath("joy_to_ackermann");
+  config_file_path = package_path + "/config/ackermann.yaml";
 
   YAML::Node config = YAML::LoadFile(config_file_path);
   if (config["theta"]) {

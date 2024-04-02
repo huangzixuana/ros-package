@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   ackermann_msgs
+  roslib
 )
 
 ## 找到 yaml-cpp 的系统安装
@@ -31,6 +32,7 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${YAML_CPP_LIBRARIES}
 )
+
 
 ## 指定安装目录
 install(TARGETS joy_to_ackermann
