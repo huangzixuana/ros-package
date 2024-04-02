@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="TransManipulation">
+
+	<executable package_path="comm_behaviors.transmanipulation_sm" class="TransManipulationSM" />
+	<tagstring>i1p</tagstring>
+	<author>ZL</author>
+	<date>Mon Sep 18 2023</date>
+	<description>
+		trans manipulation
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="text" name="axis" default="" label="axis" hint="Sets the axis" />
+
+		<param type="numeric" name="offset" default="0" label="offset" hint="Sets the offset (cm)">
+			<min value="-30" />
+			<max value="30" />
+		</param>
+
+	</params>
+
+
+</behavior>

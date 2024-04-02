@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="yolov8_result" type="result_process.py" name="yolov8_node" output="screen">
+        <!-- <remap from="image_publisher/image_raw" to="camera/color/image_raw" /> -->
+        <rosparam subst_value="true">
+            model_folder_path: "$(find yolov8_result)/model"
+            first_image_path: "$(find yolov8_result)/img/test.png"
+
+            search_max: true
+            search_centroid: false
+            search_corner: true
+            min_rest: 1
+            distance_ratio_x: 0.8
+            distance_ratio_y: 0.4
+
+            bgr2rgb: false
+            debug_out: false
+            use_cv_bridge: false
+
+        </rosparam>
+    </node>
+
+</launch>

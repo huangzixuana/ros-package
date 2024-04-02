@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="fromPick2Place">
+
+	<executable package_path="comm_behaviors.frompick2place_sm" class="fromPick2PlaceSM" />
+	<tagstring>i1p</tagstring>
+	<author>zl</author>
+	<date>Thu Jun 15 2023</date>
+	<description>
+		armPickupDetectPose - armTopPose - armPlaceDetectPose
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

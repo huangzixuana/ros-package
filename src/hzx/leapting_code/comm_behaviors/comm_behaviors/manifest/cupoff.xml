@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="CupOff">
+
+	<executable package_path="comm_behaviors.cupoff_sm" class="CupOffSM" />
+	<tagstring>i1p</tagstring>
+	<author>ZL</author>
+	<date>Wed Jun 21 2023</date>
+	<description>
+		suction cup off
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

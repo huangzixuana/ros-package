@@ -1,0 +1,23 @@
+<launch>
+    <node name="joint_trajectory_controller" pkg="robot_state" type="joint_trajectory_controller"
+        output="screen">
+        <rosparam subst_value="true">
+            min_traj_dur: 0.2
+            speed_scale: 0.5
+        </rosparam>
+    </node>
+
+
+    <node
+        pkg="diagnostic_aggregator" type="aggregator_node"
+        name="diag_agg" args="CPP" output="screen">
+        <rosparam command="load"
+            file="/home/leizeng/catkin_ws/src/leapting_code/scripts/analyzer.yaml" />
+    </node>
+
+    <node
+        pkg="rqt_robot_monitor" type="rqt_robot_monitor"
+        name="rqt_robot_monitor" output="screen">
+
+    </node>
+</launch> 

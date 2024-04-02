@@ -1,0 +1,20 @@
+dynparam:
+  cmd_vel_filter:
+    filter_enabled: null
+    test_p: null
+  test:
+    dyp1: null
+    dyp2: null
+flexbe:
+  beh1:
+    install_gap: '17'
+    param3: 'false'
+    param6: st6
+  beh2:
+    detect: 'false'
+    install_gap: '17'
+parameter:
+  install_gap: 17
+  param3: true
+  pvm_length: 2500
+  pvm_width: 1134

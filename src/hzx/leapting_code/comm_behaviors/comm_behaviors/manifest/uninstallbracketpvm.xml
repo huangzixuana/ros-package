@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="UninstallBracketPVM">
+
+	<executable package_path="comm_behaviors.uninstallbracketpvm_sm" class="UninstallBracketPVMSM" />
+	<tagstring>i1p</tagstring>
+	<author>why</author>
+	<date>Thu Jun 15 2023</date>
+	<description>
+		UninstallPVM
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="StartPVMDetect" />
+	<contains name="StopPVMDetect" />
+	<contains name="CupOn" />
+
+	<!-- Available Parameters -->
+
+</behavior>

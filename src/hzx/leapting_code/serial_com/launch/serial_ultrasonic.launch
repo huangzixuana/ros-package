@@ -1,0 +1,9 @@
+<launch>
+    <node pkg="serial_com" type="serial_ultrasonic_node" name="ultrasonic_node" respawn="true" respawn_delay="5">
+        <param name="boundrate" type="int" value="9600" />
+        <param name="usb_name"  type="string" value="/dev/ttyUSB0" />
+        <param name="distance"  type="double" value="2.0" />
+        <param name="offset"  type="double" value="0.6" />
+    </node>
+
+</launch>

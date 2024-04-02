@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="test-arm">
+
+	<executable package_path="comm_behaviors.test_arm_sm" class="testarmSM" />
+	<tagstring>test</tagstring>
+	<author>ZL</author>
+	<date>Fri Aug 25 2023</date>
+	<description>
+		test-arm
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

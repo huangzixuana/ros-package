@@ -1,0 +1,8 @@
+<launch>
+    <node pkg="serial_com" type="serial_relay_node" name="relay_node" output="screen"  respawn="true" respawn_delay="5">
+        <param name="boundrate" type="int" value="9600" />
+        <param name="usb_name"  type="string" value="/dev/relay" />
+
+    </node>
+
+</launch>

@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+
+import rospy
+from robot_state.joint_limits_urdf import get_joint_limits
+from control_msgs.msg import JointTrajectoryControllerState
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from sensor_msgs.msg import Joy
+from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus
+import numpy as np
+import time
+
+
+class JointTrajectoryController():
+    def __init__(self):
+        self._min_traj_dur = rospy.get_param("~min_traj_dur", 0.5)
+        self._speed_scale = rospy.get_param("~speed_scale", 0.1)
+        self._stale_timeout = rospy.get_param("~stale_timeout", 5)
+
+        self.diagnostics_pub = rospy.Publisher('/diagnostics',
+                                               DiagnosticArray,
+                                               queue_size=1)
+
+        self._cmd_pub = rospy.Publisher("position_trajectory_controller/command",
+                                        JointTrajectory,
+                                        queue_size=1)
+        self._state_sub = rospy.Subscriber("position_trajectory_controller/state",
+                                           JointTrajectoryControllerState,
+                                           self._state_cb,
+                                           queue_size=1)
+        self._joy_sub = rospy.Subscriber("joy",
+                                         Joy,
+                                         self._joy_cb,
+                                         queue_size=1)
+        self._joint_names = None
+        self._joint_pos = {'position': {},  'command': {}, 'limits': {}}
+        self._robot_joint_limits = None
+        try:
+            self._robot_joint_limits = get_joint_limits()
+        except:
+            pass
+        self._t1 = time.time()
+
+        # self._state_diag_msg = diag_array_gen("arm_joint", 0, "arm state")
+        self._state_diag_0 = diag_array_gen("arm_joint", 0, "arm online")
+        self._state_diag_1 = diag_array_gen("arm_joint", 1, "arm offline")
+
+    def _state_cb(self, msg):
+        self._joint_names = msg.joint_names
+        self._joint_pos['position'] = dict(
+            zip(msg.joint_names, msg.actual.positions))
+        if time.time() - self._t1 > 0.5:
+            self._t1 = time.time()
+            # self.diagnostics_pub.publish(self._state_diag_msg)
+
+    def _joy_cb(self, msg):
+        if msg.header.frame_id == "jtc":
+            try:
+                if self._robot_joint_limits == None:
+                    self._robot_joint_limits = get_joint_limits()
+                self._joint_pos['command'] = dict(
+                    zip(self._joint_names, msg.axes))
+                self._update_cmd_cb()
+            except Exception as e:
+                rospy.logwarn("jtc: %s" % str(e))
+
+    def _update_cmd_cb(self):
+        dur = []
+        traj = JointTrajectory()
+        traj.header.stamp = rospy.Time.now()
+        traj.joint_names = self._joint_names
+        point = JointTrajectoryPoint()
+        for name in traj.joint_names:
+            pos = self._joint_pos['position'][name]
+            cmd = pos + self._joint_pos['command'][name]
+            limits = self._robot_joint_limits[name]
+            cmd = np.clip(cmd, limits['min_position'], limits['max_position'])
+
+            max_vel = self._robot_joint_limits[name]['max_velocity']
+            dur.append(max(abs(cmd - pos) / max_vel, self._min_traj_dur))
+            point.positions.append(cmd)
+        point.time_from_start = rospy.Duration(max(dur) / self._speed_scale)
+        traj.points.append(point)
+
+        self._cmd_pub.publish(traj)
+
+
+def diag_array_gen(d_name, d_level, d_msg):
+    da_msg = DiagnosticArray()
+    da_msg.header.stamp = rospy.Time.now()
+    status_msg = DiagnosticStatus()
+    status_msg.name = d_name
+    status_msg.level = d_level
+    status_msg.message = d_msg
+    da_msg.status.append(status_msg)
+    return da_msg
+
+
+def main():
+    rospy.init_node('joint_controller')
+    controller_obj = JointTrajectoryController()
+    while not rospy.is_shutdown():
+        if time.time() - controller_obj._t1 > controller_obj._stale_timeout:
+            controller_obj.diagnostics_pub.publish(
+                controller_obj._state_diag_1)
+        else:
+            controller_obj.diagnostics_pub.publish(
+                controller_obj._state_diag_0)
+        rospy.sleep(1.0)
+    try:
+        rospy.spin()
+    except:
+        print("Shutting down...")
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="remove_border_restrictions">
+
+	<executable package_path="dev_flexbe_behaviors.remove_border_restrictions_sm" class="remove_border_restrictionsSM" />
+	<tagstring></tagstring>
+	<author>hzx</author>
+	<date>Thu Oct 19 2023</date>
+	<description>
+		remove_border_restrictions
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="test0915">
+
+	<executable package_path="comm_behaviors.test0915_sm" class="test0915SM" />
+	<tagstring>test</tagstring>
+	<author>ZL</author>
+	<date>Fri Aug 25 2023</date>
+	<description>
+		install one PVM
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="CommPickupPVM" />
+	<contains name="CommPlacePVM" />
+	<contains name="WithdrawPVM" />
+	<contains name="fromPlace2Pick" />
+
+	<!-- Available Parameters -->
+
+</behavior>

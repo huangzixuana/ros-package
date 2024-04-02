@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="StartInstallCheck">
+
+	<executable package_path="comm_behaviors.startinstallcheck_sm" class="StartInstallCheckSM" />
+	<tagstring>i1p</tagstring>
+	<author>Lei Zeng</author>
+	<date>Tue Sep 19 2023</date>
+	<description>
+		check start
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="fromPlace2Pick" />
+
+	<!-- Available Parameters -->
+
+</behavior>

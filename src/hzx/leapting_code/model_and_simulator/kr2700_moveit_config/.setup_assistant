@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: lt_description
+    relative_path: urdf/inc/test_kuka_kr210_r2700_dh.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/frontec_arm.srdf
+  CONFIG:
+    author_name: zl
+    author_email: zl@1223.com
+    generated_timestamp: 1695284979

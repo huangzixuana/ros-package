@@ -1,0 +1,3 @@
+launch kuka2100:
+roslaunch lt_gazebo kuka2700_cover_bringup.launch
+roslaunch kr2700_moveit_config moveit_planning_execution.launch

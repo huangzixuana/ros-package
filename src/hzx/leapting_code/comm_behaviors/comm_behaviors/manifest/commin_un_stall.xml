@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="CommIn(Un)stall">
+
+	<executable package_path="comm_behaviors.commin_un_stall_sm" class="CommInUnstallSM" />
+	<tagstring>i1p</tagstring>
+	<author>ZengLei</author>
+	<date>Fri Jun 16 2023</date>
+	<description>
+		install-uninstall
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="CommInstallPVM" />
+	<contains name="CommUninstallPVM" />
+
+	<!-- Available Parameters -->
+
+</behavior>

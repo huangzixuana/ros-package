@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="HandEyeBack">
+
+	<executable package_path="comm_behaviors.handeyeback_sm" class="HandEyeBackSM" />
+	<tagstring>com</tagstring>
+	<author>Lei ZENG</author>
+	<date>Tue Oct 31 2023</date>
+	<description>
+		calibrate hand eye
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="idx" default="1" label="idx" hint="Sets the idx">
+			<min value="0" />
+			<max value="100" />
+		</param>
+
+		<param type="boolean" name="auto" default="False" label="auto" hint="Sets the auto" />
+
+	</params>
+
+
+</behavior>

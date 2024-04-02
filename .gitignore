@@ -1,0 +1,13 @@
+
+# GITIGNORE
+.git.ignore
+!.gitignore
+
+# CATKIN_WS
+/build
+/devel
+/src/CMakeLists.txt
+*.vscode
+/.license
+*.vscode
+/src/hzx/leapting_code/model_and_simulator/lt_description

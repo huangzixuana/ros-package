@@ -1,0 +1,12 @@
+<launch>
+    <node name="robot_state_node" pkg="robot_state" type="robot_state_node" output="screen">
+        <rosparam subst_value="true">
+            param_path: "$(find robot_state)/cfg/robot_state_params.yaml"
+            <!-- repo_path: "$(find rosbridge_system)" -->
+            repo_path: "/home/leizeng/catkin_ws/src/ros_controllers"
+            arm_launch_path: "/home/leizeng/catkin_ws/src/leapting_code/robot_state/launch/joint_trajectory_controller.launch"
+        </rosparam>
+    </node>
+
+
+</launch> 

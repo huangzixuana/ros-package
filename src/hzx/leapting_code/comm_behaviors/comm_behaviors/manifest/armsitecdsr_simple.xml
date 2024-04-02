@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="armSiteCdsr_simple">
+
+	<executable package_path="comm_behaviors.armsitecdsr_simple_sm" class="armSiteCdsr_simpleSM" />
+	<tagstring>com</tagstring>
+	<author>zcx</author>
+	<date>Tue Nov 21 2023</date>
+	<description>
+		simple armSiteCdsr
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="enum" name="operation" default="add" label="operation" hint="Sets the operation">
+			<option value="add" />
+			<option value="delete" />
+			<option value="search" />
+			<option value="update" />
+		</param>
+
+		<param type="enum" name="operation_file" default="srdf" label="operation_file" hint="Sets the operation_file">
+			<option value="srdf" />
+			<option value="yaml" />
+			<option value="together" />
+		</param>
+
+		<param type="text" name="site_name" default="" label="site_name" hint="Sets the site_name" />
+
+	</params>
+
+
+</behavior>

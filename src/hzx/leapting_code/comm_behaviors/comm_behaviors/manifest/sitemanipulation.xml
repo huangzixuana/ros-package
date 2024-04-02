@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="SiteManipulation">
+
+	<executable package_path="comm_behaviors.sitemanipulation_sm" class="SiteManipulationSM" />
+	<tagstring>i1p</tagstring>
+	<author>ZL</author>
+	<date>Mon Sep 18 2023</date>
+	<description>
+		site manipulation
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="text" name="site_name" default="" label="site_name" hint="Sets the site_name" />
+
+	</params>
+
+
+</behavior>

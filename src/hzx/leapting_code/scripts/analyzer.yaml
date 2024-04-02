@@ -1,0 +1,286 @@
+base_path: ''
+analyzers:
+  status:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: STATUS
+    analyzers:
+      task:
+        type: diagnostic_aggregator/AnalyzerGroup
+        path: TASK
+        analyzers:
+          init:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: INIT
+            contains: task/init
+            discard_stale: true
+          goal:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: GOAL
+            contains: task/goal
+            discard_stale: true
+          waypoint:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: WAYPOINT
+            contains: task/waypoint
+            discard_stale: true
+          trajectory:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: TRAJECTORY
+            contains: task/trajectory
+            discard_stale: true
+          state:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: STATE
+            contains: task/state
+            discard_stale: true
+          behavior:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: BEHAVIOR
+            contains: task/behavior
+            discard_stale: true
+      motion:
+        type: diagnostic_aggregator/AnalyzerGroup
+        path: MOTION
+        analyzers:
+          left:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: LEFT
+            contains: motion/left
+          right:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: RIGHT
+            contains: motion/right
+          back:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: BACK
+            contains: motion/back
+      action:
+        type: diagnostic_aggregator/AnalyzerGroup
+        path: ACTION
+        analyzers:
+          dump:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: DUMP
+            contains: action/dump
+            discard_stale: true
+          load:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: LOAD
+            contains: action/load
+            discard_stale: true
+          open:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: OPEN
+            contains: action/open
+            discard_stale: true
+          close:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: CLOSE
+            contains: action/close
+            discard_stale: true
+      estop:
+        type: diagnostic_aggregator/AnalyzerGroup
+        path: ESTOP
+        analyzers:
+          base:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: BASE
+            contains: estop/base
+          safe:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: SAFE
+            contains: estop/safe
+            discard_stale: true
+          area:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: AREA
+            contains: estop/area
+            discard_stale: true
+          joystick:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: JOYSTICK
+            contains: estop/joystick
+            discard_stale: true
+          terminal:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: TERMINAL
+            contains: estop/terminal
+            discard_stale: true
+      start:
+        type: diagnostic_aggregator/AnalyzerGroup
+        path: START
+        analyzers:
+          enable:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: ENABLE
+            contains: start/enable
+            discard_stale: true
+          buzzer:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: BUZZER
+            contains: start/buzzer
+            discard_stale: true
+          power:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: POWER
+            contains: start/power
+            discard_stale: true
+          relay:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: RELAY
+            contains: start/relay
+          charge:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: CHARGE
+            contains: start/charge
+            discard_stale: true
+          modex:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: MODEX
+            contains: start/modex
+            discard_stale: true
+          pedal:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: PEDAL
+            contains: start/pedal
+            discard_stale: true
+          stick:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: STICK
+            contains: start/stick
+            discard_stale: true
+      maintenance:
+        type: diagnostic_aggregator/AnalyzerGroup
+        path: MAINTENANCE
+        analyzers:
+          account:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: ACCOUNT
+            contains: maintenance/account
+            discard_stale: true
+          update:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: UPDATE
+            contains: maintenance/update
+            discard_stale: true
+          datetime:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: DATETIME
+            contains: maintenance/datetime
+            discard_stale: true
+          mileage:
+            type: diagnostic_aggregator/GenericAnalyzer
+            path: MILEAGE
+            contains: maintenance/mileage
+            discard_stale: true
+  devices:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: DEVICES
+    analyzers:
+      camera:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: CAMERA
+        contains: realsense2_camera_manager
+        discard_stale: true
+      laser:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: LASER
+        contains: scan_laser
+      drive:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: DRIVE
+        contains: rosbridge_drive
+      imu:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: IMU
+        contains: rosbridge_imu
+      plc:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: PLC
+        contains: rosbridge_plc
+      battery:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: BATTERY
+        contains: rosbridge_battery
+        discard_stale: true
+      joystick:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: JOYSTICK
+        contains: jsnode
+        discard_stale: true
+      sound:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: SOUND
+        contains: sound
+        discard_stale: true
+      arm:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: ARM
+        contains: arm
+        discard_stale: true
+  system:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: SYSTEM
+    analyzers:
+      startup:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: STARTUP
+        contains: startup
+        discard_stale: true
+      net:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: NET
+        find_and_remove_prefix: net
+        discard_stale: true
+      git:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: GIT
+        find_and_remove_prefix: git
+        discard_stale: true
+      database:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: DATABASE
+        find_and_remove_prefix: database
+        discard_stale: true
+      license:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: LICENSE
+        find_and_remove_prefix: license
+        discard_stale: true
+  algorithm:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: ALGORITHM
+    analyzers:
+      localization:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: LOCALIZATION
+        contains: [
+          'ekf_node_local',
+          'ekf_node_global',
+          'amcl',
+          'robot_pose']
+      obstacle:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: OBSTACLE
+        contains: ['obstacle', 'cmd_vel_filter']
+        discard_stale: true
+      mapping:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: MAPPING
+        contains: mapping
+        discard_stale: true
+      navigation:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: NAVIGATION
+        contains: ['navigation', 'global_path']
+        discard_stale: true
+      recognition:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: RECOGNITION
+        contains: recognition
+        discard_stale: true
+      docking:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: DOCKING
+        contains: docking
+        discard_stale: true

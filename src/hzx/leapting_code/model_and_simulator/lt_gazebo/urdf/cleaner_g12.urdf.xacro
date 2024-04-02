@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<robot name="frontec_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="$(find lt_description)/urdf/inc/_kuka_kr210_r2700_dh.xacro" />
+    <xacro:kuka_kr210_r2700_cover />
+
+
+    <xacro:include filename="$(find lt_description)/urdf/inc/_fltk_chassis.urdf.xacro" />
+    <xacro:fltk_chassis />
+
+
+    <link name="base_link" />
+
+    <joint name="base_link_arm" type="fixed">
+        <origin xyz="0 0 1.0" rpy="0 0 3.1415926" />
+        <parent link="base_link" />
+        <child link="base_arm" />
+    </joint>
+
+    <joint name="base_car_sim" type="fixed">
+        <origin xyz="0 0 0.0" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="base_car" />
+    </joint>
+
+
+    <xacro:include filename="$(find lt_description)/urdf/inc/_c2p_gripper.urdf.xacro" />
+    <xacro:gripper/>
+    <joint name="base_gripper" type="fixed">
+        <origin xyz="0.0 0.0 -0.1" rpy="3.1415926 0 0" />
+        <parent link="tool0" />
+        <child link="gripper" />
+    </joint>
+
+
+    <xacro:include filename="$(find lt_description)/urdf/inc/_d455.urdf.xacro" />
+    <xacro:property name="rplidar_offset_x" value="0.63" />
+    <xacro:property name="rplidar_offset_y" value="0" />
+    <xacro:property name="rplidar_offset_z" value="0" />
+
+    <xacro:property name="camera_offset_x" value="0" />
+    <xacro:property name="camera_offset_y" value="-0.7" />
+    <xacro:property name="camera_offset_z" value="0.20" />
+    <xacro:property name="camera_offset_roll" value="0" />
+    <xacro:property name="camera_offset_pitch" value="${radians(-90)}" />
+    <xacro:property name="camera_offset_yaw" value="${radians(180)}" />
+    <xacro:arg name="use_nominal_extrinsics" default="false" />
+    <xacro:arg name="camera_name" default="camera" />
+
+    <!-- Camera -->
+    <!-- <joint name="base_camera_joint" type="fixed">
+        <origin xyz="${camera_offset_x} ${camera_offset_y} ${camera_offset_z}" rpy="${camera_offset_roll}
+    ${camera_offset_pitch} ${camera_offset_yaw}" />
+        <parent link="tool0" />
+        <child link="base_camera" />
+    </joint>
+    <link name="base_camera" />
+    <xacro:sensor_d455 parent="base_camera"
+        use_nominal_extrinsics="$(arg use_nominal_extrinsics)"
+        name="$(arg camera_name)">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:sensor_d455> -->
+
+
+    <xacro:macro name="trans_gazebo" params="joint_name">
+        <transmission name="${joint_name}_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${joint_name}">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${joint_name}_motor">
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+    <xacro:trans_gazebo joint_name="joint_a1" />
+    <xacro:trans_gazebo joint_name="joint_a2" />
+    <xacro:trans_gazebo joint_name="joint_a3" />
+    <xacro:trans_gazebo joint_name="joint_a4" />
+    <xacro:trans_gazebo joint_name="joint_a5" />
+    <xacro:trans_gazebo joint_name="joint_a6" />
+
+
+    <gazebo>
+        <plugin name="ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        </plugin>
+    </gazebo>
+
+    <xacro:macro name="arm_gazebo" params="link">
+        <gazebo reference="${link}">
+            <!-- <material>Gazebo/White</material> -->
+            <mu1>0.2</mu1>
+            <mu2>0.2</mu2>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:arm_gazebo link="base_arm" />
+    <xacro:arm_gazebo link="link_1" />
+    <xacro:arm_gazebo link="link_2" />
+    <xacro:arm_gazebo link="link_3" />
+    <xacro:arm_gazebo link="link_4" />
+    <xacro:arm_gazebo link="link_5" />
+    <xacro:arm_gazebo link="link_6" />
+
+
+    <xacro:include filename="$(find realsense_ros_gazebo)/xacro/tracker.xacro" />
+    <xacro:include filename="$(find realsense_ros_gazebo)/xacro/depthcam.xacro" />
+
+    <xacro:realsense_d435 sensor_name="camera" parent_link="tool0" rate="10">
+        <origin xyz="${camera_offset_x} ${camera_offset_y} ${camera_offset_z}"
+            rpy="${radians(-90)} ${radians(90)} ${camera_offset_yaw}" />
+
+    </xacro:realsense_d435>
+
+
+    <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro" />
+    <xacro:VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points" hz="10" samples="440"
+        gpu="false">
+        <origin xyz="1.0 0 1.5" rpy="0 0 0" />
+    </xacro:VLP-16>
+
+
+</robot>

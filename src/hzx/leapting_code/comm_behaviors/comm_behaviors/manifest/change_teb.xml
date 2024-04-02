@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="change_teb">
+
+	<executable package_path="comm_behaviors.change_teb_sm" class="change_tebSM" />
+	<tagstring>com</tagstring>
+	<author>sunkm</author>
+	<date>Tue Jul 27 2021</date>
+	<description>
+		change_teb
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

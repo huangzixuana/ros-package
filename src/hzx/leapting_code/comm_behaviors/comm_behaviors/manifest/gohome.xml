@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="GoHome">
+
+	<executable package_path="comm_behaviors.gohome_sm" class="GoHomeSM" />
+	<tagstring>i1p</tagstring>
+	<author>why</author>
+	<date>Wed Jun 07 2023</date>
+	<description>
+		GoHome
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

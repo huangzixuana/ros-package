@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="detach_pvm">
+
+	<executable package_path="dev_flexbe_behaviors.detach_pvm_sm" class="detach_pvmSM" />
+	<tagstring></tagstring>
+	<author>hzx</author>
+	<date>Tue Oct 17 2023</date>
+	<description>
+		detach_pvm
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

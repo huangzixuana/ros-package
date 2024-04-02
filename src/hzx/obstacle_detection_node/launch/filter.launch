@@ -1,0 +1,65 @@
+<launch>
+
+  <arg name="manager" default="passthrough_manager"/>
+  <node pkg="nodelet" type="nodelet" name="passthrough_manager" args="manager" required="true" />
+
+  <node pkg="nodelet" type="nodelet" name="cropbox" args="load pcl/CropBox $(arg manager)" >
+    <remap from="~input" to="/mid360_front" />
+    <remap from="~output" to="/mid360_front_crop1"/>
+    <rosparam>
+      min_x: -1.5
+      max_x: 1.5
+      min_y: -3.5
+      max_y: 1
+      min_z: -1
+      max_z: 3
+      keep_organized: False
+      negative: True
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="cropbox2" args="load pcl/CropBox $(arg manager)" >
+    <remap from="~input" to="/mid360_front_crop1"/>
+    <remap from="~output" to="/mid360_front_crop2"/>
+    <rosparam>
+      min_x: -2
+      max_x: 1.5
+      min_y: -4.5
+      max_y: 2
+      min_z: -0.5
+      max_z: 3
+      keep_organized: False
+      negative: False
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="cropbox3" args="load pcl/CropBox $(arg manager)" >
+    <remap from="~input" to="/mid360_back" />
+    <remap from="~output" to="/mid360_back_crop1"/>
+    <rosparam>
+      min_x: -1.5
+      max_x: 1.5
+      min_y: -3.5
+      max_y: 1
+      min_z: -1
+      max_z: 3
+      keep_organized: False
+      negative: True
+    </rosparam>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="cropbox4" args="load pcl/CropBox $(arg manager)" >
+    <remap from="~input" to="/mid360_back_crop1"/>
+    <remap from="~output" to="/mid360_back_crop2"/>
+    <rosparam>
+      min_x: -2
+      max_x: 1.5
+      min_y: -4.5
+      max_y: 2
+      min_z: -0.5
+      max_z: 3
+      keep_organized: False
+      negative: False
+    </rosparam>
+  </node>
+</launch>

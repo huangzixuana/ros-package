@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="HandEyeCalibration">
+
+	<executable package_path="comm_behaviors.handeyecalibration_sm" class="HandEyeCalibrationSM" />
+	<tagstring>kuka</tagstring>
+	<author>Lei ZENG</author>
+	<date>Tue Oct 31 2023</date>
+	<description>
+		calibrate hand eye
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="HandEyeBack" />
+	<contains name="HandEyePose" />
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="boolean" name="if_auto_all" default="False" label="if_auto_all" hint="Sets the if_auto_all" />
+
+	</params>
+
+
+</behavior>

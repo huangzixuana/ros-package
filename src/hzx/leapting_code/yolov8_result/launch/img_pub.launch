@@ -1,0 +1,9 @@
+<launch>
+    <node pkg="image_publisher" type="image_publisher" name="image_publisher"
+        args="$(find yolov8_result)/img/test.png">
+        <param name="publish_rate" value="10" />
+    </node>
+
+    <node pkg="rqt_image_view" type="rqt_image_view" name="rqt_image_view">
+    </node>
+</launch>

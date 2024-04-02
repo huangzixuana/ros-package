@@ -1,0 +1,15 @@
+<launch>
+
+    <rosparam file="$(find cmd_vel_mux)/config/params.yaml" command="load" />
+    <node pkg="cmd_vel_mux" type="cmd_vel_mux_node" name="cmd_vel_mux_node" output="screen" respawn="true">
+        <param name="yaml_cfg_file" value="$(find cmd_vel_mux)/config/params.yaml"/>
+    </node>
+
+    <node name="joy_publisher_node" pkg="cmd_vel_mux" type="joy_publisher.py" output="screen">
+    </node>
+
+    <node pkg="cmd_vel_mux" type="heart_cmd_node" name="heart_cmd_vel_node" output="screen" respawn="true">
+
+    </node>
+
+</launch>

@@ -1,0 +1,10 @@
+<launch>
+    <node pkg="serial_com" type="serial_battery_node" name="serial_battery_node" respawn="true" respawn_delay="3">
+        <rosparam>
+            com_name: /dev/battery
+            boundrate: 9600
+        </rosparam>
+
+    </node>
+
+</launch>
