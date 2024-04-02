@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import rostopic
 import tf
 import math
 import moveit_commander
@@ -37,11 +38,17 @@ class BorderRestrictions(EventState):
         self._position_x = position_x
         self._position_y = position_y
         self._position_z = position_z
-        self.scene = moveit_commander.PlanningSceneInterface()
         self.thickness = 0.001
         self.plane_pose = [geometry_msgs.msg.PoseStamped() for _ in range(6)]
         
     def execute(self, userdata):
+
+        msg_type, msg_topic, _ = rostopic.get_topic_class('/move_group/goal')
+        if msg_topic is None:
+            Logger.logwarn('Moveit Failed')
+            return
+        else:
+            self.scene = moveit_commander.PlanningSceneInterface()
 
         if self._action == "add":
             self.scene.add_box("plane0", self.plane_pose[0], size=(self._cube_size[0],self._cube_size[1],self.thickness))

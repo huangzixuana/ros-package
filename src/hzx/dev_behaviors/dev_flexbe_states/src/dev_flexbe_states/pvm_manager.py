@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import rospy
+import rostopic
 import moveit_commander
 import geometry_msgs.msg
 from flexbe_core import EventState, Logger
@@ -34,11 +35,17 @@ class PvmManager(EventState):
         self._frame_id = frame_id
         self._position_z = position_z
         self.pvm_name = "pvm"
-        self.scene = moveit_commander.PlanningSceneInterface()
         self.eef_link = frame_id
         self.pvm_pose = geometry_msgs.msg.PoseStamped()
         
     def execute(self, userdata):
+        
+        msg_type, msg_topic, _ = rostopic.get_topic_class('/move_group/goal')
+        if msg_topic is None:
+            Logger.logwarn('Moveit Failed')
+            return
+        else:
+            self.scene = moveit_commander.PlanningSceneInterface()
 
         if self._action == "attach":
             self.scene.add_box(self.pvm_name, self.pvm_pose, size=(self._size[0],self._size[1], self._size[2]))
