@@ -26,10 +26,10 @@ class BorderRestrictions(EventState):
     '''
 
     def __init__(self, action="add",
-                 cube_size=[5.6, 5, 3],
+                 cube_size=[4.8, 5.6, 3],
                  frame_id="base_arm",
-                 position_x=0.8,
-                 position_y=-0.9,
+                 position_x=1.3,
+                 position_y=0.9,
                  position_z=2.9):
         super(BorderRestrictions, self).__init__(outcomes=['done'])
         self._action = action

@@ -5,20 +5,34 @@
 #include <fstream>
 #include <ros/package.h>
 
-double theta;
+double theta = 0;
 double prev_angular_z = 0;
 double maxtheta;
 double deltatheta;
-std::string config_file_path;
+bool received_odom_msg = false;
 ros::Publisher ackermann_pub;
 
-void saveThetaToYaml(double theta, const std::string& file_path) {
-  YAML::Node config;
-  config["theta"] = theta;
-  config["maxtheta"] = maxtheta;
-  config["deltatheta"] = deltatheta;
-  std::ofstream file(file_path);
-  file << config;
+// 读取yaml文件位置
+std::string getConfigFilePath() {
+    std::string package_path = ros::package::getPath("joy_to_ackermann");
+    return package_path + "/config/ackermann.yaml";
+}
+
+// 读取参数值
+void readConfigParameters(const std::string& config_file_path) {
+    YAML::Node config = YAML::LoadFile(config_file_path);
+    maxtheta = config["maxtheta"].as<double>();
+    deltatheta = config["deltatheta"].as<double>();
+}
+
+// 回调函数：接收初始theta值
+void odomCallback(const ackermann_msgs::AckermannDrive::ConstPtr& msg)
+{
+    // 只有在没有接收到过消息时才更新theta的值
+    if (!received_odom_msg) {
+        theta = msg->steering_angle;
+        received_odom_msg = true;
+    }
 }
 
 // 回调函数：处理cmd_topic_name话题的消息
@@ -68,7 +82,6 @@ void cmdTopicCallback(const sensor_msgs::Joy::ConstPtr& msg)
       }
 
       ack_msg.steering_angle = theta;
-
       // 发布joy_to_ackermann话题
       ackermann_pub.publish(ack_msg);
     }
@@ -77,39 +90,19 @@ void cmdTopicCallback(const sensor_msgs::Joy::ConstPtr& msg)
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "joy_to_ackermann");
-
   ros::NodeHandle nh;
   ros::NodeHandle ph("~");
-
-  std::string package_path = ros::package::getPath("joy_to_ackermann");
-  config_file_path = package_path + "/config/ackermann.yaml";
-
-  YAML::Node config = YAML::LoadFile(config_file_path);
-  if (config["theta"]) {
-    theta = config["theta"].as<double>();
-  } else {
-    theta = 0.0;
-  }
-  maxtheta = config["maxtheta"].as<double>();
-  deltatheta = config["deltatheta"].as<double>();
+  std::string config_file_path = getConfigFilePath();
+  readConfigParameters(config_file_path);
 
   ackermann_pub = nh.advertise<ackermann_msgs::AckermannDrive>("joy_to_ackermann", 1);
-
+  ros::Subscriber odom_sub = nh.subscribe("ackermann_drive_odom", 1, odomCallback);
   ros::Subscriber cmd_sub = nh.subscribe("joy", 1, cmdTopicCallback);
 
   ros::Rate rate(10.0);
-  int loop_count = 0;
   while (ros::ok()) {
     ros::spinOnce();
     rate.sleep();
-    ++loop_count;
-    if (loop_count == 600) { // 100 loops for 10 seconds
-      saveThetaToYaml(theta, config_file_path); // Save data every 60 seconds
-      loop_count = 0; // Reset loop count
-    }
   }
-
-  saveThetaToYaml(theta, config_file_path);
-
   return 0;
 }

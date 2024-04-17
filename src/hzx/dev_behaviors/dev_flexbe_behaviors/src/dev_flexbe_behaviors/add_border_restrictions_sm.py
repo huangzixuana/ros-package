@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from dev_flexbe_states.border_restrictions import BorderRestrictions
+from dev_flexbe_states.border_restrictions import BorderRestrictions as dev_flexbe_states__BorderRestrictions
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -55,7 +55,7 @@ class add_border_restrictionsSM(Behavior):
 		with _state_machine:
 			# x:126 y:136
 			OperatableStateMachine.add('add_border_restrictions',
-										BorderRestrictions(action="add", cube_size=[6.2,6.2,3.8], frame_id="base_arm", position_x=0.8, position_y=0.9, position_z=3.7),
+										dev_flexbe_states__BorderRestrictions(action="add", cube_size=[5.8,6.6,4], frame_id="base_arm", position_x=2, position_y=0.9, position_z=5),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 

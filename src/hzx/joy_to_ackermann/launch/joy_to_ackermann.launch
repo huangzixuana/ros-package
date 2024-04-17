@@ -1,3 +1,7 @@
 <launch>
   <node pkg="joy_to_ackermann" type="joy_to_ackermann" name="joy_to_ackermann" output="screen"/>
+      <node name="joy_publisher_node" pkg="joy_to_ackermann" type="joy_publisher.py" output="screen">
+    </node>
+      <node name="ackermann_publisher_node" pkg="joy_to_ackermann" type="ackermann_publisher.py" output="screen">
+    </node>
 </launch>
