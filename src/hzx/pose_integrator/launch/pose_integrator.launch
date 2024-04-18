@@ -1,0 +1,5 @@
+<launch>
+    <!-- 启动 pose_integrator 可执行文件 -->
+    <node name="pose_integrator_node" pkg="pose_integrator" type="pose_integrator" output="screen">
+    </node>
+</launch>
