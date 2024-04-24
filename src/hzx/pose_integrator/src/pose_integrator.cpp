@@ -40,6 +40,8 @@ public:
             return;  // 如果任一pose没有被初始化，就返回
         }
 
+        readTFRelationsFromYAML();
+
         // 如果协方差满足条件
         if (isCovarianceValid(pose_) && isCovarianceValid(pose_reflection_))
         {
@@ -57,10 +59,6 @@ public:
                 writeTFRelationsToYAML();
                 // 舍弃最早的数据
                 tf_buffer_.pop_front();
-            }
-            else
-            {
-                readTFRelationsFromYAML();
             }
         }
         else

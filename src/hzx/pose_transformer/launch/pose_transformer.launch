@@ -1,0 +1,17 @@
+<launch>
+
+    <!-- 启动 pose_transformer 可执行文件 -->
+    <node name="pose_transformer_node" pkg="pose_transformer" type="pose_transformer" output="screen">
+        <remap from="init_pose" to="amcl_pose_reflection"/>
+        <remap from="transformed_pose" to="map1_pose"/>
+        <param name="target_frame" value="map1"/>
+    </node>
+
+    <!-- 启动 pose_transformer 可执行文件 -->
+    <node name="pose_transformer_node1" pkg="pose_transformer" type="pose_transformer" output="screen">
+        <remap from="init_pose" to="map1_pose"/>
+        <remap from="transformed_pose" to="map_pose"/>
+        <param name="target_frame" value="map"/>
+    </node>
+
+</launch>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="TrailerUpDown">
+
+	<executable package_path="dev_flexbe_behaviors.trailerupdown_sm" class="TrailerUpDownSM" />
+	<tagstring>1p</tagstring>
+	<author>hzx</author>
+	<date>Mon Apr 22 2024</date>
+	<description>
+		Trailer Up or Down
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

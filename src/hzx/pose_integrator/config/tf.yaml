@@ -1,11 +1,11 @@
 tf_relations:
   - average_transform:
       translation:
-        x: -0.126153
-        y: 0.103064
+        x: 15
+        y: 5
         z: 0
       rotation:
         x: 0
         y: 0
-        z: -0.0613481
-        w: 0.998116
+        z: 0
+        w: 1

@@ -140,7 +140,7 @@
                   - name: plc_port
                     type: read
                     byte: [$(arg byte_head), 0x06, 0x00, 0x02, any1, any2]
-              - name: rotate_right
+              - name: rotate_down
                 type: std_msgs/String
                 op: subscribe
                 action_chain:
@@ -150,7 +150,7 @@
                   - name: plc_port
                     type: read
                     byte: [$(arg byte_head), 0x06, 0x00, 0x03, any1, any2]
-              - name: rotate_left
+              - name: rotate_up
                 type: std_msgs/String
                 op: subscribe
                 action_chain:
@@ -170,33 +170,33 @@
                   - name: plc_port
                     type: read
                     byte: [$(arg byte_head), 0x06, 0x00, 0x03, any1, any2]
-              - name: rotate_right_speed
+              - name: rotate_down_speed
                 type: std_msgs/String
                 op: subscribe
                 action_chain:
                   - name: plc_port
                     type: write
-                    byte: [$(arg byte_write), 0x06, 0x00, 0x04, rotate_right_speed, big]
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x04, rotate_down_speed, big]
                   - name: plc_port
                     type: read
                     byte: [$(arg byte_head), 0x06, 0x00, 0x04, any1, any2]
-              - name: rotate_left_speed
+              - name: rotate_up_speed
                 type: std_msgs/String
                 op: subscribe
                 action_chain:
                   - name: plc_port
                     type: write
-                    byte: [$(arg byte_write), 0x06, 0x00, 0x05, rotate_left_speed, big]
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x05, rotate_up_speed, big]
                   - name: plc_port
                     type: read
                     byte: [$(arg byte_head), 0x06, 0x00, 0x05, any1, any2]
-              - name: lift_goal_angle
+              - name: rotate_goal_angle
                 type: std_msgs/String
                 op: subscribe
                 action_chain:
                   - name: plc_port
                     type: write
-                    byte: [$(arg byte_write), 0x06, 0x00, 0x06, angle, big]
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x06, rotate_goal_angle, big]
                     <!-- byte: [$(arg byte_write), 0x10, 0x00, 0x06, 0x00, 0x02, 0x04, angle, double_big, double_big, double_big] -->
                   - name: plc_port
                     type: read
@@ -207,7 +207,7 @@
                 action_chain:
                   - name: plc_port
                     type: write
-                    byte: [$(arg byte_write), 0x06, 0x00, 0x08, height, big]
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x08, lift_goal_height, big]
                   - name: plc_port
                     type: read
                     byte: [$(arg byte_head), 0x06, 0x00, 0x08, any1, any2]             
@@ -218,7 +218,7 @@
                 action_chain:
                   - name: plc_port
                     type: write
-                    byte: [$(arg byte_write), 0x06, 0x00, 0x14, 0x00, height, big]
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x14, 0x00, 0x01]
                   - name: plc_port
                     type: read
                     byte: [$(arg byte_head), 0x06, 0x00, 0x14, any1, any2]

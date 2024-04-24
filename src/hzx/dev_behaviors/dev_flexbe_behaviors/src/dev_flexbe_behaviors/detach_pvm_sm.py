@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from dev_flexbe_states.pvm_manager import PvmManager
+from dev_flexbe_states.scene_manager import SceneManager
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -53,9 +53,9 @@ class detach_pvmSM(Behavior):
 
 
 		with _state_machine:
-			# x:30 y:40
-			OperatableStateMachine.add('detach_pvm',
-										PvmManager(action="detach", pvm_size=[2.278,1.134,0.035], frame_id="tool0", position_z=0),
+			# x:50 y:153
+			OperatableStateMachine.add('detach',
+										SceneManager(action="detach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 

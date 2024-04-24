@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from dev_flexbe_states.pvm_manager import SceneManager
+from dev_flexbe_states.publish_string import PublishString
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -16,18 +16,18 @@ from dev_flexbe_states.pvm_manager import SceneManager
 
 
 '''
-Created on Tue Oct 17 2023
+Created on Mon Apr 22 2024
 @author: hzx
 '''
-class attach_pvmSM(Behavior):
+class TrailerUpDownSM(Behavior):
 	'''
-	attach_pvm
+	Trailer Up or Down
 	'''
 
 
 	def __init__(self):
-		super(attach_pvmSM, self).__init__()
-		self.name = 'attach_pvm'
+		super(TrailerUpDownSM, self).__init__()
+		self.name = 'TrailerUpDown'
 
 		# parameters of this behavior
 
@@ -53,9 +53,9 @@ class attach_pvmSM(Behavior):
 
 
 		with _state_machine:
-			# x:37 y:130
-			OperatableStateMachine.add('attach',
-										SceneManager(action="attach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
+			# x:30 y:40
+			OperatableStateMachine.add('lift_up',
+										PublishString(name="trailer_request", value="{\"name\":\"lift_load_speed\",\"lift_load_speed\":80}"),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 
