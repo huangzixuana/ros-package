@@ -30,4 +30,14 @@ class PublishString(EventState):
     def on_enter(self, userdata):
         t = String()
         t.data = self._value
+        if self._value.__contains__('{'):
+            dic = eval(self._value)
+            if "lift_goal_height" in dic.keys():
+                scale_value = int(10000 * dic["lift_goal_height"])
+                # dic["lift_goal_height"] = scale_value
+                t.data = self._value.replace(str(dic["lift_goal_height"]),str(scale_value))
+            elif "rotate_goal_angle" in dic.keys():
+                scale_value = int(10 * dic["rotate_goal_angle"])
+                # dic["rotate_goal_angle"] = scale_value
+                t.data = self._value.replace(str(dic["rotate_goal_angle"]),str(scale_value))
         self._pub.publish(self._topic, t)

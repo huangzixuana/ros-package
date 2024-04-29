@@ -3,17 +3,27 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Vector3.h>
 #include <deque>
 #include <fstream>
 #include <ros/package.h>
 #include <yaml-cpp/yaml.h>
+#include <dynamic_reconfigure/server.h>
+#include "pose_integrator/pose_integratorConfig.h"
 
 class PoseIntegrator
 {
 public:
     PoseIntegrator()
-    {
-        tf_yaml_file_ = ros::package::getPath("pose_integrator") + "/config/tf.yaml";
+    {   
+        f = boost::bind(&PoseIntegrator::dynamicConfigCallback, this, _1, _2);
+        server.setCallback(f);
+        std::string yaml_read, yaml_write;
+        std::string node_name = ros::this_node::getName();
+        nh_.param(node_name + "/yaml_read", yaml_read, std::string("/config/tf.yaml"));
+        nh_.param(node_name + "/yaml_write", yaml_write, std::string("/config/tf_write.yaml"));
+        tf_yaml_file_read = ros::package::getPath("pose_integrator") + yaml_read;
+        tf_yaml_file_write = ros::package::getPath("pose_integrator") + yaml_write;
         // 订阅amcl_pose和amcl_pose_reflection话题
         pose_sub_ = nh_.subscribe("amcl_pose", 10, &PoseIntegrator::poseCallback, this);
         pose_reflection_sub_ = nh_.subscribe("amcl_pose_reflection", 10, &PoseIntegrator::poseReflectionCallback, this);
@@ -37,6 +47,7 @@ public:
     {
         if (pose_.header.stamp.isZero() || pose_reflection_.header.stamp.isZero())
         {
+            tf_buffer_.clear();
             return;  // 如果任一pose没有被初始化，就返回
         }
 
@@ -48,15 +59,25 @@ public:
             // 计算tf转化关系并存入队列中
             calculateAndStoreTransform(pose_, pose_reflection_, tf_buffer_);
 
-            // 如果列表中存储了100个tf关系，就计算平均并发布
-            if (tf_buffer_.size() == 100)
+            std::string node_name = ros::this_node::getName();
+            std::int32_t tf_write;
+            // nh_.param(node_name + "/queue_length", queue_length, std::int32_t(100));
+            nh_.param(node_name + "/tf_write", tf_write, std::int32_t(1));
+
+            // 如果列表中存储了queue_length个tf关系，就计算平均并发布
+            std::int32_t size = tf_buffer_.size();
+            ROS_INFO("tf_buffer_size: %d", size);
+            if (size >= queue_length)
             {
                 // 选择中间的transform
                 selectMiddleTransforms();
                 // 计算平均的transform
-                computeAverageTransform();
+                computeAverageTransform(tf1_buffer_);
                 // 将平均的transform写入yaml文件
-                writeTFRelationsToYAML();
+                if (tf_write == 1)
+                {
+                    writeTFRelationsToYAML();
+                }
                 // 舍弃最早的数据
                 tf_buffer_.pop_front();
             }
@@ -86,26 +107,63 @@ private:
     std::deque<tf2::Transform> tf1_buffer_;
     tf2_ros::TransformBroadcaster broadcaster_;
     tf2::Transform average_transform;
-    std::string tf_yaml_file_;
+    std::string tf_yaml_file_read;
+    std::string tf_yaml_file_write;
+    std::string node_name;
+    std::double_t covariance_threshold;
+    std::int32_t queue_length;
+    dynamic_reconfigure::Server<pose_integrator_cfg::pose_integratorConfig> server;
+    dynamic_reconfigure::Server<pose_integrator_cfg::pose_integratorConfig>::CallbackType f;
+
+    void dynamicConfigCallback(pose_integrator_cfg::pose_integratorConfig &config, uint32_t level)
+    {
+        covariance_threshold = config.Covariance_threshold;
+        queue_length = config.Queue_length;
+        ROS_INFO("Covariance threshold value: %f", covariance_threshold);
+        ROS_INFO("Queue length value: %d", queue_length);
+    }
 
     bool isCovarianceValid(const geometry_msgs::PoseWithCovarianceStamped& pose)
     {
+        // std::double_t Covariance_threshold;
+        // nh_.param("Covariance_threshold", Covariance_threshold, std::double_t());
         // 检查协方差的第0，7，35位的和是否满足阈值
         double sum = pose.pose.covariance[0] + pose.pose.covariance[7] + pose.pose.covariance[35];
         // ROS_INFO("Sum of covariance elements: %f", sum);
-        return sum < 0.02;
+        return sum < covariance_threshold;
     }
 
     void calculateAndStoreTransform(const geometry_msgs::PoseWithCovarianceStamped& pose, 
                                     const geometry_msgs::PoseWithCovarianceStamped& pose_reflection, 
                                     std::deque<tf2::Transform>& tf_buffer) 
     {
-        tf2::Transform tf_pose, tf_pose_reflection;
+        tf2::Transform tf_pose, tf_pose_reflection, transform;
         tf2::fromMsg(pose.pose.pose, tf_pose);
         tf2::fromMsg(pose_reflection.pose.pose, tf_pose_reflection);
+        geometry_msgs::TransformStamped map_to_map1;
+        geometry_msgs::TransformStamped trans;
 
-        // 计算从pose到pose_reflection的转换关系
-        tf2::Transform transform = tf_pose.inverseTimes(tf_pose_reflection);
+        tf2::Transform inverse_tf_pose_reflection = tf_pose_reflection.inverse();
+        geometry_msgs::TransformStamped tf_pose_reflection_inv;
+        tf_pose_reflection_inv.header = pose_reflection.header;
+        tf_pose_reflection_inv.transform = tf2::toMsg(inverse_tf_pose_reflection);
+
+        trans.header = pose.header;
+        trans.transform = tf2::toMsg(tf_pose);
+
+        tf2::doTransform(tf_pose_reflection_inv,map_to_map1,trans);
+
+        tf2::fromMsg(map_to_map1.transform, transform);
+
+        // 计算从 map 到 map1 的变换
+        // tf2::Transform transform = transform_pose_reflection.inverseTimes(transform_pose);
+
+        geometry_msgs::TransformStamped transformStamped1;
+        transformStamped1.header.stamp = ros::Time::now();
+        transformStamped1.header.frame_id = "test";
+        transformStamped1.child_frame_id = "test1";
+        transformStamped1.transform = tf2::toMsg(transform);
+        broadcaster_.sendTransform(transformStamped1);
 
         // 将计算的tf关系存储到队列中
         tf_buffer.push_back(transform);
@@ -144,23 +202,39 @@ private:
         }
     }
 
-    void computeAverageTransform()
-    {
-        // Initialize the average transform
-        average_transform.setIdentity();
+    tf2::Quaternion slerp(const tf2::Quaternion& q1, const tf2::Quaternion& q2, double t) {
+    // 对两个四元数进行球面线性插值
+        return q1.slerp(q2, t);
+    }
 
-        // Compute the sum of all transforms in the buffer
-        for (const auto& tf : tf1_buffer_)
-        {
-            average_transform *= tf;
+    void computeAverageTransform(const std::deque<tf2::Transform>& transforms) 
+    {
+    // 分别存储所有 transform 的旋转和平移部分
+        std::deque<tf2::Quaternion> rotations;
+        std::deque<tf2::Vector3> translations;
+
+        // 提取所有 transform 的旋转和平移部分
+        for (const auto& transform : transforms) {
+            rotations.push_back(transform.getRotation());
+            translations.push_back(transform.getOrigin());
         }
 
-        // Normalize the average transform
-        double num_transforms = static_cast<double>(tf1_buffer_.size());
-        average_transform.setOrigin(average_transform.getOrigin() / num_transforms);
-        tf2::Quaternion avg_quaternion = average_transform.getRotation();
-        avg_quaternion.normalize();
-        average_transform.setRotation(avg_quaternion);
+        // 计算平均旋转（使用球面线性插值）
+        tf2::Quaternion averageRotation = tf2::Quaternion::getIdentity();
+        for (size_t i = 0; i < rotations.size(); ++i) {
+            // 对每对相邻的旋转进行插值
+            averageRotation = tf2::slerp(averageRotation, rotations[i], 1.0 / (i + 1));
+        }
+
+        // 计算平均平移
+        tf2::Vector3 averageTranslation = tf2::Vector3(0, 0, 0);
+        for (const auto& translation : translations) {
+            averageTranslation += translation;
+        }
+        averageTranslation /= translations.size();
+
+        average_transform.setRotation(averageRotation);
+        average_transform.setOrigin(averageTranslation);
     }
 
     void publishAverageTransform(const tf2::Transform& transform)
@@ -168,16 +242,26 @@ private:
         // 发布最新的transform
         geometry_msgs::TransformStamped transformStamped;
         transformStamped.header.stamp = ros::Time::now();
-        transformStamped.header.frame_id = "map";
-        transformStamped.child_frame_id = "map1";
+        std::string map, map1;
+        std::string node_name = ros::this_node::getName();
+        nh_.param(node_name + "/init_frame", map, std::string("map"));
+        nh_.param(node_name + "/transformed_frame", map1, std::string("map1"));
+        transformStamped.header.frame_id = map;
+        transformStamped.child_frame_id = map1;
         transformStamped.transform = tf2::toMsg(transform);
-        broadcaster_.sendTransform(transformStamped);
+
+        std::int32_t tf_publish;
+        nh_.param(node_name + "/tf_publish", tf_publish, std::int32_t(1));
+        if (tf_publish == 1)
+        {
+            broadcaster_.sendTransform(transformStamped);
+        }
     }
 
     void writeTFRelationsToYAML()
     {
         // Open YAML file for writing
-        std::ofstream yaml_file(tf_yaml_file_);
+        std::ofstream yaml_file(tf_yaml_file_write);
 
         // Write TF relations to YAML
         yaml_file << "tf_relations:\n";
@@ -198,7 +282,7 @@ private:
     void readTFRelationsFromYAML()
     {
         // Open YAML file for reading
-        std::ifstream yaml_file(tf_yaml_file_);
+        std::ifstream yaml_file(tf_yaml_file_read);
         // Check if the file is open
         if (!yaml_file.is_open())
         {

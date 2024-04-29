@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<behavior name="TrailerUpDown">
+<behavior name="TrailerRotate">
 
-	<executable package_path="dev_flexbe_behaviors.trailerupdown_sm" class="TrailerUpDownSM" />
-	<tagstring>1p</tagstring>
+	<executable package_path="dev_flexbe_behaviors.trailerrotate_sm" class="TrailerRotateSM" />
+	<tagstring>trailer rotate</tagstring>
 	<author>hzx</author>
-	<date>Mon Apr 282024</date>
+	<date>Sun Apr 28 2024</date>
 	<description>
-		Trailer Up or Down
+		trailer rotate
 	</description>
 
 
@@ -16,9 +16,9 @@
 	<!-- Available Parameters -->
 	<params>
 
-		<param type="numeric" name="height" default="0.40" label="height" hint="Sets the height">
+		<param type="numeric" name="goal_angle" default="90" label="goal_angle" hint="Sets the goal_angle">
 			<min value="0" />
-			<max value="1" />
+			<max value="90" />
 		</param>
 
 		<param type="numeric" name="up_speed" default="80" label="up_speed" hint="Sets the up_speed">

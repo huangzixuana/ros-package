@@ -16,21 +16,21 @@ from dev_flexbe_states.publish_string import PublishString
 
 
 '''
-Created on Mon Apr 282024
+Created on Sun Apr 28 2024
 @author: hzx
 '''
-class TrailerUpDownSM(Behavior):
+class TrailerRotateSM(Behavior):
 	'''
-	Trailer Up or Down
+	trailer rotate
 	'''
 
 
 	def __init__(self):
-		super(TrailerUpDownSM, self).__init__()
-		self.name = 'TrailerUpDown'
+		super(TrailerRotateSM, self).__init__()
+		self.name = 'TrailerRotate'
 
 		# parameters of this behavior
-		self.add_parameter('height', 0.40)
+		self.add_parameter('goal_angle', 90)
 		self.add_parameter('up_speed', 80)
 		self.add_parameter('down_speed', 80)
 
@@ -46,7 +46,7 @@ class TrailerUpDownSM(Behavior):
 
 
 	def create(self):
-		# x:872 y:35, x:833 y:340
+		# x:837 y:29, x:31 y:479
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
 
 		# Additional creation code can be added inside the following tags
@@ -56,34 +56,34 @@ class TrailerUpDownSM(Behavior):
 
 
 		with _state_machine:
-			# x:62 y:26
-			OperatableStateMachine.add('lift_up',
-										PublishString(name="trailer_request", value="lift_load"),
-										transitions={'done': 'lift_up_speed'},
+			# x:46 y:24
+			OperatableStateMachine.add('rotate_up',
+										PublishString(name="trailer_request", value="rotate_up"),
+										transitions={'done': 'rotate_up_speed'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:523 y:28
-			OperatableStateMachine.add('lift_down_speed',
-										PublishString(name="trailer_request", value="{\"name\":\"lift_dump_speed\",\"lift_dump_speed\": "+str(self.down_speed)+"}"),
-										transitions={'done': 'lift_goal_height'},
+			# x:490 y:24
+			OperatableStateMachine.add('rotate_down_speed',
+										PublishString(name="trailer_request", value="{\"name\":\"rotate_down_speed\",\"rotate_down_speed\":"+str(self.down_speed)+"}"),
+										transitions={'done': 'rotate_goal_angle'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:671 y:27
-			OperatableStateMachine.add('lift_goal_height',
-										PublishString(name="trailer_request", value="{\"name\":\"lift_goal_height\",\"lift_goal_height\":"+str(self.height)+"}"),
+			# x:643 y:24
+			OperatableStateMachine.add('rotate_goal_angle',
+										PublishString(name="trailer_request", value="{\"name\":\"rotate_goal_angle\",\"rotate_goal_angle\":"+str(self.goal_angle)+"}"),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:215 y:26
-			OperatableStateMachine.add('lift_up_speed',
-										PublishString(name="trailer_request", value="{\"name\":\"lift_load_speed\",\"lift_load_speed\": "+str(self.up_speed)+"}"),
-										transitions={'done': 'lift_down'},
+			# x:196 y:24
+			OperatableStateMachine.add('rotate_up_speed',
+										PublishString(name="trailer_request", value="{\"name\":\"rotate_up_speed\",\"rotate_up_speed\":"+str(self.up_speed)+"}"),
+										transitions={'done': 'rotate_down'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:370 y:27
-			OperatableStateMachine.add('lift_down',
-										PublishString(name="trailer_request", value="lift_dump"),
-										transitions={'done': 'lift_down_speed'},
+			# x:346 y:24
+			OperatableStateMachine.add('rotate_down',
+										PublishString(name="trailer_request", value="rotate_down"),
+										transitions={'done': 'rotate_down_speed'},
 										autonomy={'done': Autonomy.Off})
 
 

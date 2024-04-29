@@ -8,9 +8,14 @@ find_package(catkin REQUIRED COMPONENTS
   tf2
   tf2_ros
   roslib
+  dynamic_reconfigure
 )
 
 find_package(yaml-cpp REQUIRED)
+
+generate_dynamic_reconfigure_options( 
+    cfg/pose_integrator.cfg 
+) 
 
 catkin_package(
   CATKIN_DEPENDS roscpp geometry_msgs tf2 tf2_ros

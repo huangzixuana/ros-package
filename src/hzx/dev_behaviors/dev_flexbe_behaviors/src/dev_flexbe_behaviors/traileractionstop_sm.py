@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from dev_flexbe_states.scene_manager import SceneManager
+from dev_flexbe_states.publish_string import PublishString
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -16,18 +16,18 @@ from dev_flexbe_states.scene_manager import SceneManager
 
 
 '''
-Created on Tue Oct 17 2023
+Created on Sun Apr 28 2024
 @author: hzx
 '''
-class attach_pvmSM(Behavior):
+class TrailerActionStopSM(Behavior):
 	'''
-	attach_pvm
+	stop the trailer updown or rotate
 	'''
 
 
 	def __init__(self):
-		super(attach_pvmSM, self).__init__()
-		self.name = 'attach_pvm'
+		super(TrailerActionStopSM, self).__init__()
+		self.name = 'TrailerActionStop'
 
 		# parameters of this behavior
 
@@ -43,7 +43,7 @@ class attach_pvmSM(Behavior):
 
 
 	def create(self):
-		# x:30 y:365, x:130 y:365
+		# x:74 y:413, x:213 y:442
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
 
 		# Additional creation code can be added inside the following tags
@@ -53,9 +53,15 @@ class attach_pvmSM(Behavior):
 
 
 		with _state_machine:
-			# x:37 y:130
-			OperatableStateMachine.add('attach',
-										SceneManager(action="attach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
+			# x:46 y:124
+			OperatableStateMachine.add('updown_stop',
+										PublishString(name="trailer_request", value="lift_stop"),
+										transitions={'done': 'rotate_stop'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:46 y:224
+			OperatableStateMachine.add('rotate_stop',
+										PublishString(name="trailer_request", value="rotate_stop"),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 
