@@ -1,7 +1,33 @@
 <?xml version="1.0"?>
 <robot name="frontec_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:include filename="$(find lt_description)/urdf/inc/_kuka_kr210_r2700_dh.xacro" />
-    <xacro:kuka_kr210_r2700_dh />
+    <xacro:include filename="$(find lt_description)/urdf/inc/_kuka_kr10_r1100.xacro" />
+    <xacro:include filename="$(find lt_description)/urdf/inc/_inspection_chassis.xacro" />
+    <xacro:include filename="$(find lt_description)/urdf/inc/_yuntai.xacro" />
+
+    <xacro:kuka_kr10_r1100/>
+    <xacro:inspection_chassis/>
+    <xacro:yuntai/>
+
+    <link name="base_link" />
+    <joint name="base_car_link" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="base_car" />
+        <child link="base_link" />
+    </joint>
+
+    <joint name="base_car_arm" type="fixed">
+        <origin xyz="-0.64577 0 0.004" rpy="0 0 3.14159" />
+        <parent link="base_link" />
+        <child link="base_arm" />
+    </joint>
+
+    <joint name="base_car_yuntai" type="prismatic">
+        <origin xyz="0.3007 -0.0004 0" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="base_yuntai" />
+        <axis xyz="0 0 1" />
+        <limit lower="0" upper="1" effort="100" velocity="0.5"/>
+    </joint>
 
 
     <xacro:macro name="trans_gazebo" params="joint_name">
@@ -21,6 +47,7 @@
     <xacro:trans_gazebo joint_name="joint_a4" />
     <xacro:trans_gazebo joint_name="joint_a5" />
     <xacro:trans_gazebo joint_name="joint_a6" />
+    <xacro:trans_gazebo joint_name="base_car_yuntai" />
 
 
     <gazebo>
@@ -32,7 +59,7 @@
 
     <xacro:macro name="arm_gazebo" params="link">
         <gazebo reference="${link}">
-            <material>Gazebo/Black</material>
+            <!-- <material>Gazebo/White</material> -->
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
         </gazebo>
@@ -45,4 +72,6 @@
     <xacro:arm_gazebo link="link_4" />
     <xacro:arm_gazebo link="link_5" />
     <xacro:arm_gazebo link="link_6" />
+    <xacro:arm_gazebo link="base_yuntai" />
+
 </robot>

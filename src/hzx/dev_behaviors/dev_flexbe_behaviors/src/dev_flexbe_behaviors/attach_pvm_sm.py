@@ -9,6 +9,7 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from dev_flexbe_states.scene_manager import SceneManager
+from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -56,7 +57,25 @@ class attach_pvmSM(Behavior):
 			# x:37 y:130
 			OperatableStateMachine.add('attach',
 										SceneManager(action="attach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
-										transitions={'done': 'finished'},
+										transitions={'done': 'wa'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:282 y:48
+			OperatableStateMachine.add('de',
+										SceneManager(action="dttach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
+										transitions={'done': 'wait'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:76 y:46
+			OperatableStateMachine.add('wa',
+										WaitState(wait_time=1),
+										transitions={'done': 'de'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:191 y:217
+			OperatableStateMachine.add('wait',
+										WaitState(wait_time=1),
+										transitions={'done': 'attach'},
 										autonomy={'done': Autonomy.Off})
 
 

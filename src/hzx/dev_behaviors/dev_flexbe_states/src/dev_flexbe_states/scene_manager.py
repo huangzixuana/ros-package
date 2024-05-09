@@ -72,10 +72,11 @@ class SceneManager(EventState):
 
 
     def on_enter(self, userdata):
-        if rospy.has_param('robot_state/pvm_length'):
-            self._size[0] = rospy.get_param('robot_state/pvm_length') * 0.001
-        if rospy.has_param('robot_state/pvm_width'):
-            self._size[1] = rospy.get_param('robot_state/pvm_width') * 0.001
+        if self.box_name == "pvm":
+            if rospy.has_param('robot_state/pvm_length'):
+                self._size[0] = rospy.get_param('robot_state/pvm_length') * 0.001
+            if rospy.has_param('robot_state/pvm_width'):
+                self._size[1] = rospy.get_param('robot_state/pvm_width') * 0.001
         self.box_pose.header.frame_id = self.eef_link
         self.box_pose.pose.position.x = self._position[0] 
         self.box_pose.pose.position.y = self._position[1]
