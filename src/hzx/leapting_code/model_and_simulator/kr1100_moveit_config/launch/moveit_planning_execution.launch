@@ -1,0 +1,15 @@
+<launch>
+  <arg name="sim" default="true" />
+  <arg name="debug" default="false" />
+
+  <!-- Remap follow_joint_trajectory -->
+  <!-- <remap if="$(arg sim)" from="/position_trajectory_controller/follow_joint_trajectory"
+    to="/position_trajectory_controller/follow_joint_trajectory" /> -->
+
+  <!-- Launch moveit -->
+  <include file="$(find kr1100_moveit_config)/launch/move_group.launch">
+    <arg name="debug" default="$(arg debug)" />
+  </include>
+   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find kr1100_moveit_config)/launch/moveit.rviz" output="screen"/>
+
+</launch>

@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: lt_description
+    relative_path: urdf/inc/test_kr1100.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/kr1100.srdf
+  CONFIG:
+    author_name: hzx
+    author_email: hzx@qq.com
+    generated_timestamp: 1715241778

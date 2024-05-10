@@ -11,17 +11,18 @@
     <link name="base_link" />
     <joint name="base_car_link" type="fixed">
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <parent link="base_car" />
-        <child link="base_link" />
+        <parent link="base_link" />
+        <child link="base_car" />
     </joint>
 
-    <joint name="base_car_arm" type="fixed">
+    <joint name="base_link_arm" type="fixed">
         <origin xyz="-0.64577 0 0.004" rpy="0 0 3.14159" />
+        <!-- <origin xyz="-0.64577 0 1.004" rpy="0 0 3.14159" /> -->
         <parent link="base_link" />
         <child link="base_arm" />
     </joint>
 
-    <joint name="base_car_yuntai" type="prismatic">
+    <joint name="base_link_yuntai" type="prismatic">
         <origin xyz="0.3007 -0.0004 0" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="base_yuntai" />
@@ -47,7 +48,7 @@
     <xacro:trans_gazebo joint_name="joint_a4" />
     <xacro:trans_gazebo joint_name="joint_a5" />
     <xacro:trans_gazebo joint_name="joint_a6" />
-    <xacro:trans_gazebo joint_name="base_car_yuntai" />
+    <xacro:trans_gazebo joint_name="base_link_yuntai" />
 
 
     <gazebo>
