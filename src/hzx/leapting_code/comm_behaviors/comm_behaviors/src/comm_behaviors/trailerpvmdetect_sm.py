@@ -13,8 +13,8 @@ from comm_behaviors.stoppvmdetect_sm import StopPVMDetectSM
 from comm_states.listen_solar import ListenSolar
 from comm_states.manipulation_share import ManipulationShare
 from comm_states.publisherheader import PublishHeader
-from comm_states.site_manipulation import SiteManipulation
 from comm_states.trig_decision import TrigDecision
+from dev_flexbe_states.site_manipulation import SiteManipulation as dev_flexbe_states__SiteManipulation
 from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
@@ -107,17 +107,15 @@ class TrailerPVMDetectSM(Behavior):
 
 			# x:192 y:39
 			OperatableStateMachine.add('armPickupDetectPose',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPickupDetectPose", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=2, stay_level=False, cart_step_list=[3,11], retry_num=3, itp_norm=0.15, if_debug=False),
+										dev_flexbe_states__SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPickupDetectPose", axis_value=["none",0], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=2, stay_level=False, cartesian_step=0.3, itp_norm=0.15, if_debug=False),
 										transitions={'done': 'StartPVMDetect', 'failed': 'armPickupDetectPose'},
-										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'move_group': 'move_group'})
+										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off})
 
 			# x:399 y:277
 			OperatableStateMachine.add('armPickupPVM',
-										SiteManipulation(pos=[self.pick_solar_x, self.pick_solar_y, self.pick_solar_z], quat=[0, 0, 0, 1], target_frame="solar_link", target_name="none", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=0.1, a_factor=0.1, if_execute=True, wait_time=0.5, stay_level=True, cart_step_list=[3,7], retry_num=5, itp_norm=0.1, if_debug=True),
+										dev_flexbe_states__SiteManipulation(pos=[self.pick_solar_x, self.pick_solar_y, self.pick_solar_z], quat=[0, 0, 0, 1], target_frame="solar_link", target_name="none", axis_value=["none",0], reference_frame="base_arm", end_effector_link="tool0", v_factor=0.1, a_factor=0.1, if_execute=True, wait_time=0.5, stay_level=True, cartesian_step=0.3, itp_norm=0.1, if_debug=True),
 										transitions={'done': 'stopPickupDetect', 'failed': 'wait3s'},
-										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'move_group': 'move_group'})
+										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off})
 
 			# x:212 y:367
 			OperatableStateMachine.add('checkPickupSolar',

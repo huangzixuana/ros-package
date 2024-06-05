@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="UpdatePickIdeal">
+
+	<executable package_path="comm_behaviors.updatepickideal_sm" class="UpdatePickIdealSM" />
+	<tagstring>i1p</tagstring>
+	<author>hzx</author>
+	<date>Thu Mar 13 2024</date>
+	<description>
+		UpdatePickIdeal
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="StartPVMDetect" />
+
+	<!-- Available Parameters -->
+
+</behavior>

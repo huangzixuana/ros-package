@@ -55,7 +55,7 @@ class add_border_restrictionsSM(Behavior):
 		with _state_machine:
 			# x:126 y:136
 			OperatableStateMachine.add('add_border_restrictions',
-										dev_flexbe_states__BorderRestrictions(action="add", cube_size=[5.8,6.6,4], frame_id="base_arm", position_x=2, position_y=0.9, position_z=5),
+										dev_flexbe_states__BorderRestrictions(action="add", cube_size=[5.8,6.6,4], frame_id="base_arm", position_x=2, position_y=0.9, position_z=3.2),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 

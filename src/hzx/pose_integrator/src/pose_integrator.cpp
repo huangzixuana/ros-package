@@ -20,8 +20,8 @@ public:
         server.setCallback(f);
         std::string yaml_read, yaml_write;
         std::string node_name = ros::this_node::getName();
-        nh_.param(node_name + "/yaml_read", yaml_read, std::string("/config/tf.yaml"));
-        nh_.param(node_name + "/yaml_write", yaml_write, std::string("/config/tf_write.yaml"));
+        nh_.param("pose_integrator_node/yaml_read", yaml_read, std::string("/config/tf.yaml"));
+        nh_.param("pose_integrator_node/yaml_write", yaml_write, std::string("/config/tf_write.yaml"));
         tf_yaml_file_read = ros::package::getPath("pose_integrator") + yaml_read;
         tf_yaml_file_write = ros::package::getPath("pose_integrator") + yaml_write;
         // 订阅amcl_pose和amcl_pose_reflection话题
@@ -53,8 +53,17 @@ public:
 
         readTFRelationsFromYAML();
 
+        std::int32_t compute_average;
+        nh_.param("pose_integrator_node/compute_average", compute_average, std::int32_t());
+
+        // ROS_INFO("compute_average: %d", compute_average);
+
+        std::int32_t tf_write;
+        nh_.param("pose_integrator_node/tf_write", tf_write, std::int32_t(1));
+        // ROS_INFO("tf_write: %d", tf_write);
+
         // 如果协方差满足条件
-        if (isCovarianceValid(pose_) && isCovarianceValid(pose_reflection_))
+        if (isCovarianceValid(pose_) && isCovarianceValid(pose_reflection_) && compute_average == 1)
         {
             // 计算tf转化关系并存入队列中
             calculateAndStoreTransform(pose_, pose_reflection_, tf_buffer_);
@@ -62,7 +71,7 @@ public:
             std::string node_name = ros::this_node::getName();
             std::int32_t tf_write;
             // nh_.param(node_name + "/queue_length", queue_length, std::int32_t(100));
-            nh_.param(node_name + "/tf_write", tf_write, std::int32_t(1));
+            nh_.param("pose_integrator_node/tf_write", tf_write, std::int32_t(1));
 
             // 如果列表中存储了queue_length个tf关系，就计算平均并发布
             std::int32_t size = tf_buffer_.size();
@@ -84,7 +93,7 @@ public:
         }
         else
         {
-            ROS_WARN("Covariance conditions not met, clearing TF buffer and restarting accumulation.");
+            // ROS_WARN("Covariance conditions not met, clearing TF buffer and restarting accumulation.");
             // 清空队列
             tf_buffer_.clear();
         }
@@ -119,8 +128,8 @@ private:
     {
         covariance_threshold = config.Covariance_threshold;
         queue_length = config.Queue_length;
-        ROS_INFO("Covariance threshold value: %f", covariance_threshold);
-        ROS_INFO("Queue length value: %d", queue_length);
+        // ROS_INFO("Covariance threshold value: %f", covariance_threshold);
+        // ROS_INFO("Queue length value: %d", queue_length);
     }
 
     bool isCovarianceValid(const geometry_msgs::PoseWithCovarianceStamped& pose)
@@ -130,7 +139,8 @@ private:
         // 检查协方差的第0，7，35位的和是否满足阈值
         double sum = pose.pose.covariance[0] + pose.pose.covariance[7] + pose.pose.covariance[35];
         // ROS_INFO("Sum of covariance elements: %f", sum);
-        return sum < covariance_threshold;
+        // return sum < covariance_threshold;
+        return sum < 0;
     }
 
     void calculateAndStoreTransform(const geometry_msgs::PoseWithCovarianceStamped& pose, 
@@ -244,14 +254,14 @@ private:
         transformStamped.header.stamp = ros::Time::now();
         std::string map, map1;
         std::string node_name = ros::this_node::getName();
-        nh_.param(node_name + "/init_frame", map, std::string("map"));
-        nh_.param(node_name + "/transformed_frame", map1, std::string("map1"));
+        nh_.param("pose_integrator_node/init_frame", map, std::string("map"));
+        nh_.param("pose_integrator_node/transformed_frame", map1, std::string("map1"));
         transformStamped.header.frame_id = map;
         transformStamped.child_frame_id = map1;
         transformStamped.transform = tf2::toMsg(transform);
 
         std::int32_t tf_publish;
-        nh_.param(node_name + "/tf_publish", tf_publish, std::int32_t(1));
+        nh_.param("pose_integrator_node/tf_publish", tf_publish, std::int32_t(1));
         if (tf_publish == 1)
         {
             broadcaster_.sendTransform(transformStamped);

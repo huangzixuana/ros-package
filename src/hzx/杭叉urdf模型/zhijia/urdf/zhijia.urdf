@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="zhijia">
+  <link
+    name="base_zhijia">
+    <inertial>
+      <origin
+        xyz="0.304179491555336 0.0686251823387179 -0.0130485805192313"
+        rpy="0 0 0" />
+      <mass
+        value="25.9782112884737" />
+      <inertia
+        ixx="1.20232559632263"
+        ixy="-0.0147149695170033"
+        ixz="0.0262014110830567"
+        iyy="1.82332477464825"
+        iyz="-0.00192368969820329"
+        izz="2.92847446441549" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://zhijia/meshes/base_zhijia.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://zhijia/meshes/base_zhijia.STL" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

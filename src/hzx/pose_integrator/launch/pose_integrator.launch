@@ -2,10 +2,11 @@
     <!-- 启动 pose_integrator 可执行文件 -->
     <node name="pose_integrator_node" pkg="pose_integrator" type="pose_integrator" output="screen">
         <!-- <param name="queue_length" value="100"/>  -->
+        <param name="compute_average" value="0"/>   
         <param name="init_frame" value="map"/>    
         <param name="transformed_frame" value="map1"/>
         <param name="tf_publish" value="1"/>
-        <param name="tf_write" value="1"/>
+        <param name="tf_write" value="0"/>
         <param name="yaml_read" value="/config/tf.yaml"/>    
         <param name="yaml_write" value="/config/tf.yaml"/>
     </node>

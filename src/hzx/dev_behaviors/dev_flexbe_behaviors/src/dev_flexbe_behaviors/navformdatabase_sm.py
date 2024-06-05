@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from dev_flexbe_states.scene_manager import SceneManager
+from dev_flexbe_states.g21_trig import g21_trig
 from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
@@ -17,18 +17,18 @@ from flexbe_states.wait_state import WaitState
 
 
 '''
-Created on Tue Oct 17 2023
+Created on Sat May 11 2024
 @author: hzx
 '''
-class attach_pvmSM(Behavior):
+class NavFormDatabaseSM(Behavior):
 	'''
-	attach_pvm
+	Read Nac_pose from  database
 	'''
 
 
 	def __init__(self):
-		super(attach_pvmSM, self).__init__()
-		self.name = 'attach_pvm'
+		super(NavFormDatabaseSM, self).__init__()
+		self.name = 'NavFormDatabase'
 
 		# parameters of this behavior
 
@@ -44,7 +44,7 @@ class attach_pvmSM(Behavior):
 
 
 	def create(self):
-		# x:30 y:365, x:130 y:365
+		# x:83 y:340, x:130 y:365
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
 
 		# Additional creation code can be added inside the following tags
@@ -54,28 +54,22 @@ class attach_pvmSM(Behavior):
 
 
 		with _state_machine:
-			# x:37 y:130
-			OperatableStateMachine.add('attach',
-										SceneManager(action="attach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
+			# x:46 y:74
+			OperatableStateMachine.add('request',
+										g21_trig(seq=10, frame_id="execute_mission"),
+										transitions={'done': 'wait3s'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:210 y:122
+			OperatableStateMachine.add('wait3s',
+										WaitState(wait_time=3),
+										transitions={'done': 'point1'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:46 y:174
+			OperatableStateMachine.add('point1',
+										g21_trig(seq=25, frame_id="request_object"),
 										transitions={'done': 'finished'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:282 y:48
-			OperatableStateMachine.add('de',
-										SceneManager(action="dttach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
-										transitions={'done': 'wait'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:76 y:46
-			OperatableStateMachine.add('wa',
-										WaitState(wait_time=1),
-										transitions={'done': 'de'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:191 y:217
-			OperatableStateMachine.add('wait',
-										WaitState(wait_time=1),
-										transitions={'done': 'attach'},
 										autonomy={'done': Autonomy.Off})
 
 

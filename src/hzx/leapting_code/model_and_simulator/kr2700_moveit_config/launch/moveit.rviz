@@ -232,7 +232,7 @@ Visualization Manager:
       Planning Scene Topic: move_group/monitored_planning_scene
       Robot Description: robot_description
       Scene Geometry:
-        Scene Alpha: 0.10000000149011612
+        Scene Alpha: 1
         Scene Color: 255; 0; 0
         Scene Display Time: 0.009999999776482582
         Show Scene Geometry: true
@@ -732,9 +732,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.09000054001808167
+      Pitch: 0.5250003337860107
       Target Frame: base_arm
-      Yaw: 4.276801586151123
+      Yaw: 3.0117976665496826
     Saved: ~
 Window Geometry:
   Displays:

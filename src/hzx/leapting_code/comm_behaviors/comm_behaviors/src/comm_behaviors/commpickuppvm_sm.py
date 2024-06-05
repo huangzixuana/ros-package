@@ -111,14 +111,14 @@ class CommPickupPVMSM(Behavior):
 
 			# x:489 y:540
 			OperatableStateMachine.add('armUPend',
-										SiteManipulation(pos=[0, 0, 0.3], quat=[0, 0, 0, 1], target_frame='tool0', target_name='none', axis_value=['none', 0], pos_targets=[], reference_frame='base_arm', end_effector_link='tool0', v_factor=1, a_factor=1, if_execute=True, wait_time=0.5, stay_level=True, cart_step_list=[1, 3], retry_num=5, itp_norm=0, if_debug=True),
+										SiteManipulation(pos=[0, 0, 0.3], quat=[0, 0, 0, 1], target_frame='tool0', target_name='none', axis_value=['none', 0], pos_targets=[], reference_frame='base_arm', end_effector_link='tool0', v_factor=1, a_factor=1, if_execute=True, wait_time=0.5, stay_level=True, cart_step_list=[1, 3], retry_num=5, itp_norm=0, if_debug=True, cart_limit={}),
 										transitions={'done': 'test1025', 'failed': 'armUPend'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
 			# x:503 y:267
 			OperatableStateMachine.add('baseForward',
-										SiteNavigation(site_name="", position=[0,0,0], orientation=[0,0,0,1], frame_id="base_link"),
+										SiteNavigation(site_name="", position=[0,0,0], orientation=[0,0,0,1], frame_id="base_link", base_link2map=False),
 										transitions={'arrived': 'waitForward', 'canceled': 'baseForward', 'failed': 'baseForward'},
 										autonomy={'arrived': Autonomy.Off, 'canceled': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'nav_goal': 'nav_goal'})
