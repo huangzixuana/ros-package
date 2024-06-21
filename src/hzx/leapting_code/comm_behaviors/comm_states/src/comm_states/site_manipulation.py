@@ -594,8 +594,10 @@ class SiteManipulation(EventState):
 
     def moveit_goal_init(self):
         self._break_enter = False
+        self._move_group.set_planner_id("LazyPRMstar")
+        # self._move_group.set_planner_id("RRTConnect")
         self._move_group.clear_pose_targets()
-        self._move_group.set_planning_time(5)
+        self._move_group.set_planning_time(3)
         self._move_group.allow_replanning(True)
 
         self._move_group.set_max_velocity_scaling_factor(self._v_factor)

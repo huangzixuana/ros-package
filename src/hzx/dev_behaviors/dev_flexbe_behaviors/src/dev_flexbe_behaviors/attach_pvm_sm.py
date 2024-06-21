@@ -56,7 +56,7 @@ class attach_pvmSM(Behavior):
 		with _state_machine:
 			# x:37 y:130
 			OperatableStateMachine.add('attach',
-										SceneManager(action="attach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
+										SceneManager(action="attach", object_size=[2.338,1.194,0.1], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 

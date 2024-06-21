@@ -55,7 +55,7 @@ class test0527SM(Behavior):
 		with _state_machine:
 			# x:30 y:40
 			OperatableStateMachine.add('test',
-										BrackeObstacle(action="add", object_size=[2.278,30.134,0.035], frame_id="base_arm", box_position=[0.666,2.096,0.587], box_orientation=[0.0064112, -0.007739, 0.7113653, 0.7027506]),
+										BrackeObstacle(bracke="add", obstacle="add", object_size=[2.278,30.134,0.035], frame_id="base_arm", box_position=[0.666,2.096,0.587], box_orientation=[0.0064112, -0.007739, 0.7113653, 0.7027506]),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 
