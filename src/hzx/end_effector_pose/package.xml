@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>end_effector_pose</name>
+  <version>0.1.0</version>
+  <description>ROS package for obtaining end effector pose using MoveIt!</description>
+  
+  <!-- Package dependencies -->
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>moveit_core</build_depend>
+  <build_depend>moveit_ros_planning_interface</build_depend>
+  
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>moveit_core</exec_depend>
+  <exec_depend>moveit_ros_planning_interface</exec_depend>
+  
+  <!-- System dependencies -->
+  <build_export_depend>Eigen3</build_export_depend>
+  <exec_depend>Eigen3</exec_depend>
+  
+  <!-- Package maintainers -->
+  <maintainer email="your_email@example.com">Your Name</maintainer>
+  
+  <!-- Package license -->
+  <license>BSD</license>
+  
+  <!-- Other package metadata -->
+  <export>
+  </export>
+</package>

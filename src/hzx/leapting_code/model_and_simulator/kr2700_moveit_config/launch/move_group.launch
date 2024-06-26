@@ -90,7 +90,7 @@
     <param name="default_planning_pipeline" value="$(arg pipeline)" />
     <param name="capabilities" value="$(arg capabilities)" />
     <param name="disable_capabilities" value="$(arg disable_capabilities)" />
-    <param name="planning_pipelines/ompl/constraint_approximations_path" value="/home/hzx/.ros/constraint_approximations_database" />
+    <!-- <param name="planning_pipelines/ompl/constraint_approximations_path" value="/home/hzx/.ros/constraint_approximations_database" /> -->
 
 
     <!-- do not copy dynamics information from /joint_states to internal robot monitoring

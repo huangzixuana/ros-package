@@ -196,4 +196,4 @@ leapting_arm:
     - ABITstar
     - BITstar
   projection_evaluator: joints(joint_a1,joint_a2)
-  longest_valid_segment_fraction: 0.005
+  longest_valid_segment_fraction: 0.01

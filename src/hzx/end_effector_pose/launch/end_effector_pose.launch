@@ -1,0 +1,9 @@
+<launch>
+  <node name="end_effector_pose"
+        pkg="end_effector_pose"
+        type="end_effector_pose"
+        respawn="false" output="screen">
+    <rosparam command="load"
+              file="$(find kr2700_moveit_config)/config/kinematics.yaml"/>
+  </node>
+</launch>

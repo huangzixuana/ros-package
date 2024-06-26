@@ -597,7 +597,7 @@ class SiteManipulation(EventState):
         self._move_group.set_planner_id("LazyPRMstar")
         # self._move_group.set_planner_id("RRTConnect")
         self._move_group.clear_pose_targets()
-        self._move_group.set_planning_time(3)
+        self._move_group.set_planning_time(1)
         self._move_group.allow_replanning(True)
 
         self._move_group.set_max_velocity_scaling_factor(self._v_factor)
