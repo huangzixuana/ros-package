@@ -174,10 +174,10 @@ include_directories(
 #   # myfile2
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
-install(DIRECTORY cfg param shell scripts meshes urdf
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  USE_SOURCE_PERMISSIONS
-)
+# install(DIRECTORY cfg param shell scripts meshes urdf
+#  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+#  USE_SOURCE_PERMISSIONS
+#)
 
 #############
 ## Testing ##
