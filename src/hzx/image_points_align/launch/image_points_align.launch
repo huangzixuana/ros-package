@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="image_points_align" pkg="image_points_align" type="image_points_align" output="screen">
+        <rosparam subst_value="true">               
+            rgb_image_topic: /camera/color/image_raw
+            camera_info_topic: /camera/color/camera_info
+            points_cloud_topic: /livox/lidar
+            output_align_topic: /camera/depth/color/points #/pointsCloud_align
+            lidar_cumulation: 1
+            lidar2camera_T: [-0.050, -0.018, -0.05, 0.008, -0.055, 0.007]
+
+            <!-- 0825. lidar2camera_T: [0.063, 0.064, 0.023, 0.013, -0.008, -0.002]
+            0828. lidar2camera_T: [0.034, 0.076, 0.053, 0.009, 0.005, -0.010]
+            yiqi. lidar2camera_T: [0.053, 0.066, 0.027, 0.012, -0.007, -0.005] -->
+
+        </rosparam>
+    </node>
+
+    <arg name="image_points_align_rviz" default="0" />
+    <group if="$(arg image_points_align_rviz)">
+        <node launch-prefix="nice" pkg="rviz" type="rviz" name="image_points_align_rviz" args="-d $(find image_points_align)/rviz/image_points_align.rviz" />
+    </group>
+
+
+</launch>

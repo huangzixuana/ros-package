@@ -1,11 +1,11 @@
 moveit_setup_assistant_config:
   URDF:
-    package: lt_description
-    relative_path: urdf/inc/test_kuka_kr210_r2700_dh.urdf.xacro
+    package: bringup
+    relative_path: urdf/test/kr2700.urdf.xacro
     xacro_args: ""
   SRDF:
-    relative_path: config/frontec_arm.srdf
+    relative_path: config/kr2700.srdf
   CONFIG:
-    author_name: zl
-    author_email: zl@1223.com
-    generated_timestamp: 1695284979
+    author_name: leapting
+    author_email: leapting@leapting.com
+    generated_timestamp: 1694238223

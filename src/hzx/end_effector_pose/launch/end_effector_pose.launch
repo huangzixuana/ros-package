@@ -1,9 +1,12 @@
 <launch>
-  <node name="end_effector_pose"
-        pkg="end_effector_pose"
-        type="end_effector_pose"
-        respawn="false" output="screen">
-    <rosparam command="load"
-              file="$(find kr2700_moveit_config)/config/kinematics.yaml"/>
+  <node name="end_effector_pose" pkg="end_effector_pose" type="end_effector_pose" output="screen">
+    <rosparam command="load" file="$(find kr2700_moveit_config)/config/kinematics.yaml"/>
+    <param name="roll_left" value="-3.15"/>
+    <param name="roll_right" value="-2.5"/>
+    <param name="pitch_left" value="-0.6"/>
+    <param name="pitch_right" value="0.3"/>
+    <param name="yaw_left" value="-3.15"/>
+    <param name="yaw_right" value="-2.8"/>
+    <param name="kuka" value="3100"/>
   </node>
 </launch>

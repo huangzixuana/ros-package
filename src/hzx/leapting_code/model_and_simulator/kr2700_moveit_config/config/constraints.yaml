@@ -1,9 +1,0 @@
-# path_constraint:
-  name: some_constraints
-  constraints:
-  - type: orientation
-    frame_id: base_arm
-    link_name: link_6
-    orientation: [3.12,-0.001,-0.01 ] #RPY
-    tolerances: [0.05, 0.01, 0.05]
-    weight: 1.0

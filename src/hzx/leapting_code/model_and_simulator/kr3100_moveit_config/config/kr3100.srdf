@@ -1,0 +1,332 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="kr210r3100">
+	<group name="leapting_arm">
+		<joint name="joint_a1" />
+		<joint name="joint_a2" />
+		<joint name="joint_a3" />
+		<joint name="joint_a4" />
+		<joint name="joint_a5" />
+		<joint name="joint_a6" />
+	</group>
+	<group_state name="armInitPose" group="leapting_arm">
+		<joint name="joint_a1" value="-0.003669" />
+		<joint name="joint_a2" value="-2.39128" />
+		<joint name="joint_a3" value="2.732979" />
+		<joint name="joint_a4" value="-0.021331" />
+		<joint name="joint_a5" value="0.127033" />
+		<joint name="joint_a6" value="0.011722" />
+	</group_state>
+	<group_state name="armPickupDetectPose" group="leapting_arm">
+		<joint name="joint_a1" value="0.09878246" />
+		<joint name="joint_a2" value="-2.21692528" />
+		<joint name="joint_a3" value="1.67782864" />
+		<joint name="joint_a4" value="-0.06704359" />
+		<joint name="joint_a5" value="1.71570637" />
+		<joint name="joint_a6" value="0.06504411" />
+	</group_state>
+	<group_state name="armPickupDetectPose2" group="leapting_arm">
+		<joint name="joint_a1" value="-0.09831321" />
+		<joint name="joint_a2" value="-2.1059644" />
+		<joint name="joint_a3" value="2.04291194" />
+		<joint name="joint_a4" value="-0.01418363" />
+		<joint name="joint_a5" value="1.57127889" />
+		<joint name="joint_a6" value="-0.10622323" />
+	</group_state>
+	<group_state name="armTopPose" group="leapting_arm">
+		<joint name="joint_a1" value="0.02611644" />
+		<joint name="joint_a2" value="-1.39710296" />
+		<joint name="joint_a3" value="1.32610682" />
+		<joint name="joint_a4" value="-0.00430252" />
+		<joint name="joint_a5" value="1.64019524" />
+		<joint name="joint_a6" value="0.03565114" />
+	</group_state>
+	<group_state name="armPlaceDetectPose" group="leapting_arm">
+		<joint name="joint_a1" value="-1.76975737" />
+		<joint name="joint_a2" value="-1.38124517" />
+		<joint name="joint_a3" value="1.10524533" />
+		<joint name="joint_a4" value="0.04357761" />
+		<joint name="joint_a5" value="1.50930967" />
+		<joint name="joint_a6" value="-1.72917651" />
+	</group_state>
+	<group_state name="armWithdrawPose" group="leapting_arm">
+		<joint name="joint_a1" value="-0.01891481" />
+		<joint name="joint_a2" value="-0.86011215" />
+		<joint name="joint_a3" value="1.64986171" />
+		<joint name="joint_a4" value="-0.0039948" />
+		<joint name="joint_a5" value="0.81690862" />
+		<joint name="joint_a6" value="-0.03179744" />
+	</group_state>
+	<group_state name="armPickDetect" group="leapting_arm">
+		<joint name="joint_a1" value="0.02401165" />
+		<joint name="joint_a2" value="-1.34753102" />
+		<joint name="joint_a3" value="1.47816399" />
+		<joint name="joint_a4" value="-0.00438069" />
+		<joint name="joint_a5" value="1.43843443" />
+		<joint name="joint_a6" value="0.03438175" />
+	</group_state>
+	<virtual_joint name="virtual_joint" type="floating" parent_frame="base_arm" child_link="base_link" />
+	<disable_collisions link1="base_arm" link2="link_1" reason="Adjacent" />
+	<disable_collisions link1="link_1" link2="link_2" reason="Adjacent" />
+	<disable_collisions link1="link_2" link2="link_3" reason="Adjacent" />
+	<disable_collisions link1="link_3" link2="link_4" reason="Adjacent" />
+	<disable_collisions link1="link_3" link2="link_5" reason="Never" />
+	<disable_collisions link1="link_4" link2="link_5" reason="Adjacent" />
+	<disable_collisions link1="link_5" link2="link_6" reason="Adjacent" />
+	<disable_collisions link1="link_5" link2="tool0" reason="Default" />
+	<disable_collisions link1="link_6" link2="tool0" reason="Adjacent" />
+	<disable_collisions link1="base_arm" link2="base_link" reason="Never" />
+	<disable_collisions link1="link_1" link2="base_link" reason="Never" />
+	<disable_collisions link1="link_2" link2="base_link" reason="Never" />
+	<disable_collisions link1="link_3" link2="base_link" reason="Never" />
+	<disable_collisions link1="link_4" link2="base_link" reason="Never" />
+	<disable_collisions link1="link_5" link2="base_link" reason="Never" />
+	<disable_collisions link1="link_6" link2="base_link" reason="Never" />
+	<group_state name="armPickupMidPose" group="leapting_arm">
+		<joint name="joint_a1" value="-0.007604" />
+		<joint name="joint_a2" value="-1.16715232" />
+		<joint name="joint_a3" value="1.53764464" />
+		<joint name="joint_a4" value="0.01438801" />
+		<joint name="joint_a5" value="1.22384609" />
+		<joint name="joint_a6" value="-0.01964956" />
+	</group_state>
+	<group_state name="calibration_1" group="leapting_arm">
+		<joint name="joint_a1" value="-1.644301" />
+		<joint name="joint_a2" value="-1.458789" />
+		<joint name="joint_a3" value="2.312731" />
+		<joint name="joint_a4" value="0.148607" />
+		<joint name="joint_a5" value="0.563636" />
+		<joint name="joint_a6" value="-0.116017" />
+	</group_state>
+	<group_state name="calibration_2" group="leapting_arm">
+		<joint name="joint_a1" value="-1.380928" />
+		<joint name="joint_a2" value="-1.134251" />
+		<joint name="joint_a3" value="1.837552" />
+		<joint name="joint_a4" value="0.092957" />
+		<joint name="joint_a5" value="0.738196" />
+		<joint name="joint_a6" value="1.669916" />
+	</group_state>
+	<group_state name="calibration_3" group="leapting_arm">
+		<joint name="joint_a1" value="-1.890579" />
+		<joint name="joint_a2" value="-1.010177" />
+		<joint name="joint_a3" value="1.628319" />
+		<joint name="joint_a4" value="0.065973" />
+		<joint name="joint_a5" value="0.881998" />
+		<joint name="joint_a6" value="-1.817416" />
+	</group_state>
+	<group_state name="calibration_4" group="leapting_arm">
+		<joint name="joint_a1" value="-1.617652" />
+		<joint name="joint_a2" value="-0.693254" />
+		<joint name="joint_a3" value="0.931514" />
+		<joint name="joint_a4" value="0.092503" />
+		<joint name="joint_a5" value="1.146039" />
+		<joint name="joint_a6" value="-3.086483" />
+	</group_state>
+	<group_state name="calibration_5" group="leapting_arm">
+		<joint name="joint_a1" value="-1.681211" />
+		<joint name="joint_a2" value="-0.939661" />
+		<joint name="joint_a3" value="1.408081" />
+		<joint name="joint_a4" value="0.092478" />
+		<joint name="joint_a5" value="1.606073" />
+		<joint name="joint_a6" value="-0.227073" />
+	</group_state>
+	<group_state name="calibration_6" group="leapting_arm">
+		<joint name="joint_a1" value="-1.828384" />
+		<joint name="joint_a2" value="-0.970987" />
+		<joint name="joint_a3" value="1.438491" />
+		<joint name="joint_a4" value="0.121104" />
+		<joint name="joint_a5" value="1.625182" />
+		<joint name="joint_a6" value="-0.036067" />
+	</group_state>
+	<group_state name="calibration_7" group="leapting_arm">
+		<joint name="joint_a1" value="-1.815705" />
+		<joint name="joint_a2" value="-1.105754" />
+		<joint name="joint_a3" value="1.568042" />
+		<joint name="joint_a4" value="0.193088" />
+		<joint name="joint_a5" value="1.677083" />
+		<joint name="joint_a6" value="0.289148" />
+	</group_state>
+	<group_state name="calibration_8" group="leapting_arm">
+		<joint name="joint_a1" value="-1.815705" />
+		<joint name="joint_a2" value="-1.205762" />
+		<joint name="joint_a3" value="1.646576" />
+		<joint name="joint_a4" value="0.274927" />
+		<joint name="joint_a5" value="1.677082" />
+		<joint name="joint_a6" value="0.378604" />
+	</group_state>
+	<group_state name="calibration_9" group="leapting_arm">
+		<joint name="joint_a1" value="-1.886598" />
+		<joint name="joint_a2" value="-1.270306" />
+		<joint name="joint_a3" value="1.688419" />
+		<joint name="joint_a4" value="0.328106" />
+		<joint name="joint_a5" value="1.631463" />
+		<joint name="joint_a6" value="0.636476" />
+	</group_state>
+	<group_state name="calibration_10" group="leapting_arm">
+		<joint name="joint_a1" value="-1.861012" />
+		<joint name="joint_a2" value="-1.149503" />
+		<joint name="joint_a3" value="1.580567" />
+		<joint name="joint_a4" value="0.496573" />
+		<joint name="joint_a5" value="1.543953" />
+		<joint name="joint_a6" value="0.949679" />
+	</group_state>
+	<group_state name="calibration_11" group="leapting_arm">
+		<joint name="joint_a1" value="-1.861006" />
+		<joint name="joint_a2" value="-1.198577" />
+		<joint name="joint_a3" value="1.673608" />
+		<joint name="joint_a4" value="0.693553" />
+		<joint name="joint_a5" value="1.258082" />
+		<joint name="joint_a6" value="1.228178" />
+	</group_state>
+	<group_state name="calibration_12" group="leapting_arm">
+		<joint name="joint_a1" value="-1.799396" />
+		<joint name="joint_a2" value="-1.239831" />
+		<joint name="joint_a3" value="1.705301" />
+		<joint name="joint_a4" value="0.74887" />
+		<joint name="joint_a5" value="1.017351" />
+		<joint name="joint_a6" value="1.380593" />
+	</group_state>
+	<group_state name="calibration_13" group="leapting_arm">
+		<joint name="joint_a1" value="-1.769001" />
+		<joint name="joint_a2" value="-1.299763" />
+		<joint name="joint_a3" value="1.76555" />
+		<joint name="joint_a4" value="0.924413" />
+		<joint name="joint_a5" value="1.022847" />
+		<joint name="joint_a6" value="1.510894" />
+	</group_state>
+	<group_state name="calibration_14" group="leapting_arm">
+		<joint name="joint_a1" value="-1.692745" />
+		<joint name="joint_a2" value="-1.396245" />
+		<joint name="joint_a3" value="1.879136" />
+		<joint name="joint_a4" value="0.972603" />
+		<joint name="joint_a5" value="0.559531" />
+		<joint name="joint_a6" value="1.651373" />
+	</group_state>
+	<group_state name="calibration_15" group="leapting_arm">
+		<joint name="joint_a1" value="-1.645888" />
+		<joint name="joint_a2" value="-1.391725" />
+		<joint name="joint_a3" value="2.096019" />
+		<joint name="joint_a4" value="1.153782" />
+		<joint name="joint_a5" value="-0.007289" />
+		<joint name="joint_a6" value="1.850646" />
+	</group_state>
+	<group_state name="calibration_16" group="leapting_arm">
+		<joint name="joint_a1" value="-1.611248" />
+		<joint name="joint_a2" value="-1.068265" />
+		<joint name="joint_a3" value="1.516568" />
+		<joint name="joint_a4" value="0.123902" />
+		<joint name="joint_a5" value="1.663748" />
+		<joint name="joint_a6" value="-0.369791" />
+	</group_state>
+	<group_state name="calibration_17" group="leapting_arm">
+		<joint name="joint_a1" value="-1.71569559" />
+		<joint name="joint_a2" value="-1.03204104" />
+		<joint name="joint_a3" value="1.51645159" />
+		<joint name="joint_a4" value="-0.33090785" />
+		<joint name="joint_a5" value="1.18544091" />
+		<joint name="joint_a6" value="-0.87463763" />
+	</group_state>
+	<group_state name="calibration_18" group="leapting_arm">
+		<joint name="joint_a1" value="-1.501666" />
+		<joint name="joint_a2" value="-1.002929" />
+		<joint name="joint_a3" value="1.439935" />
+		<joint name="joint_a4" value="-0.674042" />
+		<joint name="joint_a5" value="1.436764" />
+		<joint name="joint_a6" value="-0.968702" />
+	</group_state>
+	<group_state name="calibration_19" group="leapting_arm">
+		<joint name="joint_a1" value="-1.418545" />
+		<joint name="joint_a2" value="-0.983907" />
+		<joint name="joint_a3" value="1.4011" />
+		<joint name="joint_a4" value="-0.811183" />
+		<joint name="joint_a5" value="1.437298" />
+		<joint name="joint_a6" value="-1.033162" />
+	</group_state>
+	<group_state name="calibration_20" group="leapting_arm">
+		<joint name="joint_a1" value="-1.407788" />
+		<joint name="joint_a2" value="-1.063811" />
+		<joint name="joint_a3" value="1.483085" />
+		<joint name="joint_a4" value="-0.887941" />
+		<joint name="joint_a5" value="1.422219" />
+		<joint name="joint_a6" value="-1.152258" />
+	</group_state>
+	<group_state name="calibration_21" group="leapting_arm">
+		<joint name="joint_a1" value="-1.380916" />
+		<joint name="joint_a2" value="-1.072623" />
+		<joint name="joint_a3" value="1.508557" />
+		<joint name="joint_a4" value="-0.948258" />
+		<joint name="joint_a5" value="1.381459" />
+		<joint name="joint_a6" value="-1.333538" />
+	</group_state>
+	<group_state name="calibration_22" group="leapting_arm">
+		<joint name="joint_a1" value="-1.358541" />
+		<joint name="joint_a2" value="-1.044744" />
+		<joint name="joint_a3" value="1.621507" />
+		<joint name="joint_a4" value="-1.009284" />
+		<joint name="joint_a5" value="1.295047" />
+		<joint name="joint_a6" value="-1.469638" />
+	</group_state>
+	<group_state name="calibration_23" group="leapting_arm">
+		<joint name="joint_a1" value="-1.331722" />
+		<joint name="joint_a2" value="-1.11078" />
+		<joint name="joint_a3" value="1.702665" />
+		<joint name="joint_a4" value="-1.049463" />
+		<joint name="joint_a5" value="1.217927" />
+		<joint name="joint_a6" value="-1.621358" />
+	</group_state>
+	<group_state name="calibration_24" group="leapting_arm">
+		<joint name="joint_a1" value="-1.313448" />
+		<joint name="joint_a2" value="-1.117316" />
+		<joint name="joint_a3" value="1.706777" />
+		<joint name="joint_a4" value="-1.005806" />
+		<joint name="joint_a5" value="0.931459" />
+		<joint name="joint_a6" value="-1.753435" />
+	</group_state>
+	<group_state name="calibration_25" group="leapting_arm">
+		<joint name="joint_a1" value="-1.395681" />
+		<joint name="joint_a2" value="-1.106905" />
+		<joint name="joint_a3" value="1.730666" />
+		<joint name="joint_a4" value="-0.988602" />
+		<joint name="joint_a5" value="0.712889" />
+		<joint name="joint_a6" value="-2.019574" />
+	</group_state>
+	<group_state name="armPlaceSim" group="leapting_arm">
+		<joint name="joint_a1" value="-1.31236984" />
+		<joint name="joint_a2" value="-0.50602867" />
+		<joint name="joint_a3" value="0.88825111" />
+		<joint name="joint_a4" value="0.00348944" />
+		<joint name="joint_a5" value="1.1875974" />
+		<joint name="joint_a6" value="1.82877341" />
+	</group_state>
+	<group_state name="armPickupDetectPose_2" group="leapting_arm">
+		<joint name="joint_a1" value="-0.12441016" />
+		<joint name="joint_a2" value="-1.96683141" />
+		<joint name="joint_a3" value="1.35890325" />
+		<joint name="joint_a4" value="0.0923645" />
+		<joint name="joint_a5" value="1.93752866" />
+		<joint name="joint_a6" value="-0.07453689" />
+	</group_state>
+	<group_state name="armPickupMid" group="leapting_arm">
+		<joint name="joint_a1" value="0.0121522" />
+		<joint name="joint_a2" value="-1.3441773" />
+		<joint name="joint_a3" value="1.0088453" />
+		<joint name="joint_a4" value="-3.1215979" />
+		<joint name="joint_a5" value="-1.47536822" />
+		<joint name="joint_a6" value="3.03393277" />
+	</group_state>
+	<group_state name="test3100" group="leapting_arm">
+		<joint name="joint_a1" value="0.015338" />
+		<joint name="joint_a2" value="-0.717785" />
+		<joint name="joint_a3" value="1.307153" />
+		<joint name="joint_a4" value="-0.005059" />
+		<joint name="joint_a5" value="0.979974" />
+		<joint name="joint_a6" value="0.027975" />
+	</group_state>
+	<group_state name="test0801" group="leapting_arm">
+		<joint name="joint_a1" value="0.028699" />
+		<joint name="joint_a2" value="-1.234003" />
+		<joint name="joint_a3" value="1.795947" />
+		<joint name="joint_a4" value="0.007905" />
+		<joint name="joint_a5" value="0.992054" />
+		<joint name="joint_a6" value="0.013106" />
+	</group_state>
+</robot>

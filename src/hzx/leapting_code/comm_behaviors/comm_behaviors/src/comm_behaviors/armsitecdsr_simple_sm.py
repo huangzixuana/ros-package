@@ -65,7 +65,7 @@ class armSiteCdsr_simpleSM(Behavior):
 
 			# x:383 y:25
 			OperatableStateMachine.add('arm_operate',
-										ArmSiteCdsrSrdfYaml(srdf_path='~/catkin_ws/dbparam/arm_waypoints.srdf', yaml_path='~/catkin_ws/dbparam/arm_waypoints.yaml', source_frame='base_arm', target_frame='tool0', operation=self.operation, operation_file=self.operation_file, site_name=self.site_name),
+										ArmSiteCdsrSrdfYaml(srdf_path='~/catkin_ws/dbparam/arm3100_waypoints.srdf', yaml_path='~/catkin_ws/dbparam/arm3100_waypoints.yaml', source_frame='base_arm', target_frame='tool0', operation=self.operation, operation_file=self.operation_file, site_name=self.site_name),
 										transitions={'done': 'done', 'failed': 'failed', 'srdf_failed': 'srdf_failed', 'yaml_failed': 'yaml_failed'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off, 'srdf_failed': Autonomy.Off, 'yaml_failed': Autonomy.Off})
 

@@ -3,10 +3,10 @@
   <name>kr2700_moveit_config</name>
   <version>0.3.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the frontec_arm with the MoveIt Motion Planning Framework
+     An automatically generated package with all the configuration and launch files for using the kr2700 with the MoveIt Motion Planning Framework
   </description>
-  <author email="zl@1223.com">zl</author>
-  <maintainer email="zl@1223.com">zl</maintainer>
+  <author email="leapting@leapting.com">leapting</author>
+  <maintainer email="leapting@leapting.com">leapting</maintainer>
 
   <license>BSD</license>
 
@@ -35,7 +35,7 @@
   <!-- <run_depend>gazebo_ros_control</run_depend> -->
   <!-- This package is referenced in the warehouse launch files, but does not build out of the box at the moment. Commented the dependency until this works. -->
   <!-- <run_depend>warehouse_ros_mongo</run_depend> -->
-  <run_depend>lt_description</run_depend>
+  <run_depend>bringup</run_depend>
 
 
 </package>

@@ -1,0 +1,66 @@
+armPickupDetectPose:
+  orientation:
+  - -0.034
+  - -0.043
+  - 0.703
+  - 0.709
+  position:
+  - 1.36
+  - -0.035
+  - 1.385
+  type: pose
+armPickupMidPose:
+  orientation:
+  - 0.055
+  - 0.025
+  - 0.651
+  - 0.756
+  position:
+  - 1.556
+  - -0.475
+  - 1.124
+  type: pose
+armPlaceDetectPose:
+  orientation:
+  - 0.15
+  - -0.135
+  - 0.677
+  - 0.708
+  position:
+  - -0.071
+  - 1.573
+  - 1.934
+  type: pose
+armTopPose:
+  orientation:
+  - -0.057
+  - -0.199
+  - 0.935
+  - 0.289
+  position:
+  - 1.096
+  - 1.597
+  - 1.621
+  type: pose
+armTopPose1:
+  orientation:
+  - -0.042
+  - -0.153
+  - 0.879
+  - 0.45
+  position:
+  - 1.083
+  - 1.017
+  - 1.55
+  type: pose
+test0621:
+  orientation:
+  - 0.008
+  - -0.008
+  - 0.704
+  - 0.711
+  position:
+  - 2.092
+  - -0.054
+  - 1.257
+  type: pose

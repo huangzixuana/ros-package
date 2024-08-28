@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="name" default="" />
+    <arg name="type" default="modbus_tcp" /> <!-- modbus_tcp // sues // modbus_rtu -->
+    <arg name="port" default="192.168.147.24" />
+    <arg name="rate" default="0.5" />
+    <arg name="debug" default="false" />
+
+    <arg name="frame_id" default="base_trailer$(arg name)" />
+
+    <arg name="byte_type" default="socket" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_head" default="0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_tail" default="" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_write" default="0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_read" default="0x00, 0x00, 0x00, 0x00, 0x00, 0x17, 0x00" if="$(eval type == 'modbus_tcp')" />
+    <arg name="plc_ratio" default="100" if="$(eval type == 'modbus_tcp')" />
+
+    <arg name="byte_type" default="serial" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_head" default="0x06" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_tail" default=", crc16, big" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_write" default="0x06" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_read" default="0x06" if="$(eval type == 'modbus_rtu')" />
+    <arg name="plc_ratio" default="3200" if="$(eval type == 'modbus_rtu')" />
+
+    <node if="$(eval type == 'modbus_tcp' or type == 'modbus_rtu')" name="rosbridge_trailer$(arg name)" pkg="rosbridge_driver" type="rosbridge_driver" output="screen">
+        <param name="plc_port" value="$(arg port)" />
+        <param name="debug_io" value="$(arg debug)" />
+        <rosparam subst_value="true">
+            port_chain:
+              - name: plc_port
+                type: $(arg byte_type)
+                ip_port: 502
+                timeout: 200.0
+                <!-- action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x24, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x24, any1, any2]
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x25, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x25, any1, any2] -->
+            topic_chain:
+              - name: diagnostics
+                type: diagnostic_updater/diagnostic_updater
+                rate: $(arg rate)
+                hardware_id: $(arg frame_id)
+                frame_id: $(arg frame_id)
+                level: 0 #[diagnostics_legacy/level]
+                values: [serial_port, vendor_name, lift_height, lift_load_limit, 
+                        lift_dump_limit, left_angle, right_angle,
+                        rotation_angle_alarm, left_ultrasonic_sensor, 
+                        right_ultrasonic_sensor]
+                serial_port: $(arg port)
+                vendor_name: sues
+                lift_height: ['=', [trailer_info/lift_height, '*', 0.0001]]
+                lift_load_limit: ['=', [trailer_info/lift_load_limit]]
+                lift_dump_limit: ['=', [trailer_info/lift_dump_limit]]
+                left_angle: ['=', [trailer_info/left_angle, '*', 0.1]]
+                right_angle: ['=', [trailer_info/right_angle, '*', 0.1]]
+                rotation_angle_alarm: ['=', [trailer_info/rotation_angle_alarm]]
+                left_ultrasonic_sensor: ['=', [trailer_info/left_ultrasonic_sensor]]
+                right_ultrasonic_sensor: ['=', [trailer_info/right_ultrasonic_sensor]]
+              - name: trailer_request
+                type: std_msgs/String
+                op: subscribe
+              - name: trailer_info
+                type: std_msgs/String
+                rate: $(arg rate)
+                op: subscribe
+                diagnostic: trailer
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_head), 0x03, 0x00, 0x0A, 0x00, 0x0A $(arg byte_tail)]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_read), 0x03, 0x14, 
+                        lift_height, big, 
+                        lift_load_limit, big, 
+                        lift_dump_limit, big,
+                        left_angle, big, 
+                        left_angle1, big,
+                        right_angle, big,  
+                        right_angle1, big,
+                        rotation_angle_alarm, big, 
+                        left_ultrasonic_sensor, big, 
+                        right_ultrasonic_sensor, big $(arg byte_tail)]
+              - name: lift_load
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x00, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x00, any1, any2]
+              - name: lift_dump
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x00, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x00, any1, any2]
+              - name: lift_stop
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x00, 0x00, 0x00]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x00, any1, any2]
+              - name: lift_load_speed
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x01, lift_load_speed, big]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x01, any1, any2]
+              - name: lift_dump_speed
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x02, lift_dump_speed, big]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x02, any1, any2]
+              - name: rotate_right
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x03, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x03, any1, any2]
+              - name: rotate_left
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x03, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x03, any1, any2]
+              - name: rotate_stop
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x03, 0x00, 0x00]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x03, any1, any2]
+              - name: rotate_right_speed
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x04, rotate_right_speed, big]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x04, any1, any2]
+              - name: rotate_left_speed
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x05, rotate_left_speed, big]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x05, any1, any2]
+              - name: lift_goal_angle
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x06, angle, big]
+                    <!-- byte: [$(arg byte_write), 0x10, 0x00, 0x06, 0x00, 0x02, 0x04, angle, double_big, double_big, double_big] -->
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x10, 0x00, 0x06, any1, any2]
+              - name: lift_goal_height
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x08, height, big]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x08, any1, any2]             
+              - name: heart_beat
+                type: std_msgs/String
+                rate: 0.5
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x14, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x14, any1, any2]
+        </rosparam>
+    </node>
+</launch>

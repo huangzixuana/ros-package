@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: bringup
+    relative_path: urdf/test/kr3100.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/kr3100.srdf
+  CONFIG:
+    author_name: leapting
+    author_email: leapting@leapting.com
+    generated_timestamp: 1694238223

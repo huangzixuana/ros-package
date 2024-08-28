@@ -11,10 +11,10 @@ import numpy as np
 from tf import TransformListener
 from actionlib_msgs.msg import GoalID
 from flexbe_core.proxy import ProxyPublisher, ProxySubscriberCached
-from std_msgs.msg import Bool, Empty
+from std_msgs.msg import Bool, Empty, Header
 from geometry_msgs.msg import Pose
-from trajectory_msgs.msg import JointTrajectory
-from moveit_msgs.msg import OrientationConstraint, Constraints
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from moveit_msgs.msg import OrientationConstraint, Constraints, RobotTrajectory
 from sensor_msgs.msg import JointState
 import yaml
 import getpass
@@ -22,10 +22,9 @@ import os
 from control_msgs.msg import JointTrajectoryControllerState
 from geometry_msgs.msg import PoseWithCovarianceStamped
 
-
 '''
 Updated on Oct 13th, 2023
-Updated on Jun 1st, 2023
+Updated on Jun 26st, 2024
 @author: lei.zeng@leapting.com
 '''
 
@@ -44,30 +43,38 @@ class SiteManipulation(EventState):
     -- a_factor             float           max_acceleration_scaling_factor
     -- if_execute           Bool            if execute the planned path or just show trajectory
     -- wait_time            float           wait time on exit
+    -- planner_id    string          planner_id
+    -- plan_time    float            plan_time
 
 
     <= done                  action complete
     <= failed                action exception
     '''
 
-    def __init__(self, pos=[0, 0, 0],
+    def __init__(self,
+                 pos=[0, 0, 0],
                  quat=[0, 0, 0, 1],
                  target_frame="none",
                  target_name="none",
                  axis_value=["none", 0],
                  pos_targets=[],
+                 trajectory_name="none",
                  reference_frame="base_arm",
                  end_effector_link="tool0",
+                 wait_time=0,
                  v_factor=1,
                  a_factor=1,
-                 if_execute=True,
-                 wait_time=0,
+                 t_factor=1.0,
                  stay_level=False,
                  cart_step_list=[3, 11],
-                 retry_num=3,
+                 step_factor=0.1,
                  itp_norm=0.15,
+                 retry_num=3,
+                 cart_limit={},
+                 if_execute=True,
                  if_debug=False,
-                 cart_limit={}):
+                 planner_id="none",
+                 plan_time=2):
         super(SiteManipulation, self).__init__(outcomes=['done', 'failed'],
                                                input_keys=['move_group'])
 
@@ -76,7 +83,7 @@ class SiteManipulation(EventState):
         self._pos, self._quat = pos, quat
         self._target_frame, self._target_name = target_frame, target_name
         self._reference_frame, self._end_effector_link = reference_frame, end_effector_link
-        self._v_factor, self._a_factor = v_factor, a_factor
+        self._v_factor, self._a_factor, self._t_factor = v_factor, a_factor, t_factor
         self._axis_num, self._value = axis_dict[axis_value[0]], axis_value[1]
         self._pos_targets = pos_targets
 
@@ -84,14 +91,20 @@ class SiteManipulation(EventState):
         self._stay_level = stay_level
         self._wait_time = wait_time
         self._cart_step_list = cart_step_list
+        self._step_factor = step_factor
         self._retry_num = retry_num
         self._itp_norm = itp_norm
         self._if_debug = if_debug
         self._cart_limit = cart_limit
+        self._trajectory_name = trajectory_name
+        self._planner_id = planner_id
+        self._plan_time = plan_time
         self._res = ''
 
         self._traj_pub = ProxyPublisher(
             {'position_trajectory_controller/command': JointTrajectory})
+        self._traj_todo_pub = ProxyPublisher(
+            {'joint_trajectory_todo': JointTrajectory})
 
         self.tf1_lis = TransformListener()
         self.entered = False
@@ -109,6 +122,13 @@ class SiteManipulation(EventState):
         self._solar_sub = ProxySubscriberCached(
             {'filter_solar_pose': PoseWithCovarianceStamped})
 
+        self._traj_todo_rec = False
+        self._traj_todo_msg = None
+        self._traj_done_sub = ProxySubscriberCached(
+            {'joint_trajectory_done': Header})
+        self._traj_done_sub.subscribe('joint_trajectory_done', Header,
+                                      callback=self.traj_done_cb, buffered=False)
+
         if self._if_debug:
             self.init_data()
             self._joint_state_sub = ProxySubscriberCached(
@@ -121,7 +141,7 @@ class SiteManipulation(EventState):
 
         arm_site_path = self.relative_to_absolute_path(rospy.get_param(
             "~arm_site_path", "~/catkin_ws/dbparam/arm_waypoints.yaml"))
-        if len(self._pos_targets) > 0:
+        if len(self._pos_targets) > 0 or self._trajectory_name != "none":
             with open(arm_site_path) as f:
                 self._waypoints = yaml.safe_load(f)
                 # print(self._waypoints)
@@ -131,6 +151,10 @@ class SiteManipulation(EventState):
             return '/home/' + getpass.getuser() + relative_path[1:]
         else:
             return relative_path
+
+    def traj_done_cb(self, msg):
+        self._traj_todo_msg = msg
+        self._traj_todo_rec = True
 
     def manipulator_init(self):
         group_name = rospy.get_param(
@@ -165,6 +189,7 @@ class SiteManipulation(EventState):
         set_target = False
 
         self._move_group.set_start_state_to_current_state()
+        '''
         if 0:
             Logger.loginfo('%s: target is  w.r.t. frame %s' %
                            (self.name, self._target_frame))
@@ -211,7 +236,63 @@ class SiteManipulation(EventState):
                 pass
 
             set_target = True
-        if self._target_frame != "none":
+
+        '''
+        if self._trajectory_name != 'none':
+            Logger.loginfo('%s: trajectory exe %s' %
+                           (self.name, self._trajectory_name))
+            traj_msg = RobotTrajectory()
+            for i in range(len(self._waypoints['joints'])):
+                traj_msg.joint_trajectory.joint_names.append(
+                    self._waypoints['joints'][i])
+
+            if (self.joint_joint_diff(self._waypoints[self._trajectory_name]['position'][0],
+                                      self._move_group.get_current_joint_values(), 0.05)):
+                Logger.logwarn('%s: start position too far' % self.name)
+
+                self._move_group.set_joint_value_target(
+                    self._waypoints[self._trajectory_name]['position'][0])
+                plan_msg = self._move_group.plan()
+                traj_msg2 = plan_msg[1]
+                self._move_group.execute(traj_msg2, wait=True)
+
+                for i in range(1, len(self._waypoints[self._trajectory_name]['position'])):
+                    p = JointTrajectoryPoint()
+                    p.positions = self._waypoints[self._trajectory_name]['position'][i]
+                    p.velocities = self._waypoints[self._trajectory_name]['velocities'][i]
+                    p.accelerations = self._waypoints[self._trajectory_name]['accelerations'][i]
+
+                    # p.time_from_start = rospy.Duration.from_sec(
+                    #     self._waypoints[self._trajectory_name]['time'][i] * self._t_factor +
+                    #     (plan_msg[1].joint_trajectory.points[-1].time_from_start).to_sec())
+                    # traj_msg2.joint_trajectory.points.append(p)
+
+                    p.time_from_start = rospy.Duration.from_sec(
+                        self._waypoints[self._trajectory_name]['time'][i] * self._t_factor)
+                    traj_msg.joint_trajectory.points.append(p)
+                traj_msg.joint_trajectory.points[0].positions = self._move_group.get_current_joint_values(
+                )
+
+                self._move_group.execute(traj_msg, wait=False)
+
+                return
+
+            else:
+                for i in range(len(self._waypoints[self._trajectory_name]['position'])):
+                    p = JointTrajectoryPoint()
+                    p.positions = self._waypoints[self._trajectory_name]['position'][i]
+                    p.velocities = self._waypoints[self._trajectory_name]['velocities'][i]
+                    p.accelerations = self._waypoints[self._trajectory_name]['accelerations'][i]
+                    p.time_from_start = rospy.Duration.from_sec(
+                        self._waypoints[self._trajectory_name]['time'][i] * self._t_factor)
+                    traj_msg.joint_trajectory.points.append(p)
+                traj_msg.joint_trajectory.points[0].positions = self._move_group.get_current_joint_values(
+                )
+
+                self._move_group.execute(traj_msg, wait=False)
+
+            return
+        elif self._target_frame != "none":
             Logger.loginfo('%s: target is  w.r.t. frame %s' %
                            (self.name, self._target_frame))
             while (True):
@@ -324,7 +405,7 @@ class SiteManipulation(EventState):
             for r in list(range(0, int(self._retry_num))):
                 for stp in list(range(int(self._cart_step_list[0]),
                                       int(self._cart_step_list[1]))):
-                    step = stp*0.1
+                    step = stp*self._step_factor
                     (plan, fraction) = self._move_group.compute_cartesian_path(
                         waypoints, step, jump_threshold)
                     plan.joint_trajectory.points = plan.joint_trajectory.points[1:]
@@ -340,6 +421,11 @@ class SiteManipulation(EventState):
                 Logger.logwarn("%s failed: fraction = {0}".format(
                     fraction) % self.name)
                 return
+
+            if 0 and self._v_factor > 0:
+                for p in plan.joint_trajectory.points:
+                    p.time_from_start = rospy.Duration.from_sec(
+                        p.time_from_start.to_sec() / self._v_factor)
 
             if self._if_debug:
                 self.update_plan_data(plan)
@@ -377,9 +463,32 @@ class SiteManipulation(EventState):
             else:
                 Logger.logwarn("%s failed:  no path" % self.name)
         elif rospy.get_param("/rosdistro")[:6] == 'noetic':
+
             if plan_msg[0] and self.check_plan_step(plan_msg[1]):
+                if self._if_debug:
+                    self.update_plan_data(plan_msg[1])
+                    self._joint_state_sub.subscribe('joint_states', JointState,
+                                                    callback=self.joints_cb, buffered=False)
+                    self._controller_state_sub.subscribe('position_trajectory_controller/state', JointTrajectoryControllerState,
+                                                         callback=self.controller_cb, buffered=False)
+
                 Logger.loginfo("%s: path planned" % self.name)
+
                 if self._if_execute:
+                    if self._planner_id != "none":
+                        self._traj_todo_rec = False
+                        self._traj_todo_pub.publish(
+                            'joint_trajectory_todo', plan_msg[1].joint_trajectory)
+                        while (not self._traj_todo_rec):
+                            if self._break_enter:
+                                return
+                            rospy.sleep(0.1)
+                            
+                        if self._traj_todo_msg.frame_id == "no":
+                            Logger.logwarn(
+                                '%s failed: trajectory is invalid' % self.name)
+                            return
+
                     if self._move_group.execute(plan_msg[1], wait=True):
                         self._res = 'done'
                         Logger.loginfo('%s succeed: executed' % self.name)
@@ -524,7 +633,7 @@ class SiteManipulation(EventState):
         plan_points = plan.joint_trajectory.points
 
         self.plot_data['plan']['time'] = list(
-            map(lambda p: round(p.time_from_start.to_sec(), 2), plan_points))
+            map(lambda p: round(p.time_from_start.to_sec(), 5), plan_points))
 
         for p in plan_points:
             self.plot_data['plan']['position'].append(list(p.positions))
@@ -534,7 +643,15 @@ class SiteManipulation(EventState):
         self.plot_data['ts'] = time.time()
 
     def execute(self, userdata):
-        return self._res
+        if self._trajectory_name != 'none' and (not self._break_enter):
+            if (not self.joint_joint_diff(self._waypoints[self._trajectory_name]['position'][-1],
+                                          self._move_group.get_current_joint_values(), 0.05)):
+                Logger.loginfo('%s succeed: executed' % self.name)
+                return 'done'
+            else:
+                pass
+        else:
+            return self._res
 
     def pause_cb(self, msg):
         if msg.data:
@@ -594,11 +711,11 @@ class SiteManipulation(EventState):
 
     def moveit_goal_init(self):
         self._break_enter = False
-        self._move_group.set_planner_id("LazyPRMstar")
-        # self._move_group.set_planner_id("RRTConnect")
         self._move_group.clear_pose_targets()
-        self._move_group.set_planning_time(1)
+        self._move_group.set_planning_time(self._plan_time)
         self._move_group.allow_replanning(True)
+        if self._planner_id != "none":
+            self._move_group.set_planner_id(self._planner_id)
 
         self._move_group.set_max_velocity_scaling_factor(self._v_factor)
         self._move_group.set_max_acceleration_scaling_factor(self._a_factor)

@@ -77,7 +77,7 @@
 
   <!-- Sensors Functionality -->
   <include ns="move_group" file="$(dirname)/sensor_manager.launch.xml" if="$(arg allow_trajectory_execution)">
-    <arg name="moveit_sensor_manager" value="frontec_arm" />
+    <arg name="moveit_sensor_manager" value="kr2700" />
   </include>
 
   <!-- Start the actual move_group node/action server -->
@@ -90,8 +90,6 @@
     <param name="default_planning_pipeline" value="$(arg pipeline)" />
     <param name="capabilities" value="$(arg capabilities)" />
     <param name="disable_capabilities" value="$(arg disable_capabilities)" />
-    <!-- <param name="planning_pipelines/ompl/constraint_approximations_path" value="/home/hzx/.ros/constraint_approximations_database" /> -->
-
 
     <!-- do not copy dynamics information from /joint_states to internal robot monitoring
          default to false, because almost nothing in move_group relies on this information -->

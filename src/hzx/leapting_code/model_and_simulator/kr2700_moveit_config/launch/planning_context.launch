@@ -9,7 +9,7 @@
   <param if="$(arg load_robot_description)" name="$(arg robot_description)" command="xacro  '$(find lt_description)/urdf/inc/test_kuka_kr210_r2700_dh.urdf.xacro'"/>
 
   <!-- The semantic description that corresponds to the URDF -->
-  <param name="$(arg robot_description)_semantic" textfile="$(find kr2700_moveit_config)/config/frontec_arm.srdf" />
+  <param name="$(arg robot_description)_semantic" textfile="$(find kr2700_moveit_config)/config/kr2700.srdf" />
 
   <!-- Load updated joint limits (override information from URDF) -->
   <group ns="$(arg robot_description)_planning">

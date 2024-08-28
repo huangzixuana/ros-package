@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="name" default="" />
+    <arg name="type" default="modbus_tcp" /> <!-- modbus_tcp // sues // modbus_rtu -->
+    <arg name="port" default="192.168.147.13" />
+    <arg name="rate" default="0.5" />
+    <arg name="debug" default="false" />
+
+    <arg name="frame_id" default="base_pdu$(arg name)" />
+
+    <arg name="byte_type" default="socket" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_head" default="0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_tail" default="" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_write" default="0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_read" default="0x00, 0x00, 0x00, 0x00, 0x00, 0x45, 0x00" if="$(eval type == 'modbus_tcp')" />
+    <arg name="plc_ratio" default="100" if="$(eval type == 'modbus_tcp')" />
+
+    <arg name="byte_type" default="serial" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_head" default="0x06" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_tail" default=", crc16, big" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_write" default="0x06" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_read" default="0x06" if="$(eval type == 'modbus_rtu')" />
+    <arg name="plc_ratio" default="3200" if="$(eval type == 'modbus_rtu')" />
+
+    <arg name="linde" default="false" />
+    <arg name="use_diagnostics_legacy" default="$(arg linde)" />
+    <arg name="use_joy" default="$(arg linde)" />
+    <arg name="use_odom" default="$(arg linde)" />
+    <arg name="use_cmd_vel" default="$(arg linde)" />
+
+    <arg name="wheel_base" default="0.23333" />
+    <arg name="wheel_ratio" default="23333.3" />
+    <arg name="wheel_encoder" default="1.0" />
+
+    <arg name="linear_mid" default="4.1" />
+    <arg name="angular_mid" default="0.5" />
+    <arg name="linear_ratio" default="1.2" />
+    <arg name="angular_ratio" default="0.006" />
+    <arg name="steering_angle_tolerance" default="0.5" />
+    <arg name="speed_limit" default="0.8" />
+    <arg name="speed_kp" default="2.0" />
+    <arg name="speed_ki" default="0.01" />
+    <arg name="speed_ki_absmax" default="1.0" />
+
+    <arg name="angular_pos_min" default="100" />
+    <arg name="angular_pos_max" default="900" />
+    <arg name="angular_neg_min" default="100" />
+    <arg name="angular_neg_max" default="900" />
+    <arg name="steering_angle_ki" default="0.0002" />
+    <arg name="steering_angle_ki_absmax" default="0.05" />
+
+    <arg name="use_lift" default="$(arg linde)" />
+    <arg name="lift_ratio" default="1000.0" if="$(arg linde)" />
+    <arg name="lift_ratio" default="288000.0" unless="$(arg linde)" />
+    <arg name="lift_vel" default="0.0041666" />
+    <arg name="lift_dump_vel" default="$(arg lift_vel)" />
+    <arg name="lift_load_vel" default="$(arg lift_vel)" />
+    <arg name="lift_bias_vel" default="$(arg lift_vel)" />
+    <arg name="lift_dump_pos" default="0.0" />
+    <arg name="lift_load_pos" default="0.035" />
+    <arg name="lift_bias_pos" default="0.002" />
+
+    <node if="$(eval type == 'modbus_tcp' or type == 'modbus_rtu')" name="rosbridge_pdu$(arg name)" pkg="rosbridge_driver" type="rosbridge_driver" output="screen">
+        <remap from="cmd_vel" to="cmd_vel_rectified" />
+        <param name="plc_port" value="$(arg port)" />
+        <param name="debug_io" value="$(arg debug)" />
+        <rosparam subst_value="true">
+            port_chain:
+              - name: plc_port
+                type: $(arg byte_type)
+                ip_port: 502
+                timeout: 200.0
+                <!-- action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x24, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x24, any1, any2]
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x25, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x25, any1, any2] -->
+            topic_chain:
+              - name: diagnostics
+                type: diagnostic_updater/diagnostic_updater
+                rate: $(arg rate)
+                hardware_id: $(arg frame_id)
+                frame_id: $(arg frame_id)
+                level: 0 #[diagnostics_legacy/level]
+                values: [serial_port, vendor_name, battery_voltage, battery_current, 
+                        charger_voltage, charger_contactor_voltage, 
+                        chassis_contactor_voltage, chassis_output_voltage, 
+                        inverter_contactor_voltage, inverter_output_voltage, 
+                        charger_contactor, charger_fuse, charger_status, 
+                        chassis_contactor, chassis_fuse, chassis_status, 
+                        inverter_contactor, inverter_fuse, inverter_status, 
+                        comm_status, estop_status, system_status, robot_status]
+                serial_port: $(arg port)
+                vendor_name: sues
+                battery_voltage: ['=', [pdu_info/battery_voltage]]
+                battery_current: ['=', [pdu_info/battery_current]]
+                charger_voltage: ['=', [pdu_info/charger_voltage]]
+                charger_contactor_voltage: ['=', [pdu_info/charger_contactor_voltage]]
+                chassis_contactor_voltage: ['=', [pdu_info/chassis_contactor_voltage]]
+                chassis_output_voltage: ['=', [pdu_info/chassis_output_voltage]]
+                inverter_contactor_voltage: ['=', [pdu_info/inverter_contactor_voltage]]
+                inverter_output_voltage: ['=', [pdu_info/inverter_output_voltage]]
+                charger_contactor: ['=', [pdu_info/charger_contactor]]
+                charger_fuse: ['=', [pdu_info/charger_fuse]]
+                charger_status: ['=', [pdu_info/charger_status]]
+                chassis_contactor: ['=', [pdu_info/chassis_contactor]]
+                chassis_fuse: ['=', [pdu_info/chassis_fuse]]
+                chassis_status: ['=', [pdu_info/chassis_status]]
+                inverter_contactor: ['=', [pdu_info/inverter_contactor]]
+                inverter_fuse: ['=', [pdu_info/inverter_fuse]]
+                inverter_status: ['=', [pdu_info/inverter_status]]
+                comm_status: ['=', [pdu_info/comm_status]]
+                estop_status: ['=', [pdu_info/estop_status]]
+                system_status: ['=', [pdu_info/system_status]]
+                robot_status: ['=', [pdu_info/robot_status]]
+              - name: pdu_request
+                type: std_msgs/String
+                op: subscribe
+              - name: pdu_info
+                type: std_msgs/String
+                rate: $(arg rate)
+                op: subscribe
+                diagnostic: Pdu
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_head), 0x03, 0x00, 0x00, 0x00, 0x21 $(arg byte_tail)]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_read), 0x03, 0x42, 
+                        battery_voltage, double_big, double_big, double_big, 
+                        battery_current, double_big, double_big, double_big, 
+                        charger_voltage, double_big, double_big, double_big, 
+                        charger_contactor_voltage, double_big, double_big, double_big, 
+                        chassis_contactor_voltage, double_big, double_big, double_big, 
+                        chassis_output_voltage, double_big, double_big, double_big, 
+                        inverter_contactor_voltage, double_big, double_big, double_big, 
+                        inverter_output_voltage, double_big, double_big, double_big, 
+                        any, any, any, any, any, any, any, any, 
+                        charger_contactor, big, charger_fuse, big, charger_status, big, 
+                        chassis_contactor, big, chassis_fuse, big, chassis_status, big, 
+                        inverter_contactor, big, inverter_fuse, big, inverter_status, big, 
+                        comm_status, big, estop_status, big, system_status, big, robot_status, big $(arg byte_tail)]
+              - name: charge_on
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x23, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x23, any1, any2]
+              - name: charge_off
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x23, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x23, any1, any2]
+              - name: chassis_on
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x24, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x24, any1, any2]
+              - name: chassis_off
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x24, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x24, any1, any2]
+              - name: inverter_on
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x25, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x25, any1, any2]
+              - name: inverter_off
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x25, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x25, any1, any2]
+              - name: auto_on
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x26, 0x00, 0x02]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x26, any1, any2]
+              - name: auto_off
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x26, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x26, any1, any2]
+              - name: heart_beat
+                type: std_msgs/String
+                rate: 0.2
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x27, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x27, any1, any2]
+        </rosparam>
+    </node>
+</launch>

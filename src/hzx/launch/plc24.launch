@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="name" default="" />
+    <arg name="type" default="modbus_tcp" /> <!-- modbus_tcp // sues // modbus_rtu -->
+    <arg name="port" default="192.168.147.24" />
+    <arg name="rate" default="0.5" />
+    <arg name="debug" default="false" />
+
+    <arg name="frame_id" default="base_plc24$(arg name)" />
+
+    <arg name="byte_type" default="socket" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_head" default="0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_tail" default="" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_write" default="0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00" if="$(eval type == 'modbus_tcp')" />
+    <arg name="byte_read" default="0x00, 0x00, 0x00, 0x00, 0x00, 0x45, 0x00" if="$(eval type == 'modbus_tcp')" />
+    <!-- 45= 42+3 -->
+    <arg name="plc_ratio" default="100" if="$(eval type == 'modbus_tcp')" />
+
+    <arg name="byte_type" default="serial" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_head" default="0x06" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_tail" default=", crc16, big" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_write" default="0x06" if="$(eval type == 'modbus_rtu')" />
+    <arg name="byte_read" default="0x06" if="$(eval type == 'modbus_rtu')" />
+    <arg name="plc_ratio" default="3200" if="$(eval type == 'modbus_rtu')" />
+
+    <node if="$(eval type == 'modbus_tcp' or type == 'modbus_rtu')" name="rosbridge_plc24$(arg name)" pkg="rosbridge_driver" type="rosbridge_driver" output="screen">
+        <param name="plc_port" value="$(arg port)" />
+        <param name="debug_io" value="$(arg debug)" />
+        <rosparam subst_value="true">
+            port_chain:
+              - name: plc_port
+                type: $(arg byte_type)
+                ip_port: 502
+                timeout: 200.0
+            topic_chain:
+              - name: diagnostics
+                type: diagnostic_updater/diagnostic_updater
+                rate: $(arg rate)
+                hardware_id: $(arg frame_id)
+                frame_id: $(arg frame_id)
+                level: 0 #[diagnostics_legacy/level]
+                values: [serial_port, vendor_name, robot_states, vacuum_pressure]
+                serial_port: $(arg port)
+                vendor_name: sues
+                robot_states: ['=', [plc24_info/robot_status]]
+                vacuum_pressure: ['=', [plc24_info/vacuum_pressure]]
+              - name: plc24_request
+                type: std_msgs/String
+                op: subscribe
+              - name: plc24_info
+                type: std_msgs/String
+                rate: $(arg rate)
+                op: subscribe
+                diagnostic: plc24
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_head), 0x03, 0x00, 0x00, 0x00, 0x21 $(arg byte_tail)]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_read), 0x03, 0x42, 
+                        any,any,any,any,any,any,any,any,
+                        any,any,any,any,any,any,any,any,
+                        any,any,any,any,any,any,robot_status,big,
+                        any,any,any,any,any,any,any,any,
+                        any,any,any,any,any,any,any,any, 
+                        any,any,any,any,any,any,any,any, 
+                        any,any,any,any,any,any,any,any,
+                        vacuum_pressure,big,any,any,any,any,any,any, 
+                        any,any, $(arg byte_tail)]
+              - name: cup_on
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x3D, 0x00, 0x00]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x3D, any1, any2]
+              - name: cup_off
+                type: std_msgs/String
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x3D, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x3D, any1, any2]
+              - name: heart_beat
+                type: std_msgs/String
+                rate: 0.5
+                op: subscribe
+                action_chain:
+                  - name: plc_port
+                    type: write
+                    byte: [$(arg byte_write), 0x06, 0x00, 0x46, 0x00, 0x01]
+                  - name: plc_port
+                    type: read
+                    byte: [$(arg byte_head), 0x06, 0x00, 0x46, any1, any2]
+        </rosparam>
+    </node>
+</launch>
