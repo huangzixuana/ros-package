@@ -21,5 +21,4 @@
         <node launch-prefix="nice" pkg="rviz" type="rviz" name="image_points_align_rviz" args="-d $(find image_points_align)/rviz/image_points_align.rviz" />
     </group>
 
-
 </launch>

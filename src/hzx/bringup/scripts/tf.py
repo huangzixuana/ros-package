@@ -24,13 +24,13 @@ def broadcast_transforms():
         livox_transform.header.frame_id = "camera_color_optical_frame"
         livox_transform.child_frame_id = "livox"
 
-        livox_transform.transform.translation.x = -0.0659906
-        livox_transform.transform.translation.y = -0.0269241
-        livox_transform.transform.translation.z = 0.0530808
+        livox_transform.transform.translation.x = -0.0639774
+        livox_transform.transform.translation.y = -0.0234305
+        livox_transform.transform.translation.z = 0.063144
 
-        R_matrix = np.array([[0.0048862,  -0.999912,  0.0123443],
-                             [-0.00657717,  -0.0123763,  -0.999902],
-                             [0.999966,  0.00480453,  -0.00663706]])
+        R_matrix = np.array([[0.00313231,  -0.999895,  0.0141244],
+                             [-0.00928674,  -0.0141529,  -0.999857],
+                             [0.999952,  0.0030007,  -0.0093301]])
         
         rotation = R.from_matrix(R_matrix)
         quat = rotation.as_quat()
