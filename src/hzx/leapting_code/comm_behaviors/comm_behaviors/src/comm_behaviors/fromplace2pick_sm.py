@@ -44,7 +44,7 @@ class fromPlace2PickSM(Behavior):
 
 
 	def create(self):
-		# x:143 y:450
+		# x:381 y:347
 		_state_machine = OperatableStateMachine(outcomes=['finished'])
 
 		# Additional creation code can be added inside the following tags
@@ -57,34 +57,34 @@ class fromPlace2PickSM(Behavior):
 			# x:104 y:62
 			OperatableStateMachine.add('armInit',
 										ManipulationShare(reference_frame='base_arm', end_effector_link='tool0'),
-										transitions={'done': 'multi-place2pick'},
+										transitions={'done': 'armPlaceDetectPose'},
 										autonomy={'done': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
 			# x:98 y:340
 			OperatableStateMachine.add('armPickupDetectPose',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPickupDetectPose", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cart_step_list=[3, 11], retry_num=3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPickupDetectPose", axis_value=["none",0], pos_targets=[], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3, 11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'finished', 'failed': 'armPickupDetectPose'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:103 y:166
+			# x:99 y:154
 			OperatableStateMachine.add('armPlaceDetectPose',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPlaceDetectPose", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cart_step_list=[3, 11], retry_num=3, itp_norm=0.15, if_debug=False),
-										transitions={'done': 'armTopPose', 'failed': 'armPlaceDetectPose'},
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPlaceDetectPose", axis_value=["none",0], pos_targets=[], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3, 11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
+										transitions={'done': 'armPickupDetectPose', 'failed': 'armPlaceDetectPose'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:105 y:265
+			# x:209 y:231
 			OperatableStateMachine.add('armTopPose',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armTopPose", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cart_step_list=[3, 11], retry_num=3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armTopPose", axis_value=["none",0], pos_targets=[], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3, 11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'armPickupDetectPose', 'failed': 'armTopPose'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:392 y:91
+			# x:343 y:61
 			OperatableStateMachine.add('multi-place2pick',
-										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='none', axis_value=['none', 0], pos_targets=['armPlaceDetectPose','armTopPose','armPickupDetectPose'], reference_frame='base_arm', end_effector_link='tool0', v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=True, cart_step_list=[3, 18], retry_num=3, itp_norm=0, if_debug=True),
+										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='none', axis_value=['none', 0], pos_targets=['armPlaceDetectPose','armTopPose','armPickupDetectPose'], trajectory_name="none", reference_frame='base_arm', end_effector_link='tool0', wait_time=0.5, v_factor=1, a_factor=1, t_factor=1.0, stay_level=True, cart_step_list=[1, 10], step_factor=0.1, itp_norm=0, retry_num=3, cart_limit={}, if_execute=True, if_debug=True, planner_id='none', plan_time=2),
 										transitions={'done': 'finished', 'failed': 'armPlaceDetectPose'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})

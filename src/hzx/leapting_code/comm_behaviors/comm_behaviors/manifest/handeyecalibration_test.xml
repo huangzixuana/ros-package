@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="HandEyeCalibration_test">
+
+	<executable package_path="comm_behaviors.handeyecalibration_test_sm" class="HandEyeCalibration_testSM" />
+	<tagstring>test</tagstring>
+	<author>zcx</author>
+	<date>Tue Oct 31 2023</date>
+	<description>
+		calibrate hand eye
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="HandEyeWeb" />
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="boolean" name="if_auto_all" default="False" label="if_auto_all" hint="Sets the if_auto_all" />
+
+		<param type="numeric" name="start_site" default="1" label="start_site" hint="Sets the start_site">
+			<min value="1" />
+			<max value="100" />
+		</param>
+
+		<param type="numeric" name="end_site" default="1" label="end_site" hint="Sets the end_site">
+			<min value="1" />
+			<max value="100" />
+		</param>
+
+		<param type="boolean" name="mirror" default="False" label="mirror" hint="Sets the mirror" />
+
+	</params>
+
+
+</behavior>

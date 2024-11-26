@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
     nh.param<int>("data_num", data_num, 5);
     nh.param<bool>("is_custom_msg", is_custom_msg, false);
 
-    for (int i = 1; i < data_num; ++i) {
+    for (int i = 0; i < data_num; ++i) {
         bag_file = bag + std::to_string(i) + ".bag";
         pcd_file = pcd + std::to_string(i) + ".pcd";
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="UpDown">
+
+	<executable package_path="comm_behaviors.updown_sm" class="UpDownSM" />
+	<tagstring>test</tagstring>
+	<author>zcx</author>
+	<date>Tue Jan 30 2024</date>
+	<description>
+		test
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="height" default="0.0" label="height" hint="Sets the height">
+			<min value="-10" />
+			<max value="10" />
+		</param>
+
+	</params>
+
+
+</behavior>

@@ -2,7 +2,7 @@
 
 from flexbe_core import EventState, Logger
 from flexbe_core.proxy import ProxyPublisher
-from std_msgs.msg import Header, String
+from std_msgs.msg import Header
 import rospy
 
 '''
@@ -13,11 +13,10 @@ Created on 06.01.2023
 
 class PublishHeader(EventState):
     '''
-    Publish a message to /task_switch
+    Publish a message to /trig
 
     -- seq	         int       seq
     -- frame_id      string    frame_id
-># twist		Twist			Velocity command to be published.
     <= done              publishing done
 
     '''
@@ -27,22 +26,16 @@ class PublishHeader(EventState):
         Constructor
         '''
         super(PublishHeader, self).__init__(outcomes=['done'])
-        self._update_pub = ProxyPublisher({'flexbe/behavior_updating': String})
         self._seq = seq
         self._frame_id = frame_id
-        self._topic = 'trig'
-        self._pub = ProxyPublisher({self._topic: Header})
+        self._pub = ProxyPublisher({'trig': Header})
 
     def execute(self, userdata):
         return 'done'
 
     def on_enter(self, userdata):
-        update_msg = String()
-        update_msg.data = self.name
-        self._update_pub.publish('flexbe/behavior_updating', update_msg)
-
         msg = Header()
         msg.seq = self._seq
         msg.frame_id = self._frame_id
         msg.stamp = rospy.Time.now()
-        self._pub.publish(self._topic, msg)
+        self._pub.publish('trig', msg)

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="ExtractModulesLocation">
+
+	<executable package_path="comm_behaviors.extractmoduleslocation_sm" class="ExtractModulesLocationSM" />
+	<tagstring>i1p</tagstring>
+	<author>hzx</author>
+	<date>Wed Jul 17 2024</date>
+	<description>
+		ExtractModulesLocation
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

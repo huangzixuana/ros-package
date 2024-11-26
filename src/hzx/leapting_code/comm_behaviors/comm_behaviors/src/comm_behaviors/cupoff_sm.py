@@ -8,8 +8,9 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from comm_states.publishjoyfeedbackarray import PublishJoyFeedbackArray
-from comm_states.pvm_manager import PvmManager
+from comm_states.publish_string import PublishString
+from comm_states.scene_manager import SceneManager
+from comm_states.vacuum_pressure import VacuumPressure
 from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
@@ -45,7 +46,7 @@ class CupOffSM(Behavior):
 
 
 	def create(self):
-		# x:42 y:336
+		# x:46 y:436
 		_state_machine = OperatableStateMachine(outcomes=['finished'])
 
 		# Additional creation code can be added inside the following tags
@@ -56,22 +57,28 @@ class CupOffSM(Behavior):
 
 		with _state_machine:
 			# x:30 y:40
-			OperatableStateMachine.add('loose',
-										PublishJoyFeedbackArray(topic="joy_feedback_array", data_type=1, data_id=7, data_intensity=1),
-										transitions={'done': 'waitLoose'},
+			OperatableStateMachine.add('cupoff',
+										PublishString(name="plc24_request", value="cup_off"),
+										transitions={'done': 'checkpressure'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:21 y:131
-			OperatableStateMachine.add('waitLoose',
-										WaitState(wait_time=3),
-										transitions={'done': 'detach_pvm'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:21 y:215
-			OperatableStateMachine.add('detach_pvm',
-										PvmManager(action='detach', pvm_size=[2.28, 1.13, 0.035], frame_id='tool0', position_z=-0.127),
+			# x:26 y:305
+			OperatableStateMachine.add('det',
+										SceneManager(action="detach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm1", box_position=[0,0,0]),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
+
+			# x:198 y:168
+			OperatableStateMachine.add('wait1s',
+										WaitState(wait_time=1),
+										transitions={'done': 'det'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:25 y:166
+			OperatableStateMachine.add('checkpressure',
+										VacuumPressure(action="cupoff", threshold=20.0, frame=2),
+										transitions={'done': 'det', 'timeout': 'checkpressure'},
+										autonomy={'done': Autonomy.Off, 'timeout': Autonomy.Off})
 
 
 		return _state_machine

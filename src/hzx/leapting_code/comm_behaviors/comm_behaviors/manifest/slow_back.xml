@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="slow_back">
+
+	<executable package_path="comm_behaviors.slow_back_sm" class="slow_backSM" />
+	<tagstring>hide</tagstring>
+	<author>ZL</author>
+	<date>Thu Jul 13 2023</date>
+	<description>
+		test
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="change_bz" />
+
+	<!-- Available Parameters -->
+
+</behavior>

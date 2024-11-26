@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="HandEyeWeb">
+
+	<executable package_path="comm_behaviors.handeyeweb_sm" class="HandEyeWebSM" />
+	<tagstring>test</tagstring>
+	<author>zcx</author>
+	<date>Tue Oct 31 2023</date>
+	<description>
+		web
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="text" name="web_info" default="" label="web_info" hint="Sets the web_info" />
+
+	</params>
+
+
+</behavior>

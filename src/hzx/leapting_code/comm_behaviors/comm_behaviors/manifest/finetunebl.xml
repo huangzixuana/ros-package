@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="FinetuneBL">
+
+	<executable package_path="comm_behaviors.finetunebl_sm" class="FinetuneBLSM" />
+	<tagstring>test</tagstring>
+	<author>zcx</author>
+	<date>Thu Mar 14 2024</date>
+	<description>
+		finetune
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="text" name="adjust_element" default="yaw" label="adjust_element" hint="Sets the adjust_element" />
+
+		<param type="numeric" name="yline_gap" default="36" label="yline_gap" hint="Sets the yline_gap">
+			<min value="0" />
+			<max value="1000" />
+		</param>
+
+		<param type="text" name="adjust_topic" default="res_line" label="adjust_topic" hint="Sets the adjust_topic" />
+
+		<param type="text" name="stop_element" default="line" label="stop_element" hint="Sets the stop_element" />
+
+	</params>
+
+
+</behavior>

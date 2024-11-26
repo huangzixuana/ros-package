@@ -12,85 +12,91 @@
 
 
 	<!-- Contained Behaviors -->
-	<contains name="StartPVMDetect" />
 	<contains name="StopPVMDetect" />
+	<contains name="StartPVMDetect" />
 
 	<!-- Available Parameters -->
 	<params>
 
-		<param type="numeric" name="pick_solar_x" default="0" label="pick_solar_x" hint="Sets the pick_solar_x">
-			<min value="-10" />
-			<max value="10" />
+		<param type="numeric" name="pick_solar_x" default="0.000001" label="pick_solar_x" hint="Sets the pick_solar_x">
+			<min value="-10.0" />
+			<max value="10.0" />
 		</param>
 
-		<param type="numeric" name="pick_solar_y" default="0" label="pick_solar_y" hint="Sets the pick_solar_y">
-			<min value="-10" />
-			<max value="10" />
+		<param type="numeric" name="pick_solar_y" default="0.08" label="pick_solar_y" hint="Sets the pick_solar_y">
+			<min value="-10.0" />
+			<max value="10.0" />
 		</param>
 
-		<param type="numeric" name="pick_solar_z" default="-0.01" label="pick_solar_z" hint="Sets the pick_solar_z">
-			<min value="-10" />
-			<max value="10" />
+		<param type="numeric" name="pick_solar_z" default="0.05" label="pick_solar_z" hint="Sets the pick_solar_z">
+			<min value="-10.0" />
+			<max value="10.0" />
 		</param>
 
-		<param type="numeric" name="pick_ideal_x" default="2.1" label="pick_ideal_x" hint="Sets the pick_ideal_x">
-			<min value="-10" />
-			<max value="10" />
+		<param type="numeric" name="pick_ideal_x" default="2.086" label="pick_ideal_x" hint="Sets the pick_ideal_x">
+			<min value="-10.0" />
+			<max value="10.0" />
 		</param>
 
-		<param type="numeric" name="pick_ideal_y" default="-0.006" label="pick_ideal_y" hint="Sets the pick_ideal_y">
-			<min value="-10" />
-			<max value="10" />
+		<param type="numeric" name="pick_ideal_y" default="-0.127" label="pick_ideal_y" hint="Sets the pick_ideal_y">
+			<min value="-10.0" />
+			<max value="10.0" />
 		</param>
 
 		<param type="numeric" name="pick_ideal_z" default="0.0" label="pick_ideal_z" hint="Sets the pick_ideal_z">
-			<min value="-10" />
-			<max value="10" />
+			<min value="-10.0" />
+			<max value="10.0" />
 		</param>
 
 		<param type="numeric" name="pick_ideal_er" default="0.006" label="pick_ideal_er" hint="Sets the pick_ideal_er">
-			<min value="-4" />
-			<max value="4" />
+			<min value="-4.0" />
+			<max value="4.0" />
 		</param>
 
 		<param type="numeric" name="pick_ideal_ep" default="-0.011" label="pick_ideal_ep" hint="Sets the pick_ideal_ep">
-			<min value="-4" />
-			<max value="4" />
+			<min value="-4.0" />
+			<max value="4.0" />
 		</param>
 
 		<param type="numeric" name="pick_ideal_ey" default="1.559" label="pick_ideal_ey" hint="Sets the pick_ideal_ey">
-			<min value="-4" />
-			<max value="4" />
+			<min value="-4.0" />
+			<max value="4.0" />
 		</param>
 
-		<param type="numeric" name="pick_tol_x" default="0.05" label="pick_tol_x" hint="Sets the pick_tol_x">
-			<min value="-1" />
-			<max value="5" />
+		<param type="numeric" name="pick_tol_x" default="-1.0" label="pick_tol_x" hint="Sets the pick_tol_x">
+			<min value="-1.0" />
+			<max value="5.0" />
 		</param>
 
-		<param type="numeric" name="pick_tol_y" default="0.1" label="pick_tol_y" hint="Sets the pick_tol_y">
-			<min value="-1" />
-			<max value="10" />
+		<param type="numeric" name="pick_tol_y" default="-1.0" label="pick_tol_y" hint="Sets the pick_tol_y">
+			<min value="-1.0" />
+			<max value="10.0" />
 		</param>
 
 		<param type="numeric" name="pick_tol_z" default="-1.0" label="pick_tol_z" hint="Sets the pick_tol_z">
-			<min value="-1" />
-			<max value="10" />
+			<min value="-1.0" />
+			<max value="10.0" />
 		</param>
 
 		<param type="numeric" name="pick_tol_er" default="0.2" label="pick_tol_er" hint="Sets the pick_tol_er">
-			<min value="-1" />
-			<max value="5" />
+			<min value="-1.0" />
+			<max value="5.0" />
 		</param>
 
 		<param type="numeric" name="pick_tol_ep" default="0.2" label="pick_tol_ep" hint="Sets the pick_tol_ep">
-			<min value="-1" />
-			<max value="5" />
+			<min value="-1.0" />
+			<max value="5.0" />
 		</param>
 
 		<param type="numeric" name="pick_tol_ey" default="0.2" label="pick_tol_ey" hint="Sets the pick_tol_ey">
-			<min value="-1" />
-			<max value="5" />
+			<min value="-1.0" />
+			<max value="5.0" />
+		</param>
+
+		<param type="enum" name="detect_option" default="line" label="detect_option" hint="Sets the detect_option">
+			<option value="pvm" />
+			<option value="line" />
+			<option value="sec" />
 		</param>
 
 	</params>

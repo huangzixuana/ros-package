@@ -1,0 +1,4 @@
+<launch>
+  <node name="message_to_web" pkg="message_to_web" type="message_to_web" output="screen">
+  </node>
+</launch>

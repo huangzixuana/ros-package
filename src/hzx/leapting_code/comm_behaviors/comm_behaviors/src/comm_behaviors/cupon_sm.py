@@ -8,9 +8,9 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from comm_states.publishjoyfeedbackarray import PublishJoyFeedbackArray
-from comm_states.pvm_manager import PvmManager
-from flexbe_states.wait_state import WaitState
+from comm_states.publish_string import PublishString
+from comm_states.scene_manager import SceneManager
+from comm_states.vacuum_pressure import VacuumPressure
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -45,7 +45,7 @@ class CupOnSM(Behavior):
 
 
 	def create(self):
-		# x:71 y:241
+		# x:58 y:431
 		_state_machine = OperatableStateMachine(outcomes=['finished'])
 
 		# Additional creation code can be added inside the following tags
@@ -55,21 +55,21 @@ class CupOnSM(Behavior):
 
 
 		with _state_machine:
-			# x:30 y:40
-			OperatableStateMachine.add('suck',
-										PublishJoyFeedbackArray(topic="joy_feedback_array", data_type=1, data_id=7, data_intensity=0),
-										transitions={'done': 'waitSuck'},
+			# x:30 y:25
+			OperatableStateMachine.add('cupon',
+										PublishString(name="plc24_request", value="cup_on"),
+										transitions={'done': 'checkpressure'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:30 y:102
-			OperatableStateMachine.add('waitSuck',
-										WaitState(wait_time=1.5),
-										transitions={'done': 'attach_pvm'},
-										autonomy={'done': Autonomy.Off})
+			# x:26 y:159
+			OperatableStateMachine.add('checkpressure',
+										VacuumPressure(action="cupon", threshold=500.0, frame=1),
+										transitions={'done': 'att', 'timeout': 'checkpressure'},
+										autonomy={'done': Autonomy.Off, 'timeout': Autonomy.Off})
 
-			# x:30 y:164
-			OperatableStateMachine.add('attach_pvm',
-										PvmManager(action='attach', pvm_size=[2.278, 1.134, 0.035], frame_id='tool0', position_z=-0.127),
+			# x:28 y:273
+			OperatableStateMachine.add('att',
+										SceneManager(action="attach", object_size=[2.298,1.164,0.15], frame_id="tool0", box_name="pvm1", box_position=[0,0,0]),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 

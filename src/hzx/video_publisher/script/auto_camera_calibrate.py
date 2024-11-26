@@ -82,11 +82,11 @@ def run_calibration():
             # 执行文件移动操作
             move_command = [
                 "mv",
-                "/home/leapting/.ros/camera_info/head_camera.yaml",
-                "/home/leapting/下载/",
+                "/home/nvidia/.ros/camera_info/head_camera.yaml",
+                "/home/nvidia/Downloads/",
             ]
             subprocess.Popen(move_command)
-            rospy.loginfo("文件移动到/home/leapting/下载")
+            rospy.loginfo("mv to /home/nvidia/Downloads/")
             rospy.signal_shutdown("Terminating node as requested.")
 
     rospy.init_node("subrosout")

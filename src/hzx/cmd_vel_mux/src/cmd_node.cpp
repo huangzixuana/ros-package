@@ -87,12 +87,12 @@ void CmdNode::CmdHandler(const geometry_msgs::TwistConstPtr msg) {
         std_msgs::Header joy_status;
         if (mode == 1) {
             joy_status.seq = 1;  // 急停按下
-        } else if (mode == 2) {
+        } else if (mode == 2 || mode == 4) {
             joy_status.seq = 2;  // 手动
         } else if (mode == 3) {
             joy_status.seq = 3;  // 自动
         } else {                 // JOY_ARM,JOY_SPEED
-            joy_status.seq = 2;  // 手动
+            joy_status.seq = 3;  // 自动
         }
         joy_status.frame_id = "joy_status";
         pub_joy_status.publish(joy_status);

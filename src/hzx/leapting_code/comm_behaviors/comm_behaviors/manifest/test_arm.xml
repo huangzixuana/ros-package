@@ -3,11 +3,11 @@
 <behavior name="test-arm">
 
 	<executable package_path="comm_behaviors.test_arm_sm" class="testarmSM" />
-	<tagstring>test</tagstring>
-	<author>ZL</author>
-	<date>Fri Aug 25 2023</date>
+	<tagstring>hide</tagstring>
+	<author>test</author>
+	<date>Thu Jun 06 2024</date>
 	<description>
-		test-arm
+		test
 	</description>
 
 

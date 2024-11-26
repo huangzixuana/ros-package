@@ -9,10 +9,9 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from comm_behaviors.cupoff_sm import CupOffSM
-from comm_behaviors.fromplace2pick_sm import fromPlace2PickSM
-from comm_states.listen_state import ListenState
 from comm_states.manipulation_share import ManipulationShare
 from comm_states.publisherheader import PublishHeader
+from comm_states.scene_manager import SceneManager
 from comm_states.site_manipulation import SiteManipulation
 from comm_states.site_navigation import SiteNavigation
 from flexbe_states.decision_state import DecisionState
@@ -42,7 +41,6 @@ class WithdrawPVMSM(Behavior):
 
 		# references to used behaviors
 		self.add_behavior(CupOffSM, 'CupOff')
-		self.add_behavior(fromPlace2PickSM, 'fromPlace2Pick')
 
 		# Additional initialization code can be added inside the following tags
 		# [MANUAL_INIT]
@@ -54,10 +52,11 @@ class WithdrawPVMSM(Behavior):
 
 
 	def create(self):
-		# x:1181 y:259
+		# x:1156 y:217
 		_state_machine = OperatableStateMachine(outcomes=['finished'], input_keys=['nav_goal'])
 		_state_machine.userdata.install_mode = self.install_mode
 		_state_machine.userdata.nav_goal = {}
+		_state_machine.userdata.empty_goal = {}
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -69,80 +68,75 @@ class WithdrawPVMSM(Behavior):
 			# x:30 y:40
 			OperatableStateMachine.add('armInit',
 										ManipulationShare(reference_frame='base_arm', end_effector_link='tool0'),
-										transitions={'done': 'fromPlace2Pick'},
+										transitions={'done': 'att11'},
 										autonomy={'done': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:722 y:146
-			OperatableStateMachine.add('Decision',
-										DecisionState(outcomes=['install', 'uninstall'], conditions=lambda x: 'install' if x else 'uninstall'),
-										transitions={'install': 'armPickupDetectPose1', 'uninstall': 'wait5s'},
-										autonomy={'install': Autonomy.Off, 'uninstall': Autonomy.Off},
-										remapping={'input_value': 'install_mode'})
-
-			# x:30 y:301
+			# x:56 y:323
 			OperatableStateMachine.add('armPickDetect',
-										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='armPickDetect', axis_value=['none', 0], pos_targets=[], reference_frame='base_arm', end_effector_link='tool0', v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cart_step_list=[3, 11], retry_num=3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='armPickDetect', axis_value=['none', 0], pos_targets=[], trajectory_name='none', reference_frame='base_arm', end_effector_link='tool0', wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3, 11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='RRTConnect', plan_time=2),
 										transitions={'done': 'CupOff', 'failed': 'armPickDetect'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:876 y:249
-			OperatableStateMachine.add('armPickupDetectPose1',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPickupDetectPose", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=1, stay_level=False, cart_step_list=[3, 11], retry_num=3, itp_norm=0.15, if_debug=False),
-										transitions={'done': 'finished', 'failed': 'armPickupDetectPose1'},
+			# x:1001 y:297
+			OperatableStateMachine.add('armTOPPOSE',
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armTopPose", axis_value=["none",0], pos_targets=[], trajectory_name='none', reference_frame="base_arm", end_effector_link="tool0", wait_time=1, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3, 11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='RRTConnect', plan_time=2),
+										transitions={'done': 'finished', 'failed': 'armTOPPOSE'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:25 y:211
-			OperatableStateMachine.add('armPickupMidPose',
-										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='armPickupMidPose', axis_value=['none', 0], pos_targets=[], reference_frame='base_arm', end_effector_link='tool0', v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cart_step_list=[3, 11], retry_num=3, itp_norm=0.15, if_debug=False),
-										transitions={'done': 'armPickDetect', 'failed': 'armPickupMidPose'},
+			# x:27 y:186
+			OperatableStateMachine.add('armTopPose',
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armTopPose", axis_value=["none",0], pos_targets=[], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id="LazyPRMstar", plan_time=2),
+										transitions={'done': 'armPickDetect', 'failed': 'armTopPose'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:320 y:422
-			OperatableStateMachine.add('armWithdrawPVM',
-										SiteManipulation(pos=[0.0,0,0.03], quat=[0, 0.02179, 0, 0.9997], target_frame="solar_link", target_name="none", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=0.2, a_factor=0.2, if_execute=True, wait_time=4, stay_level=True, cart_step_list=[3, 11], retry_num=3, itp_norm=0.3, if_debug=False),
-										transitions={'done': 'CupOff', 'failed': 'armWithdrawPVM'},
+			# x:991 y:101
+			OperatableStateMachine.add('armTopPose2',
+										SiteManipulation(pos=[1.9780,-0.0493,1.6400], quat=[0.0009615,-0.00208041,0.71054785,0.70364515], target_frame="none", target_name="none", axis_value=["none",0], pos_targets=[], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=True, cart_step_list=[1,11], step_factor=0.1, itp_norm=0, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id="none", plan_time=2),
+										transitions={'done': 'finished', 'failed': 'armTopPose2'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:497 y:255
+			# x:31 y:111
+			OperatableStateMachine.add('att11',
+										SceneManager(action="attach", object_size=[2.278,1.134,0.035], frame_id="tool0", box_name="pvm", box_position=[0,0,0]),
+										transitions={'done': 'armTopPose'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:330 y:160
+			OperatableStateMachine.add('att22',
+										SceneManager(action="attach", object_size=[1.8,1.1,0.035], frame_id="tool0", box_name="pvm1", box_position=[0,0,0]),
+										transitions={'done': 'stopWithdrawSegment'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:592 y:229
 			OperatableStateMachine.add('baseBackward',
-										SiteNavigation(site_name="", position=[0,0,0], orientation=[0,0,0,1], frame_id="map"),
-										transitions={'arrived': 'waitBack', 'canceled': 'baseBackward', 'failed': 'baseBackward'},
+										SiteNavigation(site_name="", position=[0,0,0], orientation=[0,0,0,1], frame_id="map", base_link2map=True),
+										transitions={'arrived': 'waitBack1s', 'canceled': 'baseBackward', 'failed': 'baseBackward'},
 										autonomy={'arrived': Autonomy.Off, 'canceled': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'nav_goal': 'nav_goal'})
 
-			# x:322 y:638
-			OperatableStateMachine.add('checkWithdrawTF',
-										ListenState(target_frame='solar_link', source_frame='base_arm', timeout=60, fresh_time=3.0, ideal=[0, 0, 0, 0, 0, 0], tolerance=[-1, -1, -1, -1, -1, -1]),
-										transitions={'done': 'waitTargetStable', 'timeout': 'waitWithdrawTarget'},
-										autonomy={'done': Autonomy.Off, 'timeout': Autonomy.Off})
+			# x:722 y:146
+			OperatableStateMachine.add('decision',
+										DecisionState(outcomes=['install', 'uninstall'], conditions=lambda x: 'install' if x else 'uninstall'),
+										transitions={'install': 'finished', 'uninstall': 'wait5s'},
+										autonomy={'install': Autonomy.Off, 'uninstall': Autonomy.Off},
+										remapping={'input_value': 'install_mode'})
 
-			# x:22 y:120
-			OperatableStateMachine.add('fromPlace2Pick',
-										self.use_behavior(fromPlace2PickSM, 'fromPlace2Pick'),
-										transitions={'finished': 'armPickupMidPose'},
-										autonomy={'finished': Autonomy.Inherit})
-
-			# x:36 y:638
-			OperatableStateMachine.add('startWithdrawDetect',
-										PublishHeader(seq=2, frame_id="solar_detect"),
-										transitions={'done': 'checkWithdrawTF'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:22 y:461
-			OperatableStateMachine.add('startWithdrawSegment',
-										PublishHeader(seq=2, frame_id="enable_yolov8"),
-										transitions={'done': 'startWithdrawDetect'},
-										autonomy={'done': Autonomy.Off})
+			# x:502 y:358
+			OperatableStateMachine.add('nav-back',
+										SiteNavigation(site_name="", position=[-1,0,0], orientation=[0,0,0,1], frame_id="base_link", base_link2map=False),
+										transitions={'arrived': 'waitBack1s', 'canceled': 'nav-back', 'failed': 'nav-back'},
+										autonomy={'arrived': Autonomy.Off, 'canceled': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'nav_goal': 'empty_goal'})
 
 			# x:497 y:42
 			OperatableStateMachine.add('stopWithdrawDetect',
 										PublishHeader(seq=0, frame_id="solar_detect"),
-										transitions={'done': 'Decision'},
+										transitions={'done': 'decision'},
 										autonomy={'done': Autonomy.Off})
 
 			# x:319 y:42
@@ -151,34 +145,22 @@ class WithdrawPVMSM(Behavior):
 										transitions={'done': 'stopWithdrawDetect'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:496 y:146
+			# x:501 y:145
 			OperatableStateMachine.add('wait5s',
 										WaitState(wait_time=5),
-										transitions={'done': 'baseBackward'},
+										transitions={'done': 'nav-back'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:724 y:252
-			OperatableStateMachine.add('waitBack',
-										WaitState(wait_time=5),
-										transitions={'done': 'armPickupDetectPose1'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:326 y:537
-			OperatableStateMachine.add('waitTargetStable',
+			# x:808 y:269
+			OperatableStateMachine.add('waitBack1s',
 										WaitState(wait_time=1),
-										transitions={'done': 'armWithdrawPVM'},
+										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:143 y:527
-			OperatableStateMachine.add('waitWithdrawTarget',
-										WaitState(wait_time=3),
-										transitions={'done': 'startWithdrawSegment'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:322 y:295
+			# x:322 y:297
 			OperatableStateMachine.add('CupOff',
 										self.use_behavior(CupOffSM, 'CupOff'),
-										transitions={'finished': 'stopWithdrawSegment'},
+										transitions={'finished': 'att22'},
 										autonomy={'finished': Autonomy.Inherit})
 
 

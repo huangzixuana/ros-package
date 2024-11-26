@@ -17,30 +17,112 @@ JoyToCmd::JoyToCmd(ros::NodeHandle& nhandle, std::string name, float linear, flo
     angular_speed = max_angular_speed;  //* 0.5;
     // 订阅控制器话题
     sub_joy = nh.subscribe("joy", 1, &JoyToCmd::JoyHandler, this);
+
+    estop_sub = nh.subscribe("/estop",1, &JoyToCmd::Estop_sub, this);
+
+    plc_sub=nh.subscribe("/plc24_message",1,&JoyToCmd::plcSub,this);
+
+
+    pub_diag = nh.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 10);
     // 发布控制器速度命令
     pub_cmd_vel = nh.advertise<geometry_msgs::Twist>(topic_name, 1);
+    std::cout<<"topic_name:"<<topic_name<<std::endl;
     pub_arm_vel = nh.advertise<sensor_msgs::Joy>("joy", 1);
     timer = nh.createTimer(ros::Duration(0.05), &JoyToCmd::TimeHandler, this);
     // pub_arm_cancel_goal = nh.advertise<trajectory_msgs::JointTrajectory>("/leapting_controller/command", 1);//zs add
     pub_arm_cancel_goal = nh.advertise<std_msgs::Bool>("/flexbe/command/pause", 1);  // zs add
+
+    pub_plc_=nh.advertise<std_msgs::String>("/plc24_request", 1); //wl add
+}
+
+void JoyToCmd::plcSub(const diagnostic_msgs::DiagnosticArray::ConstPtr & msg){
+    for(const auto& kv:msg->status[0].values){
+        if(kv.key=="vacuum_pressure"){
+            if (std::stoi(kv.value)<100){
+                cap_on_status_=false;
+            }
+            else{
+                cap_on_status_=true;
+            }
+            break;
+        }
+    }
+
+}
+
+void JoyToCmd::Estop_sub(const std_msgs::Bool::ConstPtr& msg) {
+    if(msg->data) {
+        ROS_INFO("Emergency stop activated!");
+        stop_state = true;
+        
+    } else {
+        ROS_INFO("Emergency stop deactivated.");
+        stop_state = false;
+    }
 }
 void JoyToCmd::JoyHandler(const sensor_msgs::JoyConstPtr msg) {
     // 是否是当前节点的joy
     if (msg->header.frame_id != topic_name)
         return;
+    // zcx add
+    if (msg->header.frame_id == "/web")
+    {
+        joy_sub_time = ros::Time::now();
+    }
     // 急停按下zs add
-    if (msg->buttons[6] == 1) {
+    // std::cout<<"stop_state:"<<stop_state<<std::endl;
+    if (msg->buttons[6] == 1 || stop_state) {
+        if (!last_stop_on_){
+            std_msgs::String plc_msg;
+            plc_msg.data="estop_on";
+            pub_plc_.publish(plc_msg);
+            
+        }
+        last_stop_on_=true;
+
         joy_type = JOY_STOP;
+        stop_state = true;
+
         cmd.linear.z = 1;  // 1急停按下;2手动;3自动
-        std::cout << "急停按钮被按下！" << std::endl;
+        std::cout << "急停按钮被按下button！" << std::endl;
         // 急停被按下或者未定义对应动作，置零位
         cmd.linear.x = 0;
         cmd.angular.z = 0;
         linear_speed = max_linear_speed;    //* 0.5;
         angular_speed = max_angular_speed;  // * 0.5;
         emergence_time = ros::Time::now();
+
+        cmd_joy.header.stamp = ros::Time::now();
+        cmd_joy.header.frame_id = "jtc_" + topic_name;
+        cmd_joy.axes.resize(6);
+        cmd_joy.axes[0] =  0;
+        cmd_joy.axes[1] =  0;
+        cmd_joy.axes[2] =  0;
+        cmd_joy.axes[3] =  0;
+        cmd_joy.axes[4] =  0;
+        cmd_joy.axes[5] =  0;
+        
+        if (msg->buttons[6] == 1) {
+            stop_button = true;
+        }else{
+            stop_button = false;
+        }
+        if (last_stop_button != stop_button){
+            stop_state = false;
+        }
+        last_stop_button = stop_button;
         return;
     }
+    else{
+        if(last_stop_on_){
+            std_msgs::String plc_msg;
+            plc_msg.data="estop_off";
+            pub_plc_.publish(plc_msg);
+        }
+        last_stop_on_=false;
+        
+    }
+    stop_state = false;
     // 判断手柄是否归位
     if ((fabs(msg->axes[2]) == 1 && fabs(msg->axes[5]) == 0) || (fabs(msg->axes[2]) == 0 && fabs(msg->axes[5]) == 1) ||
         (fabs(msg->axes[2]) == 1 && fabs(msg->axes[5]) == 1) || (fabs(msg->axes[2]) == 0 && fabs(msg->axes[5]) == 0)) {
@@ -66,19 +148,23 @@ void JoyToCmd::JoyHandler(const sensor_msgs::JoyConstPtr msg) {
                 cmd.linear.z = 4;
             }
             else{
-                cmd.linear.z = 2;  // 1急停按下;2手动;3自动
+            cmd.linear.z = 2;  // 1急停按下;2手动;3自动
             }
             return;
-        }
+        } 
         // 机械臂设置
         if (fabs(msg->axes[5]) == 0.5 && fabs(msg->axes[2] == 0)) {
             // to do
-            joy_type = JOY_ARM;
+            joy_type = JOY_ARM;                          
             cmd.linear.z = 2;  // 1急停按下;2手动;3自动
             cmd_joy.header.stamp = ros::Time::now();
             cmd_joy.header.frame_id = "jtc_" + topic_name;
             cmd_joy.axes.resize(6);
             cmd_joy.axes.clear();
+            if (msg->buttons[0] == 0) {
+                cmd_joy.axes.resize(6);
+            }
+
             if (msg->buttons[0] == 1) {
                 // std::cout << "机械臂1动作" << std::endl;
                 cmd_joy.axes.resize(6);
@@ -109,6 +195,24 @@ void JoyToCmd::JoyHandler(const sensor_msgs::JoyConstPtr msg) {
                 cmd_joy.axes.resize(6);
                 cmd_joy.axes[5] = msg->axes[1] * 0.1;
             }
+            if (fabs(msg->axes[6]) == 0.5 && fabs(msg->axes[7]) == 0.5) {  // 控制吸盘
+                static ros::Time last_time = ros::Time::now();
+
+                // std::cout << "0.5................................." << std::endl;
+                if (((ros::Time::now() - last_time).toSec()) > 2.0) {
+                    last_time = ros::Time::now();
+                    if (cap_on_status_) {
+                        std_msgs::String msg;
+                        msg.data="cup_off";
+                        pub_plc_.publish(msg);
+                    } else {
+                        std_msgs::String msg;
+                        msg.data="cup_on";
+                        pub_plc_.publish(msg);
+                    }
+                }
+            }
+
             return;
         }
     } else {
@@ -137,15 +241,73 @@ void JoyToCmd::TimeHandler(const ros::TimerEvent& event) {
     // joy_status.frame_id = "joy_status";
     // pub_joy_status.publish(joy_status);
     // zs_add
+
+    // zcx add
+    if ((topic_name == "/web") && (ros::Time::now() - joy_sub_time > ros::Duration(1.0)))
+    {
+        cmd.linear.x = 0;
+        cmd.angular.z = 0;
+    }
+
+    diagnostic_msgs::DiagnosticArray diag_array;
+    diag_array.header.stamp = ros::Time::now();
+    diagnostic_msgs::DiagnosticStatus status;
+    if (topic_name == "/can0"){
+        status.name = "estop/web";
+    }else{
+        status.name = "estop_web0";
+    }
+    if (stop_state) {
+        status.level = diagnostic_msgs::DiagnosticStatus::ERROR;
+        status.message = "The emergency stop is pressed";
+        diag_array.status.push_back(status);
+        pub_diag.publish(diag_array);
+        cmd.linear.x = 0;
+        cmd.angular.z = 0;
+        cmd.linear.z = 1;
+        pub_cmd_vel.publish(cmd);
+        
+        cmd_joy.header.stamp = ros::Time::now();
+        cmd_joy.header.frame_id = "jtc_" + topic_name;
+        cmd_joy.axes.resize(6);
+        cmd_joy.axes[0] =  0;
+        cmd_joy.axes[1] =  0;
+        cmd_joy.axes[2] =  0;
+        cmd_joy.axes[3] =  0;
+        cmd_joy.axes[4] =  0;
+        cmd_joy.axes[5] =  0;
+        pub_arm_vel.publish(cmd_joy);
+    }else{
+        status.level = diagnostic_msgs::DiagnosticStatus::OK;
+        status.message = "Estop web checks out OK";
+        diag_array.status.push_back(status);
+        pub_diag.publish(diag_array);
+    }
+
+
     if (ros::Time::now() - emergence_time < ros::Duration(1.0)) {  // 急停按下
         // trajectory_msgs::JointTrajectory trajectory;
         std_msgs::Bool trajectory;
         // trajectory.header.stamp = ros::Time::now();
         trajectory.data = true;
-        pub_arm_cancel_goal.publish(trajectory);
+        // pub_arm_cancel_goal.publish(trajectory);
         cmd.linear.x = 0;
         cmd.angular.z = 0;
         cmd.linear.z = 1;  // 1急停按下;2手动;3自动
+
+       
+        pub_cmd_vel.publish(cmd);
+        
+        cmd_joy.header.stamp = ros::Time::now();
+        cmd_joy.header.frame_id = "jtc_" + topic_name;
+        cmd_joy.axes.resize(6);
+        cmd_joy.axes[0] =  0;
+        cmd_joy.axes[1] =  0;
+        cmd_joy.axes[2] =  0;
+        cmd_joy.axes[3] =  0;
+        cmd_joy.axes[4] =  0;
+        cmd_joy.axes[5] =  0;
+        pub_arm_vel.publish(cmd_joy);  
     }
     switch (joy_type) {
         case JOY_SPEED:
@@ -163,17 +325,44 @@ void JoyToCmd::TimeHandler(const ros::TimerEvent& event) {
             break;
         case JOY_STOP:
             // to doh(cmd);
+            cmd.linear.x = 0;
+            cmd.angular.z = 0;
+            cmd.linear.z = 1;  // 1急停按下;2手动;3自动
+
+            pub_cmd_vel.publish(cmd);
+            
+            cmd_joy.header.stamp = ros::Time::now();
+            cmd_joy.header.frame_id = "jtc_" + topic_name;
+            cmd_joy.axes.resize(6);
+            cmd_joy.axes[0] =  0;
+            cmd_joy.axes[1] =  0;
+            cmd_joy.axes[2] =  0;
+            cmd_joy.axes[3] =  0;
+            cmd_joy.axes[4] =  0;
+            cmd_joy.axes[5] =  0;
+            pub_arm_vel.publish(cmd_joy);                        
             last_joy_type = joy_type;
             break;
-        case JOY_IDLE:
+        case JOY_IDLE:         
             if (last_joy_type != JOY_IDLE) {
                 cmd.linear.x = 0;
                 cmd.angular.z = 0;
                 pub_cmd_vel.publish(cmd);
+                
+                cmd_joy.header.stamp = ros::Time::now();
+                cmd_joy.header.frame_id = "jtc_" + topic_name;
+                cmd_joy.axes.resize(6);
+                cmd_joy.axes[0] =  0;
+                cmd_joy.axes[1] =  0;
+                cmd_joy.axes[2] =  0;
+                cmd_joy.axes[3] =  0;
+                cmd_joy.axes[4] =  0;
+                cmd_joy.axes[5] =  0;
+                pub_arm_vel.publish(cmd_joy);// 发布机械臂速度命令
             }
             last_joy_type = joy_type;
             break;
-        default:
+        default:       
             break;
     }
 }

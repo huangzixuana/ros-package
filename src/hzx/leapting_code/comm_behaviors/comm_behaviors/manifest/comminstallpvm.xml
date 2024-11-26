@@ -14,32 +14,35 @@
 	<!-- Contained Behaviors -->
 	<contains name="change_bz" />
 	<contains name="CommPickupPVM" />
+	<contains name="CommPlace2PVM" />
 	<contains name="CupOff" />
-	<contains name="CommPlacePVM" />
-	<contains name="WithdrawPVM" />
 	<contains name="fromPlace2Pick" />
+	<contains name="NavLastPVM" />
+	<contains name="WithdrawPVM" />
+	<contains name="fromPlaceMid2Pick" />
+	<contains name="UpDown" />
 
 	<!-- Available Parameters -->
 	<params>
 
-		<param type="boolean" name="auto" default="False" label="auto" hint="Sets the auto" />
+		<param type="boolean" name="auto" default="True" label="auto" hint="Sets the auto" />
 
-		<param type="numeric" name="pvm_sum" default="100" label="pvm_sum" hint="Sets the pvm_sum">
+		<param type="numeric" name="pvm_sum" default="1" label="pvm_sum" hint="Sets the pvm_sum">
 			<min value="0" />
 			<max value="999" />
 		</param>
 
-		<param type="numeric" name="pick_solar_x" default="0" label="pick_solar_x" hint="Sets the pick_solar_x">
+		<param type="numeric" name="pick_solar_x" default="-0.1" label="pick_solar_x" hint="Sets the pick_solar_x">
 			<min value="-10" />
 			<max value="10" />
 		</param>
 
-		<param type="numeric" name="pick_solar_y" default="0" label="pick_solar_y" hint="Sets the pick_solar_y">
-			<min value="-10" />
-			<max value="10" />
+		<param type="numeric" name="pick_solar_y" default="0.08" label="pick_solar_y" hint="Sets the pick_solar_y">
+			<min value="-10.0" />
+			<max value="10.0" />
 		</param>
 
-		<param type="numeric" name="pick_solar_z" default="-0.01" label="pick_solar_z" hint="Sets the pick_solar_z">
+		<param type="numeric" name="pick_solar_z" default="0.025" label="pick_solar_z" hint="Sets the pick_solar_z">
 			<min value="-10" />
 			<max value="10" />
 		</param>
@@ -74,12 +77,12 @@
 			<max value="4" />
 		</param>
 
-		<param type="numeric" name="pick_tol_x" default="0.05" label="pick_tol_x" hint="Sets the pick_tol_x">
+		<param type="numeric" name="pick_tol_x" default="-1" label="pick_tol_x" hint="Sets the pick_tol_x">
 			<min value="-1" />
 			<max value="5" />
 		</param>
 
-		<param type="numeric" name="pick_tol_y" default="0.1" label="pick_tol_y" hint="Sets the pick_tol_y">
+		<param type="numeric" name="pick_tol_y" default="0.4" label="pick_tol_y" hint="Sets the pick_tol_y">
 			<min value="-1" />
 			<max value="5" />
 		</param>
@@ -114,12 +117,12 @@
 			<max value="1000" />
 		</param>
 
-		<param type="numeric" name="place_solar_x" default="0" label="place_solar_x" hint="Sets the place_solar_x">
+		<param type="numeric" name="place_solar_x" default="-0.03" label="place_solar_x" hint="Sets the place_solar_x">
 			<min value="-10" />
 			<max value="10" />
 		</param>
 
-		<param type="numeric" name="place_solar_z" default="0.03" label="place_solar_z" hint="Sets the place_solar_z">
+		<param type="numeric" name="place_solar_z" default="0.08" label="place_solar_z" hint="Sets the place_solar_z">
 			<min value="-10" />
 			<max value="10" />
 		</param>
@@ -154,12 +157,12 @@
 			<max value="10" />
 		</param>
 
-		<param type="numeric" name="place_tol_x" default="0.5" label="place_tol_x" hint="Sets the place_tol_x">
+		<param type="numeric" name="place_tol_x" default="-1" label="place_tol_x" hint="Sets the place_tol_x">
 			<min value="-1" />
 			<max value="10" />
 		</param>
 
-		<param type="numeric" name="place_tol_y" default="0.3" label="place_tol_y" hint="Sets the place_tol_y">
+		<param type="numeric" name="place_tol_y" default="-1" label="place_tol_y" hint="Sets the place_tol_y">
 			<min value="-1" />
 			<max value="10" />
 		</param>
@@ -182,6 +185,17 @@
 		<param type="numeric" name="place_tol_ey" default="0.5" label="place_tol_ey" hint="Sets the place_tol_ey">
 			<min value="-1" />
 			<max value="10" />
+		</param>
+
+		<param type="enum" name="detect_option" default="line" label="detect_option" hint="Sets the detect_option">
+			<option value="line" />
+			<option value="pvm" />
+			<option value="bkt" />
+		</param>
+
+		<param type="numeric" name="line_gap" default="51" label="line_gap" hint="Sets the line_gap">
+			<min value="-1000" />
+			<max value="1000" />
 		</param>
 
 	</params>

@@ -146,8 +146,8 @@ class ArmSiteCdsrSrdfYaml(EventState):
         self.move_group.set_pose_reference_frame(self._source_frame)
         self.move_group.set_end_effector_link(self._target_frame)
         pose = self.move_group.get_current_pose().pose
-        self.pos = [round(pose.position.x,3), round(pose.position.y,3), round(pose.position.z,3)]
-        self.quat = [round(pose.orientation.x,3), round(pose.orientation.y,3), round(pose.orientation.z,3), round(pose.orientation.w,3)]
+        self.pos = [round(pose.position.x,8), round(pose.position.y,8), round(pose.position.z,8)]
+        self.quat = [round(pose.orientation.x,8), round(pose.orientation.y,8), round(pose.orientation.z,8), round(pose.orientation.w,8)]
 
     def operate_yaml(self):
         if self._operation == 'add':
@@ -174,10 +174,10 @@ class ArmSiteCdsrSrdfYaml(EventState):
         dat = yaml.safe_load(fr)
         fr.close()
         if name in dat.keys():
-            self.info_yaml = '[YAML] Failed. Already has %s site, please update it' %name
+            self.info_yaml = '[YAML] Failed add %s. Already has this site, please update it' %name
             self.flag_yaml = False
         elif len(self.pos) == 0 or len(self.quat) == 0:
-            self.info_yaml = '[YAML] Failed. Check arm'
+            self.info_yaml = '[YAML] Failed add %s. Check arm' %name
             self.flag_yaml = False
         else:
             pot = {}
@@ -188,14 +188,14 @@ class ArmSiteCdsrSrdfYaml(EventState):
             fw = open(self._yaml_path, 'w')
             yaml.dump(dat, fw)
             fw.close()
-            self.info_yaml = '[YAML] Add success'
+            self.info_yaml = '[YAML] Successed add %s' %name
 
     def search_site_yaml(self, name):
         fr = open(self._yaml_path, 'r')
         dat = yaml.safe_load(fr)
         fr.close()
         if name not in dat.keys():
-            self.info_yaml = '[YAML] Failed. No %s site' %name
+            self.info_yaml = '[YAML] Failed search %s. No this site' %name
             self.flag_yaml = False
         else:
             search_str = "\r\n[YAML] arm_site_name: "+str(name)+"\r\n"
@@ -209,7 +209,7 @@ class ArmSiteCdsrSrdfYaml(EventState):
         dat = yaml.safe_load(fr)
         fr.close()
         if name not in dat.keys():
-            self.info_yaml = '[YAML] Failed. No %s site' %name
+            self.info_yaml = '[YAML] Failed update %s. No this site' %name
             self.flag_yaml = False
         else:
             dat[name]['position'] = self.pos
@@ -217,21 +217,21 @@ class ArmSiteCdsrSrdfYaml(EventState):
             fw = open(self._yaml_path, 'w')
             yaml.dump(dat, fw)
             fw.close()
-            self.info_yaml = '[YAML] Update success'
+            self.info_yaml = '[YAML] Successed update %s' %name
 
     def delete_site_yaml(self, name):
         fr = open(self._yaml_path, 'r')
         dat = yaml.safe_load(fr)
         fr.close()
         if name not in dat.keys():
-            self.info_yaml = '[YAML] Failed. No %s site' %name
+            self.info_yaml = '[YAML] Failed delete %s. No this site' %name
             self.flag_yaml = False
         else:
             del dat[name]
             fw = open(self._yaml_path, 'w')
             yaml.dump(dat, fw)
             fw.close()
-            self.info_yaml = '[YAML] Delete success'
+            self.info_yaml = '[YAML] Successed delete %s' %name
 
     def create_site_srdf(self, name):
         tree = ET.parse(self._srdf_path)
@@ -239,7 +239,7 @@ class ArmSiteCdsrSrdfYaml(EventState):
         site_list = root.findall('group_state')
         site = [x for x in site_list if x.attrib['name']==name]
         if len(site) != 0:
-            self.info_srdf = '[SRDF] Failed. Already has %s site, please update it' %name
+            self.info_srdf = '[SRDF] Failed add %s. Already has this site, please update it' %name
             self.flag_srdf = False
         else:
             group_state_p = ET.Element('group_state')
@@ -248,12 +248,12 @@ class ArmSiteCdsrSrdfYaml(EventState):
             for i in range(len(self.site_positions)):
                 joint_p = ET.Element('joint')
                 joint_p.set('name', self.joint_name[i])
-                joint_p.set('value', str(round(self.site_positions[i],6)))
+                joint_p.set('value', str(round(self.site_positions[i],8)))
                 group_state_p.append(joint_p)
             root.append(group_state_p)
             self.pretty_xml(root)
             tree.write(self._srdf_path, encoding='utf-8', xml_declaration=True)
-            self.info_srdf = '[SRDF] Add success'
+            self.info_srdf = '[SRDF] Successed add %s' %name
 
     def search_site_srdf(self, name):
         tree = ET.parse(self._srdf_path)
@@ -261,7 +261,7 @@ class ArmSiteCdsrSrdfYaml(EventState):
         site_list = root.findall('group_state')
         site = [x for x in site_list if x.attrib['name']==name]
         if len(site) == 0:
-            self.info_srdf = '[SRDF] Failed. No %s site' %name
+            self.info_srdf = '[SRDF] Failed search %s. No this site' %name
             self.flag_srdf = False
         else:
             search_str = "\r\n[SRDF] arm_site_name: "+str(name)+"\r\n"
@@ -276,27 +276,27 @@ class ArmSiteCdsrSrdfYaml(EventState):
         site_list = root.findall('group_state')
         site = [x for x in site_list if x.attrib['name']==name]
         if len(site) == 0:
-            self.info_srdf = '[SRDF] Failed. No %s site' %name
+            self.info_srdf = '[SRDF] Failed update %s. No this site' %name
             self.flag_srdf = False
         else:
             js = site[0].findall('joint')
             if len(js) != len(self.joint_name):
-                self.info_srdf = '[SRDF] Failed. Please check joint number'
+                self.info_srdf = '[SRDF] Failed update %s. Please check joint number' %name
                 self.flag_srdf = False
             else:
                 for j in range(len(js)):
                     name_temp = str(js[j].attrib['name'])
                     if name_temp not in self.joint_name:
-                        self.info_srdf = '[SRDF] Failed. Please check joint name'
+                        self.info_srdf = '[SRDF] Failed update %s. Please check joint name' %name
                         self.flag_srdf = False
                         break
                     else:
                         index_temp = self.joint_name.index(name_temp)
-                        js[j].set('value',str(round(self.site_positions[index_temp],6)))
+                        js[j].set('value',str(round(self.site_positions[index_temp],8)))
                         if j == len(js)-1:
                             self.pretty_xml(root)
                             tree.write(self._srdf_path, encoding='utf-8', xml_declaration=True)
-                            self.info_srdf = '[SRDF] Update success'
+                            self.info_srdf = '[SRDF] Successed update %s' %name
 
     def delete_site_srdf(self, name):
         tree = ET.parse(self._srdf_path)
@@ -304,13 +304,13 @@ class ArmSiteCdsrSrdfYaml(EventState):
         site_list = root.findall('group_state')
         site = [x for x in site_list if x.attrib['name']==name]
         if len(site) == 0:
-            self.info_srdf = '[SRDF] Failed. No %s site' %name
+            self.info_srdf = '[SRDF] Failed delete %s. No this site' %name
             self.flag_srdf = False
         else:
             root.remove(site[0])
             self.pretty_xml(root)
             tree.write(self._srdf_path, encoding='utf-8', xml_declaration=True)
-            self.info_srdf = '[SRDF] Delete success'
+            self.info_srdf = '[SRDF] Successed delete %s' %name
 
     def pretty_xml(self, elem, level=0):
         i ="\n" + level*"\t"

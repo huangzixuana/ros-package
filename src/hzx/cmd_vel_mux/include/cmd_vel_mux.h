@@ -47,7 +47,6 @@
 #include <geometry_msgs/Twist.h>
 #include "cmd_node.h"
 #include "joy_to_cmd.h"
-#include <ackermann_msgs/AckermannDrive.h>
 
 namespace cmd_vel_mux
 {

@@ -9,6 +9,7 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from comm_states.handeye_action import HandeyeAction as comm_states__HandeyeAction
+from comm_states.publish_string import PublishString
 from comm_states.publisherheader import PublishHeader
 from comm_states.site_manipulation import SiteManipulation
 from flexbe_states.decision_state import DecisionState
@@ -50,7 +51,7 @@ class HandEyePoseSM(Behavior):
 
 
 	def create(self):
-		# x:151 y:801
+		# x:150 y:864
 		_state_machine = OperatableStateMachine(outcomes=['finished'], input_keys=['sampler'], output_keys=['sampler'])
 		_state_machine.userdata.move_group = None
 		_state_machine.userdata.sampler = None
@@ -65,7 +66,7 @@ class HandEyePoseSM(Behavior):
 		with _state_machine:
 			# x:122 y:44
 			OperatableStateMachine.add('calibrateXPosePLan',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name='calibration_'+str(self.idx), axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=False, wait_time=0, stay_level=False, cart_step_list=[3,11], retry_num=3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name='calibration_'+str(self.idx), axis_value=["none",0], pos_targets=[], trajectory_name='none', reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=False, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'ifAuto', 'failed': 'calibrateXPosePLan'},
 										autonomy={'done': Autonomy.High, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
@@ -110,6 +111,12 @@ class HandEyePoseSM(Behavior):
 										transitions={'done': 'subWeb2'},
 										autonomy={'done': Autonomy.Off})
 
+			# x:126 y:745
+			OperatableStateMachine.add('pubClick',
+										PublishString(name="easy_handeye", value="take"),
+										transitions={'done': 'finished'},
+										autonomy={'done': Autonomy.Off})
+
 			# x:557 y:200
 			OperatableStateMachine.add('subWeb',
 										SubscriberState(topic='trig', blocking=True, clear=True),
@@ -127,7 +134,7 @@ class HandEyePoseSM(Behavior):
 			# x:129 y:648
 			OperatableStateMachine.add('take_sample',
 										comm_states__HandeyeAction(client_action='take', algorithm='Andreff', if_write=False),
-										transitions={'done': 'finished'},
+										transitions={'done': 'pubClick'},
 										autonomy={'done': Autonomy.Off},
 										remapping={'sampler_in': 'sampler', 'sampler_out': 'sampler'})
 
@@ -151,7 +158,7 @@ class HandEyePoseSM(Behavior):
 
 			# x:123 y:311
 			OperatableStateMachine.add('calibrateXPose',
-										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='calibration_'+str(self.idx), axis_value=['none', 0], pos_targets=[], reference_frame='base_arm', end_effector_link='tool0', v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cart_step_list=[3, 11], retry_num=3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='calibration_'+str(self.idx), axis_value=['none', 0], pos_targets=[], trajectory_name='none', reference_frame='base_arm', end_effector_link='tool0', wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3, 11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'wait3s', 'failed': 'calibrateXPose'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})

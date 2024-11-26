@@ -4,6 +4,8 @@ from flexbe_core import EventState, Logger
 import rospy
 import sys
 import moveit_commander
+from flexbe_core.proxy import ProxySubscriberCached
+from std_msgs.msg import Empty
 
 
 '''
@@ -19,10 +21,23 @@ class ManipulationShare(EventState):
                                                 output_keys=['move_group'])
         self._reference_frame, self._end_effector_link = reference_frame, end_effector_link
         self._init_done = False
-        rospy.Timer(rospy.Duration(0.1), self.time_cb, oneshot=True)
+        # rospy.Timer(rospy.Duration(0.1), self.time_cb, oneshot=False)
+        self._heart_sub = ProxySubscriberCached(
+            {"/flexbe/heartbeat": Empty})
+        # self._heart_sub.subscribe("/flexbe/heartbeat", Empty,
+        #                           callback=self.heart_cb, buffered=False)
 
-    def time_cb(self, event):
-        self.manipulator_init()
+    # def time_cb(self, event):
+    #     if not self._init_done:
+    #         self.manipulator_init()
+
+    def on_start(self):
+        self._heart_sub.subscribe("/flexbe/heartbeat", Empty,
+                                  callback=self.heart_cb, buffered=False)
+
+    def heart_cb(self, msg):
+        if not self._init_done:
+            self.manipulator_init()
 
     def manipulator_init(self):
         group_name = rospy.get_param(
@@ -43,3 +58,6 @@ class ManipulationShare(EventState):
         if self._init_done:
             userdata.move_group = self._move_group
             return 'done'
+
+    def on_stop(self):
+        self._heart_sub.unsubscribe_topic('/flexbe/heartbeat')

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="CommPlace2PVM">
+
+	<executable package_path="comm_behaviors.commplace2pvm_sm" class="CommPlace2PVMSM" />
+	<tagstring>i1p</tagstring>
+	<author>hzx</author>
+	<date>Mon Jun 05 2023</date>
+	<description>
+		PlacePVM
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="CupOff" />
+	<contains name="PlacePVMDetect" />
+	<contains name="StartPVMDetect" />
+	<contains name="StopPVMDetect" />
+	<contains name="secDetectPose" />
+	<contains name="CommPickupPVM" />
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="enum" name="mode" default="SimPlacePVM" label="mode" hint="Sets the mode">
+			<option value="SimPlacePVM" />
+			<option value="PlacePVM" />
+		</param>
+
+		<param type="numeric" name="pvm_width" default="1134" label="pvm_width" hint="Sets the pvm width (mm)">
+			<min value="0" />
+			<max value="10000" />
+		</param>
+
+		<param type="numeric" name="install_gap" default="-40" label="install_gap" hint="Sets the install_gap">
+			<min value="-1000" />
+			<max value="1000" />
+		</param>
+
+		<param type="numeric" name="place_solar_x" default="-0.03" label="place_solar_x" hint="Sets the place_solar_x">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="place_solar_z" default="0.13" label="place_solar_z" hint="Sets the place_solar_z">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="place_ideal_x" default="0.6" label="place_ideal_x" hint="Sets the place_ideal_x">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="place_ideal_y" default="2.4" label="place_ideal_y" hint="Sets the place_ideal_y">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="place_ideal_z" default="0.001" label="place_ideal_z" hint="Sets the place_ideal_z">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="place_ideal_er" default="-0.05" label="place_ideal_er" hint="Sets the place_ideal_er">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="place_ideal_ep" default="-0.04" label="place_ideal_ep" hint="Sets the place_ideal_ep">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="place_ideal_ey" default="1.63" label="place_ideal_ey" hint="Sets the place_ideal_ey">
+			<min value="-10" />
+			<max value="10" />
+		</param>
+
+		<param type="numeric" name="place_tol_x" default="1.0" label="place_tol_x" hint="Sets the place_tol_x">
+			<min value="-1" />
+			<max value="10" />
+		</param>
+
+		<param type="numeric" name="place_tol_y" default="-1.0" label="place_tol_y" hint="Sets the place_tol_y">
+			<min value="-1" />
+			<max value="10" />
+		</param>
+
+		<param type="numeric" name="place_tol_z" default="-1" label="place_tol_z" hint="Sets the place_tol_z">
+			<min value="-1" />
+			<max value="10" />
+		</param>
+
+		<param type="numeric" name="place_tol_er" default="0.5" label="place_tol_er" hint="Sets the place_tol_er">
+			<min value="-1.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="place_tol_ep" default="0.5" label="place_tol_ep" hint="Sets the place_tol_ep">
+			<min value="-1.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="place_tol_ey" default="0.5" label="place_tol_ey" hint="Sets the place_tol_ey">
+			<min value="-1.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="enum" name="detect_option" default="line" label="detect_option" hint="Sets the detect_option">
+			<option value="pvm" />
+			<option value="line" />
+			<option value="bkt" />
+		</param>
+
+		<param type="numeric" name="line_gap" default="42" label="line_gap" hint="Sets the line_gap">
+			<min value="-100" />
+			<max value="1000" />
+		</param>
+
+		<param type="numeric" name="line_z" default="-0.11" label="line_z" hint="Sets the line_z">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="sec_offset_x" default="0.0" label="sec_offset_x" hint="Sets the sec_offset_x">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="sec_offset_y" default="0.0" label="sec_offset_y" hint="Sets the sec_offset_y">
+			<min value="-9.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="sec_offset_z" default="0.0" label="sec_offset_z" hint="Sets the sec_offset_z">
+			<min value="-1.0" />
+			<max value="9.0" />
+		</param>
+
+	</params>
+
+
+</behavior>

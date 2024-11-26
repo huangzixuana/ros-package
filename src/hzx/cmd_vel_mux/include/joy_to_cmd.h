@@ -15,6 +15,7 @@
 
 #include <std_msgs/Header.h>
 #include <std_msgs/Float64MultiArray.h>
+#include<std_msgs/String.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/Joy.h>
 #include <sensor_msgs/NavSatFix.h>
@@ -45,14 +46,15 @@
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_msgs/Bool.h>
 #include "cmd_node.h"
-#include <ackermann_msgs/AckermannDrive.h>
+#include <diagnostic_msgs/DiagnosticArray.h>
+#include <diagnostic_msgs/DiagnosticStatus.h>
+#include <diagnostic_msgs/KeyValue.h>
 
 namespace joy_to_cmd {
 
 enum ControlType {
     JOY_IDLE = 0,
     JOY_ENBLE ,
-    JOY_ACKERMANN ,
     JOY_SPEED ,
     JOY_ARM ,
     JOY_STOP
@@ -69,6 +71,10 @@ class JoyToCmd {
 
     void JoyHandler(const sensor_msgs::JoyConstPtr msg);
     void TimeHandler(const ros::TimerEvent &event);
+    void Estop_sub(const std_msgs::Bool::ConstPtr& msg);
+
+    void plcSub(const diagnostic_msgs::DiagnosticArray::ConstPtr & msg);
+
     int Sign0(float input) {
         if (input > 0)return 1;
         if (input < 0)return -1;
@@ -77,11 +83,17 @@ class JoyToCmd {
 
   public:
     ros::Subscriber sub_joy;
+    ros::Subscriber estop_sub;
+
+    // plc24
+    ros::Subscriber plc_sub;
+
     ros::Publisher pub_cmd_vel;
     ros::Publisher pub_arm_vel;
-    ros::Publisher pub_ackermann_vel;
-
+    ros::Publisher pub_diag;
     ros::Publisher pub_arm_cancel_goal;//zs add
+    ros::Publisher pub_plc_;//wl add
+
 
   private:
     ros::NodeHandle nh;
@@ -95,7 +107,15 @@ class JoyToCmd {
     float max_angular_speed;
     float linear_speed;
     float angular_speed;
+    bool stop_state = false;
+    bool stop_button = false;
+    bool last_stop_button = false;
     ros::Time emergence_time;
+    ros::Time joy_sub_time;
+
+    bool cap_on_status_=false;
+    bool last_stop_on_=false;
+    
 };
 }
 

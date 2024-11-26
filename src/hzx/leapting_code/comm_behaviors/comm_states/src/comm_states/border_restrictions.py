@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import rostopic
 import tf
 import math
 import moveit_commander
@@ -25,10 +26,10 @@ class BorderRestrictions(EventState):
     '''
 
     def __init__(self, action="add",
-                 cube_size=[3, 4.5, 3.9],
+                 cube_size=[5.8, 6.6, 4],
                  frame_id="base_arm",
-                 position_x=0.2,
-                 position_y=0.1,
+                 position_x=1.3,
+                 position_y=0.9,
                  position_z=3.6):
         super(BorderRestrictions, self).__init__(outcomes=['done'])
         self._action = action
@@ -37,11 +38,17 @@ class BorderRestrictions(EventState):
         self._position_x = position_x
         self._position_y = position_y
         self._position_z = position_z
-        self.scene = moveit_commander.PlanningSceneInterface()
         self.thickness = 0.001
         self.plane_pose = [geometry_msgs.msg.PoseStamped() for _ in range(6)]
         
     def execute(self, userdata):
+
+        msg_type, msg_topic, _ = rostopic.get_topic_class('/move_group/goal')
+        if msg_topic is None:
+            Logger.logwarn('Moveit Failed')
+            return
+        else:
+            self.scene = moveit_commander.PlanningSceneInterface()
 
         if self._action == "add":
             self.scene.add_box("plane0", self.plane_pose[0], size=(self._cube_size[0],self._cube_size[1],self.thickness))
@@ -66,9 +73,24 @@ class BorderRestrictions(EventState):
             return 'done'
             
         else:
-            self.scene.remove_world_object()
-            if (len(self.scene.get_known_object_names())>0):
-                return 
+            self.scene.remove_world_object("plane0")
+            self.scene.remove_world_object("plane1")
+            self.scene.remove_world_object("plane2")
+            self.scene.remove_world_object("plane3")
+            self.scene.remove_world_object("plane4")
+            self.scene.remove_world_object("plane5")
+            if ("plane0" in self.scene.get_known_object_names()):
+                return  
+            if ("plane1" in self.scene.get_known_object_names()):
+                return  
+            if ("plane2" in self.scene.get_known_object_names()):
+                return  
+            if ("plane3" in self.scene.get_known_object_names()):
+                return  
+            if ("plane4" in self.scene.get_known_object_names()):
+                return  
+            if ("plane5" in self.scene.get_known_object_names()):
+                return  
             Logger.loginfo('remove succeed: executed')
             return 'done'
 

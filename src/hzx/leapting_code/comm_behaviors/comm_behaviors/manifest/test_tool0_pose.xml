@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="test_tool0_pose">
+
+	<executable package_path="comm_behaviors.test_tool0_pose_sm" class="test_tool0_poseSM" />
+	<tagstring></tagstring>
+	<author>hzx</author>
+	<date>Fri Nov 15 2024</date>
+	<description>
+		test_not_detect
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

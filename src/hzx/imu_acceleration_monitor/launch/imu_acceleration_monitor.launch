@@ -1,0 +1,11 @@
+<launch>
+
+  <!-- 启动 imu_monitor_node 节点 -->
+  <node pkg="imu_acceleration_monitor" type="imu_acceleration_monitor" name="imu_acceleration_monitor" output="screen">
+
+    <!-- 你可以在这里添加一些参数，例如阈值等 -->
+    <param name="threshold_value" value="0.5" />
+
+  </node>
+
+</launch>

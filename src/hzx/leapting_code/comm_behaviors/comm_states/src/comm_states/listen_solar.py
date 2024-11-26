@@ -15,12 +15,13 @@ Created on 2023-11-24
 
 class ListenSolar(EventState):
     '''
-    check if the Transformer can determine the transform from source_frame to target_frame within given time.
+    check PoseWithCovarianceStamped within given time.
 
     -- timeout             float             timeout
     -- fresh_time          float             tf fresh time
     -- ideal               list              six ideal degrees
     -- tolerance           list              tolerance for each degree
+    -- pose_topic          string            PoseWithCovarianceStamped topic name
 
 
     <= done                  transform determined
@@ -28,13 +29,15 @@ class ListenSolar(EventState):
     '''
 
     def __init__(self, timeout=60, fresh_time=3.0,
-                 ideal=[0, 0, 0, 0, 0, 0], tolerance=[-1, -1, -1, -1, -1, -1]):
-        super(ListenSolar, self).__init__(outcomes=['done', 'timeout'])
+                 ideal=[0, 0, 0, 0, 0, 0], tolerance=[-1, -1, -1, -1, -1, -1],
+                 pose_topic="filter_solar_pose"):
+        super(ListenSolar, self).__init__(
+            outcomes=['done', 'timeout'],  output_keys=['pose_msg'])
 
-        self._solar_sub = ProxySubscriberCached(
-            {'filter_solar_pose': PoseWithCovarianceStamped})
-        self._solar_sub.subscribe('filter_solar_pose', PoseWithCovarianceStamped,
-                                  callback=self.solar_cb, buffered=False)
+        self._pose_sub = ProxySubscriberCached(
+            {pose_topic: PoseWithCovarianceStamped})
+        self._pose_sub.subscribe(pose_topic, PoseWithCovarianceStamped,
+                                 callback=self.solar_cb, buffered=False)
         self._received = False
         self._solar_msg = None
 
@@ -126,6 +129,7 @@ class ListenSolar(EventState):
                         Logger.logwarn(bad_info[:-1])
                         return
 
+                userdata.pose_msg = self._solar_msg
                 return 'done'
             except Exception as e:
                 Logger.logwarn('%s: exception : %s' %

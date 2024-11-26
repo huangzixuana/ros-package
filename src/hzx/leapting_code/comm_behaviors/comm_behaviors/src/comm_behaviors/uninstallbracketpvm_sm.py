@@ -38,6 +38,10 @@ class UninstallBracketPVMSM(Behavior):
 		self.name = 'UninstallBracketPVM'
 
 		# parameters of this behavior
+		self.add_parameter('unin_solar_x', 0.0001)
+		self.add_parameter('unin_solar_y', 0.0001)
+		self.add_parameter('unin_solar_z', 0.05)
+		self.add_parameter('if_nav_back', True)
 
 		# references to used behaviors
 		self.add_behavior(CupOnSM, 'CupOn')
@@ -54,7 +58,7 @@ class UninstallBracketPVMSM(Behavior):
 
 
 	def create(self):
-		# x:649 y:53
+		# x:649 y:41
 		_state_machine = OperatableStateMachine(outcomes=['finished'], output_keys=['nav_goal'])
 		_state_machine.userdata.nav_goal = {'frame_id':'base_link', 'position':[0,0,0],'orientation':[0,0,0,1]}
 
@@ -65,96 +69,108 @@ class UninstallBracketPVMSM(Behavior):
 
 
 		with _state_machine:
-			# x:60 y:23
-			OperatableStateMachine.add('arminit',
+			# x:314 y:27
+			OperatableStateMachine.add('armInit',
 										ManipulationShare(reference_frame='base_arm', end_effector_link='tool0'),
 										transitions={'done': 'armTopPose'},
 										autonomy={'done': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:66 y:268
+			# x:77 y:292
 			OperatableStateMachine.add('StartPVMDetect',
 										self.use_behavior(StartPVMDetectSM, 'StartPVMDetect'),
-										transitions={'finished': 'checkUninstallSolar'},
-										autonomy={'finished': Autonomy.Inherit},
-										remapping={'nav_goal': 'nav_goal'})
+										transitions={'finished': 'waitUninstallTarget2s'},
+										autonomy={'finished': Autonomy.Inherit})
 
-			# x:368 y:391
+			# x:306 y:516
 			OperatableStateMachine.add('StopPVMDetect',
 										self.use_behavior(StopPVMDetectSM, 'StopPVMDetect'),
 										transitions={'finished': 'wait5s'},
-										autonomy={'finished': Autonomy.Inherit},
-										remapping={'nav_goal': 'nav_goal'})
+										autonomy={'finished': Autonomy.Inherit})
 
-			# x:577 y:468
-			OperatableStateMachine.add('StopUninstallDetect',
-										PublishHeader(seq=0, frame_id="solar_detect"),
-										transitions={'done': 'CupOn'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:570 y:629
-			OperatableStateMachine.add('StopUninstallSegment',
-										PublishHeader(seq=0, frame_id="enable_yolov8"),
-										transitions={'done': 'StopUninstallDetect'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:72 y:521
-			OperatableStateMachine.add('WaitUninstallTarget',
-										WaitState(wait_time=3),
-										transitions={'done': 'realtimeGoal'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:73 y:124
+			# x:82 y:114
 			OperatableStateMachine.add('armPlaceDetectPose',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPlaceDetectPose", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cart_step_list=[3,11], retry_num=3, itp_norm=0.15, if_debug=False),
-										transitions={'done': 'StartPVMDetect', 'failed': 'armPlaceDetectPose'},
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPlaceDetectPose", axis_value=["none",0], pos_targets=[], trajectory_name='none', reference_frame="base_arm", end_effector_link="tool0", wait_time=2, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
+										transitions={'done': 'wait2s', 'failed': 'armPlaceDetectPose'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:571 y:167
+			# x:568 y:114
 			OperatableStateMachine.add('armPlaceDetectPose1',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPlaceDetectPose", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cart_step_list=[3,11], retry_num=3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPlaceDetectPose", axis_value=["none",0], pos_targets=[], trajectory_name='none', reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'finished', 'failed': 'armPlaceDetectPose1'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:345 y:21
+			# x:316 y:111
 			OperatableStateMachine.add('armTopPose',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armTopPose", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=2, stay_level=False, cart_step_list=[3,11], retry_num=3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armTopPose", axis_value=["none",0], pos_targets=[], trajectory_name='none', reference_frame="base_arm", end_effector_link="tool0", wait_time=2, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'armPlaceDetectPose', 'failed': 'armTopPose'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:278 y:632
-			OperatableStateMachine.add('armUninstallPVM-1',
-										SiteManipulation(pos=[0,0,-0.01], quat=[0,0,0,1], target_frame="solar_link", target_name="none", axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=0.1, a_factor=0.1, if_execute=True, wait_time=5, stay_level=True, cart_step_list=[3,11], retry_num=3, itp_norm=0.1, if_debug=False),
-										transitions={'done': 'StopUninstallSegment', 'failed': 'armUninstallPVM-1'},
+			# x:295 y:626
+			OperatableStateMachine.add('armUninstallPVM',
+										SiteManipulation(pos=[self.unin_solar_x, self.unin_solar_y, self.unin_solar_z], quat=[0,0.0087265,0,0.9999619], target_frame="solar_link", target_name="none", axis_value=["none",0], pos_targets=[], trajectory_name='none', reference_frame="base_arm", end_effector_link="tool0", wait_time=5, v_factor=1, a_factor=1, t_factor=1.0, stay_level=True, cart_step_list=[1,15], step_factor=0.1, itp_norm=0.1, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
+										transitions={'done': 'stopUninstallSegment', 'failed': 'armUninstallPVM'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:72 y:397
-			OperatableStateMachine.add('checkUninstallSolar',
-										ListenSolar(timeout=60, fresh_time=3.0, ideal=[0.5, 2.3, 0, -0.04, -0.04, 1.65], tolerance=[0.5, 0.3, -1, 0.5, 0.5, 0.5]),
-										transitions={'done': 'WaitUninstallTarget', 'timeout': 'StopPVMDetect'},
-										autonomy={'done': Autonomy.Off, 'timeout': Autonomy.Off})
+			# x:583 y:207
+			OperatableStateMachine.add('armUp10cm',
+										SiteManipulation(pos=[0, 0, 0.1], quat=[0, 0, 0, 1], target_frame='tool0', target_name='none', axis_value=['none', 0], pos_targets=[], trajectory_name='none', reference_frame='base_arm', end_effector_link='tool0', wait_time=0.5, v_factor=1, a_factor=1, t_factor=1.0, stay_level=True, cart_step_list=[1, 11], step_factor=0.1, itp_norm=0, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
+										transitions={'done': 'armPlaceDetectPose1', 'failed': 'armUp10cm'},
+										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group'})
 
-			# x:83 y:627
+			# x:81 y:521
+			OperatableStateMachine.add('checkUninstallSolar',
+										ListenSolar(timeout=60, fresh_time=3.0, ideal=[0.5, 2.3, 0, -0.04, -0.04, 1.65], tolerance=[-1, -1, -1, 0.5, 0.5, 0.5], pose_topic='filter_solar_pose'),
+										transitions={'done': 'realtimeGoal', 'timeout': 'StopPVMDetect'},
+										autonomy={'done': Autonomy.Off, 'timeout': Autonomy.Off},
+										remapping={'pose_msg': 'pose_msg'})
+
+			# x:91 y:626
 			OperatableStateMachine.add('realtimeGoal',
-										RealtimeGoal(position=[0,0,0], orientation=[0,0,0.7071,0.7071], frame_id='solar_link', source_frame='base_link', if_back=True, gap_pvm_pvm=-0.1, gap_pvm_chassis=0.2, chassis_width=2.2),
-										transitions={'done': 'armUninstallPVM-1'},
+										RealtimeGoal(position=[0,0,0], orientation=[0,0,0.7071,0.7071], frame_id='solar_link', source_frame='base_link', if_back=self.if_nav_back, gap_pvm_pvm=-0.5, gap_pvm_chassis=0.25, chassis_width=2.2, k_y=0, k_yaw=0),
+										transitions={'done': 'armUninstallPVM'},
 										autonomy={'done': Autonomy.Off},
 										remapping={'goal': 'nav_goal'})
 
-			# x:392 y:276
+			# x:577 y:468
+			OperatableStateMachine.add('stopUninstallDetect',
+										PublishHeader(seq=0, frame_id="solar_detect"),
+										transitions={'done': 'CupOn'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:574 y:623
+			OperatableStateMachine.add('stopUninstallSegment',
+										PublishHeader(seq=0, frame_id="enable_yolov8"),
+										transitions={'done': 'stopUninstallDetect'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:91 y:199
+			OperatableStateMachine.add('wait2s',
+										WaitState(wait_time=3),
+										transitions={'done': 'StartPVMDetect'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:322 y:295
 			OperatableStateMachine.add('wait5s',
 										WaitState(wait_time=5),
 										transitions={'done': 'StartPVMDetect'},
 										autonomy={'done': Autonomy.Off})
 
+			# x:76 y:408
+			OperatableStateMachine.add('waitUninstallTarget2s',
+										WaitState(wait_time=2),
+										transitions={'done': 'checkUninstallSolar'},
+										autonomy={'done': Autonomy.Off})
+
 			# x:574 y:302
 			OperatableStateMachine.add('CupOn',
 										self.use_behavior(CupOnSM, 'CupOn'),
-										transitions={'finished': 'armPlaceDetectPose1'},
+										transitions={'finished': 'armUp10cm'},
 										autonomy={'finished': Autonomy.Inherit})
 
 

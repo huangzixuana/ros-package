@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Finetune">
+
+	<executable package_path="comm_behaviors.finetune_sm" class="FinetuneSM" />
+	<tagstring>i1p</tagstring>
+	<author>zcx</author>
+	<date>Thu Mar 14 2024</date>
+	<description>
+		finetune
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="text" name="adjust_element" default="yaw" label="adjust_element" hint="Sets the adjust_element" />
+
+	</params>
+
+
+</behavior>

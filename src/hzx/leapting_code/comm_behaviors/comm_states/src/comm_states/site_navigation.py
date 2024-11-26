@@ -148,7 +148,7 @@ class SiteNavigation(EventState):
 
                 mv_goal.goal.target_pose.header.frame_id = "map"
                 mv_goal_pose.position = Point(
-                    trans_t[0], trans_t[1], trans_t[2])
+                    trans_t[0], trans_t[1], 0.0)
                 mv_goal_pose.orientation = Quaternion(quat_t[0], quat_t[1],
                                                       quat_t[2], quat_t[3])
 
@@ -159,9 +159,12 @@ class SiteNavigation(EventState):
                                                       nav_ort['z'], nav_ort['w'])
 
             self._client.send_goal(self._action_topic, mv_goal.goal)
+            # Logger.loginfo("%s: send navigation goal w.r.t %s: P=({0}, {1}, {2}) and O=({3}, {4}, {5}, {6})"
+            #                .format(nav_pos['x'], nav_pos['y'], nav_pos['z'], nav_ort['x'], nav_ort['y'],
+            #                        nav_ort['z'], nav_ort['w']) % (self.name,  mv_goal.goal.target_pose.header.frame_id))
             Logger.loginfo("%s: send navigation goal w.r.t %s: P=({0}, {1}, {2}) and O=({3}, {4}, {5}, {6})"
-                           .format(nav_pos['x'], nav_pos['y'], nav_pos['z'], nav_ort['x'], nav_ort['y'],
-                                   nav_ort['z'], nav_ort['w']) % (self.name,  mv_goal.goal.target_pose.header.frame_id))
+                           .format(mv_goal_pose.position.x, mv_goal_pose.position.y, mv_goal_pose.position.z, mv_goal_pose.orientation.x, mv_goal_pose.orientation.y,
+                                   mv_goal_pose.orientation.z, mv_goal_pose.orientation.w) % (self.name,  mv_goal.goal.target_pose.header.frame_id))
         except Exception as e:
             Logger.logwarn('%s: Failed to connect to move_base server' %
                            self.name)

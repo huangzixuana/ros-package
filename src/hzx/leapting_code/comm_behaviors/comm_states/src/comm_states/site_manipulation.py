@@ -139,12 +139,12 @@ class SiteManipulation(EventState):
                 with open(self.plot_data['path'], 'w') as fp:
                     pass
 
-        arm_site_path = self.relative_to_absolute_path(rospy.get_param(
-            "~arm_site_path", "~/catkin_ws/dbparam/arm_waypoints.yaml"))
-        if len(self._pos_targets) > 0 or self._trajectory_name != "none":
-            with open(arm_site_path) as f:
-                self._waypoints = yaml.safe_load(f)
-                # print(self._waypoints)
+        # arm_site_path = self.relative_to_absolute_path(rospy.get_param(
+        #     "~arm_site_path", "~/catkin_ws/dbparam/arm_waypoints.yaml"))
+        # if len(self._pos_targets) > 0 or self._trajectory_name != "none":
+        #     with open(arm_site_path) as f:
+        #         self._waypoints = yaml.safe_load(f)
+
 
     def relative_to_absolute_path(self, relative_path):
         if relative_path[0] == '~':
@@ -177,6 +177,16 @@ class SiteManipulation(EventState):
 
         if self._preempted:
             return
+        try:
+            self._move_group
+        except AttributeError:
+            self.manipulator_init()
+
+        arm_site_path = self.relative_to_absolute_path(rospy.get_param(
+            "~arm_site_path", "~/catkin_ws/dbparam/arm_waypoints.yaml"))
+        if len(self._pos_targets) > 0 or self._trajectory_name != "none":
+            with open(arm_site_path) as f:
+                self._waypoints = yaml.safe_load(f)
 
         self.moveit_goal_init()
         if self._if_debug:
@@ -261,11 +271,6 @@ class SiteManipulation(EventState):
                     p.positions = self._waypoints[self._trajectory_name]['position'][i]
                     p.velocities = self._waypoints[self._trajectory_name]['velocities'][i]
                     p.accelerations = self._waypoints[self._trajectory_name]['accelerations'][i]
-
-                    # p.time_from_start = rospy.Duration.from_sec(
-                    #     self._waypoints[self._trajectory_name]['time'][i] * self._t_factor +
-                    #     (plan_msg[1].joint_trajectory.points[-1].time_from_start).to_sec())
-                    # traj_msg2.joint_trajectory.points.append(p)
 
                     p.time_from_start = rospy.Duration.from_sec(
                         self._waypoints[self._trajectory_name]['time'][i] * self._t_factor)
@@ -397,9 +402,6 @@ class SiteManipulation(EventState):
 
             jump_threshold = 0
             Logger.loginfo('%s: planning cartesian path' % self.name)
-            if 0:
-                constraints = self.quat_orientation_constraints(t_quat)
-                self._move_group.set_path_constraints(constraints)
 
             plan_res = False
             for r in list(range(0, int(self._retry_num))):
@@ -479,15 +481,20 @@ class SiteManipulation(EventState):
                         self._traj_todo_rec = False
                         self._traj_todo_pub.publish(
                             'joint_trajectory_todo', plan_msg[1].joint_trajectory)
+                        Logger.loginfo(
+                            '%s: published to check' % self.name)
                         while (not self._traj_todo_rec):
                             if self._break_enter:
                                 return
                             rospy.sleep(0.1)
-                            
+                        Logger.loginfo(
+                            '%s: check res recieved' % self.name)
                         if self._traj_todo_msg.frame_id == "no":
                             Logger.logwarn(
                                 '%s failed: trajectory is invalid' % self.name)
                             return
+                        Logger.loginfo(
+                            '%s: check green light' % self.name)
 
                     if self._move_group.execute(plan_msg[1], wait=True):
                         self._res = 'done'
@@ -694,20 +701,6 @@ class SiteManipulation(EventState):
         quat = [pose_msg.orientation.x, pose_msg.orientation.y,
                 pose_msg.orientation.z, pose_msg.orientation.w]
         return (pos, quat)
-
-    def quat_orientation_constraints(self, quat):
-        orientation_constraint = OrientationConstraint()
-        orientation_constraint.header.frame_id = self._reference_frame
-        orientation_constraint.link_name = self._end_effector_link
-        orientation_constraint.orientation.x, orientation_constraint.orientation.y, orientation_constraint.orientation.z, orientation_constraint.orientation.w = quat
-
-        orientation_constraint.absolute_x_axis_tolerance = 2*1.57
-        orientation_constraint.absolute_y_axis_tolerance = 2*1.57
-        orientation_constraint.absolute_z_axis_tolerance = 2*1.57
-        orientation_constraint.weight = 1.0
-        constraints = Constraints()
-        constraints.orientation_constraints.append(orientation_constraint)
-        return constraints
 
     def moveit_goal_init(self):
         self._break_enter = False

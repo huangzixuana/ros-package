@@ -17,5 +17,26 @@
 	<contains name="CupOn" />
 
 	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="unin_solar_x" default="0.0001" label="unin_solar_x" hint="Sets the unin_solar_x">
+			<min value="-10" />
+			<max value="10" />
+		</param>
+
+		<param type="numeric" name="unin_solar_y" default="0.0001" label="unin_solar_y" hint="Sets the unin_solar_y">
+			<min value="-10" />
+			<max value="10" />
+		</param>
+
+		<param type="numeric" name="unin_solar_z" default="0.05" label="unin_solar_z" hint="Sets the unin_solar_z">
+			<min value="-10" />
+			<max value="10" />
+		</param>
+
+		<param type="boolean" name="if_nav_back" default="True" label="if_nav_back" hint="Sets the if_nav_back" />
+
+	</params>
+
 
 </behavior>

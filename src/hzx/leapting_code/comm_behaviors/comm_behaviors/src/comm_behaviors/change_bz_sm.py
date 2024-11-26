@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from comm_states.reconfigure_state import ReconfigureState
+from comm_states.reconfigure_state import ReconfigureState as comm_states__ReconfigureState
 from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
@@ -44,7 +44,7 @@ class change_bzSM(Behavior):
 
 
 	def create(self):
-		# x:183 y:390
+		# x:176 y:387
 		_state_machine = OperatableStateMachine(outcomes=['finished'])
 
 		# Additional creation code can be added inside the following tags
@@ -55,19 +55,13 @@ class change_bzSM(Behavior):
 
 		with _state_machine:
 			# x:146 y:174
-			OperatableStateMachine.add('change_bz',
-										ReconfigureState(client="move_base", parameter="base_local_planner", value="bz_local_planner/BZPlannerROS"),
-										transitions={'done': 'wait2s'},
+			OperatableStateMachine.add('changeBZ',
+										comm_states__ReconfigureState(client="move_base", parameter="base_local_planner", value="bz_local_planner/BZPlannerROS"),
+										transitions={'done': 'wait1s'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:157 y:74
+			# x:153 y:274
 			OperatableStateMachine.add('wait1s',
-										WaitState(wait_time=1),
-										transitions={'done': 'change_bz'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:157 y:274
-			OperatableStateMachine.add('wait2s',
 										WaitState(wait_time=1),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})

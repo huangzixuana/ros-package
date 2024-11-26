@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Tool0Manipulation">
+
+	<executable package_path="comm_behaviors.tool0manipulation_sm" class="Tool0ManipulationSM" />
+	<tagstring>i1p</tagstring>
+	<author>ZL</author>
+	<date>Mon Sep 18 2023</date>
+	<description>
+		tool0 manipulation
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="pos_x" default="0.0" label="pos_x" hint="Sets the pos_x">
+			<min value="-1.0" />
+			<max value="1.0" />
+		</param>
+
+		<param type="numeric" name="pos_y" default="0.0" label="pos_y" hint="Sets the pos_y">
+			<min value="-1.0" />
+			<max value="1.0" />
+		</param>
+
+		<param type="numeric" name="pos_z" default="0.0" label="pos_z" hint="Sets the pos_z">
+			<min value="-1.0" />
+			<max value="1.0" />
+		</param>
+
+		<param type="numeric" name="quat_x" default="0.0" label="quat_x" hint="Sets the quat_x">
+			<min value="-1.0" />
+			<max value="1.0" />
+		</param>
+
+		<param type="numeric" name="quat_y" default="0.0" label="quat_y" hint="Sets the quat_y">
+			<min value="-1.0" />
+			<max value="1.0" />
+		</param>
+
+		<param type="numeric" name="quat_z" default="0.0" label="quat_z" hint="Sets the quat_z">
+			<min value="-1.0" />
+			<max value="1.0" />
+		</param>
+
+		<param type="numeric" name="quat_w" default="1.0" label="quat_w" hint="Sets the quat_w">
+			<min value="-1.0" />
+			<max value="1.0" />
+		</param>
+
+	</params>
+
+
+</behavior>

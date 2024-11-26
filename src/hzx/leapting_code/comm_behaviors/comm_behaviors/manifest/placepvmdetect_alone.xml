@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="PlacePVMDetect_alone">
+
+	<executable package_path="comm_behaviors.placepvmdetect_alone_sm" class="PlacePVMDetect_aloneSM" />
+	<tagstring>i1p</tagstring>
+	<author>zcx</author>
+	<date>Mon Jul 01 2024</date>
+	<description>
+		place PVM by detection
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="FinetuneBLTimeout" />
+	<contains name="BracketLinePlace" />
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="place_solar_x" default="0.001" label="place_solar_x" hint="Sets the place_solar_x">
+			<min value="-10" />
+			<max value="10" />
+		</param>
+
+		<param type="numeric" name="pvm_width" default="1134" label="pvm_width" hint="Sets the pvm_width">
+			<min value="0" />
+			<max value="9999" />
+		</param>
+
+		<param type="numeric" name="install_gap" default="10" label="install_gap" hint="Sets the install_gap">
+			<min value="-1000" />
+			<max value="1000" />
+		</param>
+
+		<param type="numeric" name="place_solar_z" default="0.01" label="place_solar_z" hint="Sets the place_solar_z">
+			<min value="-10" />
+			<max value="10" />
+		</param>
+
+		<param type="boolean" name="en_bracket" default="False" label="en_bracket" hint="Sets the en_bracket" />
+
+		<param type="boolean" name="en_plane" default="False" label="en_plane" hint="Sets the en_plane" />
+
+	</params>
+
+
+</behavior>

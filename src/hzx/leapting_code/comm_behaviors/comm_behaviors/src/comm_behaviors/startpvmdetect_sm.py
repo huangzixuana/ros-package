@@ -9,8 +9,6 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from comm_states.publisherheader import PublishHeader
-from comm_states.roslaunch_node import roslaunch_node
-from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -45,9 +43,8 @@ class StartPVMDetectSM(Behavior):
 
 
 	def create(self):
-		# x:641 y:61
-		_state_machine = OperatableStateMachine(outcomes=['finished'], input_keys=['nav_goal'])
-		_state_machine.userdata.nav_goal = {}
+		# x:640 y:63
+		_state_machine = OperatableStateMachine(outcomes=['finished'])
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -56,30 +53,17 @@ class StartPVMDetectSM(Behavior):
 
 
 		with _state_machine:
-			# x:304 y:200
+			# x:122 y:60
 			OperatableStateMachine.add('startPickupSegment',
 										PublishHeader(seq=2, frame_id="enable_yolov8"),
 										transitions={'done': 'startPickupDetect'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:571 y:191
+			# x:363 y:59
 			OperatableStateMachine.add('startPickupDetect',
 										PublishHeader(seq=2, frame_id="solar_detect"),
 										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
-
-			# x:91 y:203
-			OperatableStateMachine.add('wait4s',
-										WaitState(wait_time=10),
-										transitions={'done': 'startPickupSegment'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:97 y:76
-			OperatableStateMachine.add('launchDetect',
-										roslaunch_node(cmd='roslaunch', pkg='bringup', launch_Node='apritagsam.launch'),
-										transitions={'done': 'wait4s'},
-										autonomy={'done': Autonomy.Off},
-										remapping={'output_value': 'output_value', 'shutdown_class': 'shutdown_class'})
 
 
 		return _state_machine

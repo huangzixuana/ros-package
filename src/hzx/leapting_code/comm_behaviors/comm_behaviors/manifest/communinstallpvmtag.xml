@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="CommUninstallPVMTag">
+
+	<executable package_path="comm_behaviors.communinstallpvmtag_sm" class="CommUninstallPVMTagSM" />
+	<tagstring>i1p</tagstring>
+	<author>ZL</author>
+	<date>Fri Jun 16 2023</date>
+	<description>
+		uninstall pvm
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="WithdrawPVMTag" />
+	<contains name="change_bz" />
+	<contains name="UninstallBracketPVM" />
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="pvm_sum" default="4" label="pvm_sum" hint="Sets the pvm_sum">
+			<min value="0" />
+			<max value="100" />
+		</param>
+
+	</params>
+
+
+</behavior>

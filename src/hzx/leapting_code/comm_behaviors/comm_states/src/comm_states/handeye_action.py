@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from flexbe_core import EventState, Logger
+from flexbe_core.proxy import ProxySubscriberCached
 import easy_handeye_msgs as ehm
 from easy_handeye.handeye_client import HandeyeClient
 
@@ -13,6 +14,7 @@ import getpass
 import yaml
 import json
 from shutil import copyfile
+from apriltag_ros.msg import AprilTagDetectionArray
 
 '''
 Created on Nov 1, 2023
@@ -45,7 +47,20 @@ class HandeyeAction(EventState):
         self._calibration_algorithm = 'OpenCV/' + algorithm
         self._last_calibration = None
 
+        self._tag_det_rec = False
+        self._tag_det_msg = None
+        self._tag_det_sub = ProxySubscriberCached(
+            {'tag_detections': AprilTagDetectionArray})
+        self._tag_det_sub.subscribe('tag_detections', AprilTagDetectionArray,
+                                    callback=self.tag_det_cb, buffered=False)
+
+    def tag_det_cb(self, msg):
+        self._tag_det_msg = msg
+        self._tag_det_rec = True
+
     def on_enter(self, userdata):
+        self._tag_det_rec = False
+
         namespace = '/my_eih_calib_eye_on_hand/'
         self._parameters = HandeyeCalibrationParameters.init_from_parameter_server(
             namespace)
@@ -78,6 +93,15 @@ class HandeyeAction(EventState):
                 self.wirte_camera_to_cfg()
 
     def execute(self, userdata):
+        if not self._tag_det_rec:
+            return
+
+        len_std_tag = len(list(filter(lambda t: len(t.id) == 1,
+                                      self._tag_det_msg.detections)))
+
+        if len_std_tag < 4:
+            Logger.logwarn("tag < 4")
+            return
         userdata.sampler_out = self._sampler
         return 'done'
 

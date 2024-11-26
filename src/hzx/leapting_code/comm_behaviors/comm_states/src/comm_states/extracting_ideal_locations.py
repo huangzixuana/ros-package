@@ -41,12 +41,12 @@ class ReadTfAndPublish(EventState):
             # Create JSON formatted data
             data = {
                 'parameter': {
-                    self.action+'solar_'+'_x': x,
-                    self.action+'solar_'+'_y': y,
-                    self.action+'solar_'+'_z': z,
-                    self.action+'solar_'+'_er': roll,
-                    self.action+'solar_'+'_ep': pitch,
-                    self.action+'solar_'+'_ey': yaw,
+                    'solar_'+self.action+'_x': x,
+                    'solar_'+self.action+'_y': y,
+                    'solar_'+self.action+'_z': z,
+                    'solar_'+self.action+'_er': roll,
+                    'solar_'+self.action+'_ep': pitch,
+                    'solar_'+self.action+'_ey': yaw,
                 }
             }
 

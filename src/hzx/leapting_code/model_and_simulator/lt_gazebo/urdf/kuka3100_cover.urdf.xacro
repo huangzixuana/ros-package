@@ -15,15 +15,15 @@
     <xacro:trailer/>
     <joint name="trailer" type="fixed">
         <!-- <origin xyz="2.3625 0.00117 -0.12" rpy="0 0 0" /> -->
-        <origin xyz="2.51565 0.00117 0.1505" rpy="0 0 0" />
+        <origin xyz="2.51565 0.00117 -0.0505" rpy="0 0 0" />
         <parent link="base_arm" />
         <child link="trailer" />
     </joint>
 
     <link name="base_link" />
-        
+
     <joint name="base_link_arm" type="fixed">
-        <origin xyz="0 0 0.8" rpy="0 0 3.1415926" />
+        <origin xyz="0 0 1.254" rpy="0 0 3.1415926" />
         <parent link="base_link" />
         <child link="base_arm" />
     </joint>

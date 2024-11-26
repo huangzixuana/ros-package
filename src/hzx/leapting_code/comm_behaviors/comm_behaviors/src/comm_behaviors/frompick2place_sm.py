@@ -9,8 +9,7 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from comm_states.manipulation_share import ManipulationShare
-from dev_flexbe_states.border_restrictions import BorderRestrictions as dev_flexbe_states__BorderRestrictions
-from dev_flexbe_states.site_manipulation import SiteManipulation as dev_flexbe_states__SiteManipulation
+from comm_states.site_manipulation import SiteManipulation
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -55,42 +54,40 @@ class fromPick2PlaceSM(Behavior):
 
 
 		with _state_machine:
-			# x:8 y:120
-			OperatableStateMachine.add('addborder',
-										dev_flexbe_states__BorderRestrictions(action="add", cube_size=[4.8,5.6,3], frame_id="base_arm", position_x=1.3, position_y=0.9, position_z=2.9),
-										transitions={'done': 'armInit'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:139 y:96
+			# x:144 y:25
 			OperatableStateMachine.add('armInit',
 										ManipulationShare(reference_frame='base_arm', end_effector_link='tool0'),
 										transitions={'done': 'multi-pick2place'},
 										autonomy={'done': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:134 y:177
+			# x:136 y:116
 			OperatableStateMachine.add('armPickupDetectPose',
-										dev_flexbe_states__SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPickupDetectPose", axis_value=["none",0], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cartesian_step=0.3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPickupDetectPose", axis_value=["none",0], pos_targets=[], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'armTopPose', 'failed': 'armPickupDetectPose'},
-										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off})
+										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group'})
 
-			# x:139 y:345
+			# x:142 y:297
 			OperatableStateMachine.add('armPlaceDetectPose',
-										dev_flexbe_states__SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPlaceDetectPose", axis_value=["none",0], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cartesian_step=0.3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPlaceDetectPose", axis_value=["none",0], pos_targets=[], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'finished', 'failed': 'armPlaceDetectPose'},
-										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off})
+										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group'})
 
-			# x:143 y:251
+			# x:148 y:203
 			OperatableStateMachine.add('armTopPose',
-										dev_flexbe_states__SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armTopPose", axis_value=["none",0], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cartesian_step=0.3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armTopPose", axis_value=["none",0], pos_targets=[], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'armPlaceDetectPose', 'failed': 'armTopPose'},
-										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off})
+										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group'})
 
 			# x:490 y:119
 			OperatableStateMachine.add('multi-pick2place',
-										dev_flexbe_states__SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='none', axis_value=['none', 0], reference_frame='base_arm', end_effector_link='tool0', v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=True, cartesian_step=0.3, itp_norm=0, if_debug=True),
+										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='none', axis_value=['none', 0], pos_targets=['armPickupDetectPose','armTopPose','armPlaceDetectPose'], trajectory_name="none", reference_frame='base_arm', end_effector_link='tool0', wait_time=0.5, v_factor=1, a_factor=1, t_factor=1.0, stay_level=True, cart_step_list=[1, 10], step_factor=0.1, itp_norm=0, retry_num=3, cart_limit={}, if_execute=True, if_debug=True, planner_id='none', plan_time=2),
 										transitions={'done': 'finished', 'failed': 'armPickupDetectPose'},
-										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off})
+										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group'})
 
 
 		return _state_machine

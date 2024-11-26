@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="secDetectPose">
+
+	<executable package_path="comm_behaviors.secdetectpose_sm" class="secDetectPoseSM" />
+	<tagstring>i1p</tagstring>
+	<author>hzx</author>
+	<date>Tue Nov 12 2024</date>
+	<description>
+		let arm to secDetectPose
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="sec_offset_x" default="0.0" label="sec_offset_x" hint="Sets the sec_offset_x">
+			<min value="-10.0" />
+			<max value="10.0" />
+		</param>
+
+		<param type="numeric" name="sec_offset_y" default="0.0" label="sec_offset_y" hint="Sets the sec_offset_y">
+			<min value="-9.0" />
+			<max value="9.0" />
+		</param>
+
+		<param type="numeric" name="sec_offset_z" default="0.0" label="sec_offset_z" hint="Sets the sec_offset_z">
+			<min value="-8.0" />
+			<max value="8.0" />
+		</param>
+
+	</params>
+
+
+</behavior>

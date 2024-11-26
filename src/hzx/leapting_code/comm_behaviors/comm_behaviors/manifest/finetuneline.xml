@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="FinetuneLine">
+
+	<executable package_path="comm_behaviors.finetuneline_sm" class="FinetuneLineSM" />
+	<tagstring>i1p</tagstring>
+	<author>zcx</author>
+	<date>Tue Jan 30 2024</date>
+	<description>
+		finetune according to lines in PVM
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="Finetune" />
+
+	<!-- Available Parameters -->
+
+</behavior>

@@ -65,7 +65,7 @@ class test0915SM(Behavior):
 			# x:167 y:44
 			OperatableStateMachine.add('CommPickupPVM',
 										self.use_behavior(CommPickupPVMSM, 'CommPickupPVM',
-											parameters={'mode': "StaticPickupPVM"}),
+											parameters={'mode': "StaticPickupPVM", 'pick_ideal_y': -0.107}),
 										transitions={'finished': 'CommPlacePVM'},
 										autonomy={'finished': Autonomy.Inherit},
 										remapping={'nav_goal': 'nav_goal'})
@@ -73,7 +73,7 @@ class test0915SM(Behavior):
 			# x:167 y:164
 			OperatableStateMachine.add('CommPlacePVM',
 										self.use_behavior(CommPlacePVMSM, 'CommPlacePVM',
-											parameters={'mode': "PlacePVM"}),
+											parameters={'mode': "PlacePVM", 'install_gap': -5, 'place_solar_x': -0.03, 'place_solar_z': 0.0, 'place_ideal_z': 0.01}),
 										transitions={'finished': 'wait5s'},
 										autonomy={'finished': Autonomy.Inherit},
 										remapping={'nav_goal': 'nav_goal'})

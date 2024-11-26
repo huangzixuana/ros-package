@@ -63,7 +63,7 @@ class HandEyeBackSM(Behavior):
 		with _state_machine:
 			# x:122 y:44
 			OperatableStateMachine.add('calibrateXPosePLan',
-										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name='calibration_'+str(self.idx), axis_value=["none",0], pos_targets=[], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=False, wait_time=0, stay_level=False, cart_step_list=[3,11], retry_num=3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name='calibration_'+str(self.idx), axis_value=["none",0], pos_targets=[], trajectory_name='none', reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=False, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'ifAuto', 'failed': 'calibrateXPosePLan'},
 										autonomy={'done': Autonomy.High, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
@@ -109,7 +109,7 @@ class HandEyeBackSM(Behavior):
 
 			# x:123 y:311
 			OperatableStateMachine.add('calibrateXPose',
-										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='calibration_'+str(self.idx), axis_value=['none', 0], pos_targets=[], reference_frame='base_arm', end_effector_link='tool0', v_factor=1, a_factor=1, if_execute=True, wait_time=0, stay_level=False, cart_step_list=[3, 11], retry_num=3, itp_norm=0.15, if_debug=False),
+										SiteManipulation(pos=[0, 0, 0], quat=[0, 0, 0, 1], target_frame='none', target_name='calibration_'+str(self.idx), axis_value=['none', 0], pos_targets=[], trajectory_name='none', reference_frame='base_arm', end_effector_link='tool0', wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3, 11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
 										transitions={'done': 'wait3s', 'failed': 'calibrateXPose'},
 										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group'})

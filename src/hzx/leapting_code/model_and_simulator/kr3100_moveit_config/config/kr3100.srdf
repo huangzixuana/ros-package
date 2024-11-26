@@ -329,4 +329,12 @@
 		<joint name="joint_a5" value="0.992054" />
 		<joint name="joint_a6" value="0.013106" />
 	</group_state>
+	<group_state name="test0906" group="leapting_arm">
+		<joint name="joint_a1" value="-1.777034" />
+		<joint name="joint_a2" value="-0.779528" />
+		<joint name="joint_a3" value="1.197049" />
+		<joint name="joint_a4" value="-0.015418" />
+		<joint name="joint_a5" value="1.166113" />
+		<joint name="joint_a6" value="-1.732621" />
+	</group_state>
 </robot>

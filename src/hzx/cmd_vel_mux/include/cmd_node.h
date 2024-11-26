@@ -43,7 +43,6 @@
 #include <mutex>
 #include <yaml-cpp/yaml.h>
 #include <geometry_msgs/Twist.h>
-#include <ackermann_msgs/AckermannDrive.h>
 
 namespace cmd_node
 {
@@ -83,7 +82,6 @@ private:
     sensor_msgs::Joy arm_cmd;
     ros::Subscriber sub_cmd;
     ros::Publisher  pub_cmd_vel;
-    ros::Publisher  pub_ackermann_vel;
     ros::Subscriber sub_slow_trig;//zs add
     ros::Publisher pub_joy_status;//zs add
     ros::Subscriber sub_arm_cmd;

@@ -43,9 +43,8 @@ class StopPVMDetectSM(Behavior):
 
 
 	def create(self):
-		# x:641 y:61
-		_state_machine = OperatableStateMachine(outcomes=['finished'], input_keys=['nav_goal'])
-		_state_machine.userdata.nav_goal = {}
+		# x:643 y:85
+		_state_machine = OperatableStateMachine(outcomes=['finished'])
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -60,7 +59,7 @@ class StopPVMDetectSM(Behavior):
 										transitions={'done': 'stopPickupDetect'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:372 y:84
+			# x:372 y:80
 			OperatableStateMachine.add('stopPickupDetect',
 										PublishHeader(seq=0, frame_id="solar_detect"),
 										transitions={'done': 'finished'},

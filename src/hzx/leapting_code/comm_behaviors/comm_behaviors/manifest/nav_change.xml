@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="nav_change">
+
+	<executable package_path="comm_behaviors.nav_change_sm" class="nav_changeSM" />
+	<tagstring>test</tagstring>
+	<author>Lei ZENG</author>
+	<date>Fri Jan 19 2024</date>
+	<description>
+		navigation change bz and teb if timeout
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="change_bz" />
+	<contains name="change_teb" />
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="wait_time" default="10" label="wait_time" hint="Sets the wait_time">
+			<min value="0" />
+			<max value="100" />
+		</param>
+
+	</params>
+
+
+</behavior>

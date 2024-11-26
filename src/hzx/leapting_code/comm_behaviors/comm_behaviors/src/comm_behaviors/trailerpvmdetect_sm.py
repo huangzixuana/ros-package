@@ -10,11 +10,13 @@
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from comm_behaviors.startpvmdetect_sm import StartPVMDetectSM
 from comm_behaviors.stoppvmdetect_sm import StopPVMDetectSM
+from comm_states.bracket_goal import BracketGoal
 from comm_states.listen_solar import ListenSolar
 from comm_states.manipulation_share import ManipulationShare
 from comm_states.publisherheader import PublishHeader
+from comm_states.site_manipulation import SiteManipulation
 from comm_states.trig_decision import TrigDecision
-from dev_flexbe_states.site_manipulation import SiteManipulation as dev_flexbe_states__SiteManipulation
+from flexbe_states.decision_state import DecisionState
 from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
@@ -37,25 +39,28 @@ class TrailerPVMDetectSM(Behavior):
 		self.name = 'TrailerPVMDetect'
 
 		# parameters of this behavior
-		self.add_parameter('pick_solar_x', 0)
-		self.add_parameter('pick_solar_y', 0)
-		self.add_parameter('pick_solar_z', -0.01)
-		self.add_parameter('pick_ideal_x', 2.1)
-		self.add_parameter('pick_ideal_y', -0.006)
+		self.add_parameter('pick_solar_x', 0.000001)
+		self.add_parameter('pick_solar_y', 0.08)
+		self.add_parameter('pick_solar_z', 0.05)
+		self.add_parameter('pick_ideal_x', 2.086)
+		self.add_parameter('pick_ideal_y', -0.127)
 		self.add_parameter('pick_ideal_z', 0.0)
 		self.add_parameter('pick_ideal_er', 0.006)
 		self.add_parameter('pick_ideal_ep', -0.011)
 		self.add_parameter('pick_ideal_ey', 1.559)
-		self.add_parameter('pick_tol_x', 0.05)
-		self.add_parameter('pick_tol_y', 0.1)
+		self.add_parameter('pick_tol_x', -1.0)
+		self.add_parameter('pick_tol_y', -1.0)
 		self.add_parameter('pick_tol_z', -1.0)
 		self.add_parameter('pick_tol_er', 0.2)
 		self.add_parameter('pick_tol_ep', 0.2)
 		self.add_parameter('pick_tol_ey', 0.2)
+		self.add_parameter('detect_option', 'line')
 
 		# references to used behaviors
 		self.add_behavior(StartPVMDetectSM, 'StartPVMDetect')
 		self.add_behavior(StopPVMDetectSM, 'StopPVMDetect')
+		self.add_behavior(StopPVMDetectSM, 'StopPVMDetect2')
+		self.add_behavior(StopPVMDetectSM, 'StopPVMDetect_2')
 
 		# Additional initialization code can be added inside the following tags
 		# [MANUAL_INIT]
@@ -67,9 +72,12 @@ class TrailerPVMDetectSM(Behavior):
 
 
 	def create(self):
-		# x:641 y:61
-		_state_machine = OperatableStateMachine(outcomes=['finished'], input_keys=['nav_goal'])
+		# x:927 y:246
+		_state_machine = OperatableStateMachine(outcomes=['finished'], input_keys=['nav_goal', 'pose_msg_in'], output_keys=['pose_msg_pick'])
 		_state_machine.userdata.nav_goal = {}
+		_state_machine.userdata.detect_option = self.detect_option
+		_state_machine.userdata.pose_msg_in = None
+		_state_machine.userdata.pose_msg_pick = None
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -78,98 +86,120 @@ class TrailerPVMDetectSM(Behavior):
 
 
 		with _state_machine:
-			# x:30 y:40
+			# x:58 y:74
 			OperatableStateMachine.add('armInit',
 										ManipulationShare(reference_frame='base_arm', end_effector_link='tool0'),
-										transitions={'done': 'armPickupDetectPose'},
+										transitions={'done': 'detectDec'},
 										autonomy={'done': Autonomy.Off},
 										remapping={'move_group': 'move_group'})
 
-			# x:421 y:569
-			OperatableStateMachine.add('DetectSucceed',
-										PublishHeader(seq=1, frame_id="install_detect_pick"),
-										transitions={'done': 'waitTargetStable5s'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:208 y:198
-			OperatableStateMachine.add('StartPVMDetect',
-										self.use_behavior(StartPVMDetectSM, 'StartPVMDetect'),
-										transitions={'finished': 'checkPickupSolar'},
-										autonomy={'finished': Autonomy.Inherit},
-										remapping={'nav_goal': 'nav_goal'})
-
-			# x:7 y:214
+			# x:30 y:317
 			OperatableStateMachine.add('StopPVMDetect',
 										self.use_behavior(StopPVMDetectSM, 'StopPVMDetect'),
-										transitions={'finished': 'wait5s'},
-										autonomy={'finished': Autonomy.Inherit},
-										remapping={'nav_goal': 'nav_goal'})
+										transitions={'finished': 'StartPVMDetect'},
+										autonomy={'finished': Autonomy.Inherit})
 
-			# x:192 y:39
+			# x:875 y:314
+			OperatableStateMachine.add('StopPVMDetect2',
+										self.use_behavior(StopPVMDetectSM, 'StopPVMDetect2'),
+										transitions={'finished': 'finished'},
+										autonomy={'finished': Autonomy.Inherit})
+
+			# x:608 y:573
+			OperatableStateMachine.add('StopPVMDetect_2',
+										self.use_behavior(StopPVMDetectSM, 'StopPVMDetect_2'),
+										transitions={'finished': 'pos2Mani'},
+										autonomy={'finished': Autonomy.Inherit})
+
+			# x:252 y:153
 			OperatableStateMachine.add('armPickupDetectPose',
-										dev_flexbe_states__SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPickupDetectPose", axis_value=["none",0], reference_frame="base_arm", end_effector_link="tool0", v_factor=1, a_factor=1, if_execute=True, wait_time=2, stay_level=False, cartesian_step=0.3, itp_norm=0.15, if_debug=False),
-										transitions={'done': 'StartPVMDetect', 'failed': 'armPickupDetectPose'},
-										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off})
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="armPickupDetectPose", axis_value=["none",0], pos_targets=[], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=False, cart_step_list=[3,11], step_factor=0.1, itp_norm=0.15, retry_num=3, cart_limit={}, if_execute=True, if_debug=False, planner_id='none', plan_time=2),
+										transitions={'done': 'wait2sCamDelay', 'failed': 'armPickupDetectPose'},
+										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group'})
 
-			# x:399 y:277
-			OperatableStateMachine.add('armPickupPVM',
-										dev_flexbe_states__SiteManipulation(pos=[self.pick_solar_x, self.pick_solar_y, self.pick_solar_z], quat=[0, 0, 0, 1], target_frame="solar_link", target_name="none", axis_value=["none",0], reference_frame="base_arm", end_effector_link="tool0", v_factor=0.1, a_factor=0.1, if_execute=True, wait_time=0.5, stay_level=True, cartesian_step=0.3, itp_norm=0.1, if_debug=True),
-										transitions={'done': 'stopPickupDetect', 'failed': 'wait3s'},
-										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off})
+			# x:880 y:435
+			OperatableStateMachine.add('armPickupThrough',
+										SiteManipulation(pos=[0,0,0], quat=[0,0,0,1], target_frame="none", target_name="none", axis_value=["none",0], pos_targets=['armTopPose', 'temp_itp', 'temp_solar'], trajectory_name="none", reference_frame="base_arm", end_effector_link="tool0", wait_time=0, v_factor=1, a_factor=1, t_factor=1.0, stay_level=True, cart_step_list=[3,18], step_factor=0.1, itp_norm=0.0, retry_num=30, cart_limit={}, if_execute=True, if_debug=False, planner_id="none", plan_time=2),
+										transitions={'done': 'StopPVMDetect2', 'failed': 'wait1Ks'},
+										autonomy={'done': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group'})
 
-			# x:212 y:367
+			# x:250 y:577
 			OperatableStateMachine.add('checkPickupSolar',
-										ListenSolar(timeout=60, fresh_time=3.0, ideal=[self.pick_ideal_x, self.pick_ideal_y, self.pick_ideal_z, self.pick_ideal_er, self.pick_ideal_ep, self.pick_ideal_ey], tolerance=[self.pick_tol_x, self.pick_tol_y, self.pick_tol_z, self.pick_tol_er, self.pick_tol_ep, self.pick_tol_ey]),
-										transitions={'done': 'DetectSucceed', 'timeout': 'DetectFailed'},
-										autonomy={'done': Autonomy.Off, 'timeout': Autonomy.Off})
+										ListenSolar(timeout=60, fresh_time=3.0, ideal=[self.pick_ideal_x, self.pick_ideal_y, self.pick_ideal_z, self.pick_ideal_er, self.pick_ideal_ep, self.pick_ideal_ey], tolerance=[self.pick_tol_x, self.pick_tol_y, self.pick_tol_z, self.pick_tol_er, self.pick_tol_ep, self.pick_tol_ey], pose_topic='filter_solar_pose'),
+										transitions={'done': 'detectSucceed', 'timeout': 'detectFailed'},
+										autonomy={'done': Autonomy.Off, 'timeout': Autonomy.Off},
+										remapping={'pose_msg': 'pose_msg_pick'})
 
-			# x:44 y:338
+			# x:42 y:407
 			OperatableStateMachine.add('dec1',
 										TrigDecision(),
 										transitions={'next': 'StopPVMDetect', 'withdraw': 'dec1'},
 										autonomy={'next': Autonomy.Off, 'withdraw': Autonomy.Off})
 
-			# x:400 y:185
-			OperatableStateMachine.add('stopPickupDetect',
-										PublishHeader(seq=0, frame_id="solar_detect"),
-										transitions={'done': 'stopPickupSegment'},
+			# x:267 y:75
+			OperatableStateMachine.add('detectDec',
+										DecisionState(outcomes=['line','sec', 'pvm', 'invalid'], conditions=lambda x: x if (x in ['line','sec', 'pvm']) else 'invalid'),
+										transitions={'line': 'armPickupDetectPose', 'sec': 'pose2Mani2nd', 'pvm': 'armPickupDetectPose', 'invalid': 'detectDec'},
+										autonomy={'line': Autonomy.Off, 'sec': Autonomy.Off, 'pvm': Autonomy.Off, 'invalid': Autonomy.Off},
+										remapping={'input_value': 'detect_option'})
+
+			# x:38 y:580
+			OperatableStateMachine.add('detectFailed',
+										PublishHeader(seq=0, frame_id="install_detect_pick"),
+										transitions={'done': 'waitPickupTarget3s'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:393 y:71
-			OperatableStateMachine.add('stopPickupSegment',
-										PublishHeader(seq=0, frame_id="enable_yolov8"),
-										transitions={'done': 'finished'},
+			# x:432 y:578
+			OperatableStateMachine.add('detectSucceed',
+										PublishHeader(seq=1, frame_id="install_detect_pick"),
+										transitions={'done': 'StopPVMDetect_2'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:603 y:279
-			OperatableStateMachine.add('wait3s',
-										WaitState(wait_time=3),
-										transitions={'done': 'armPickupPVM'},
+			# x:631 y:437
+			OperatableStateMachine.add('pos2Mani',
+										BracketGoal(pos=[self.pick_solar_x, self.pick_solar_y, self.pick_solar_z], quat=[0,0.0130896,0,0.9999143 ], dx_max=0.1, limit_dict={}, pos_targets=['armTopPose'], itp_norm=0.15),
+										transitions={'done': 'armPickupThrough'},
+										autonomy={'done': Autonomy.Off},
+										remapping={'pose_msg': 'pose_msg_pick', 'mani_goal': 'mani_goal_pick'})
+
+			# x:624 y:328
+			OperatableStateMachine.add('pose2Mani2nd',
+										BracketGoal(pos=[self.pick_solar_x, self.pick_solar_y, self.pick_solar_z-0.03], quat=[0,0.0130896,0,0.9999143], dx_max=0.1, limit_dict={}, pos_targets=['armTopPose'], itp_norm=0.15),
+										transitions={'done': 'armPickupThrough'},
+										autonomy={'done': Autonomy.Off},
+										remapping={'pose_msg': 'pose_msg_in', 'mani_goal': 'mani_goal_pick'})
+
+			# x:893 y:543
+			OperatableStateMachine.add('wait1Ks',
+										WaitState(wait_time=1000),
+										transitions={'done': 'wait1Ks'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:29 y:122
-			OperatableStateMachine.add('wait5s',
-										WaitState(wait_time=5),
+			# x:255 y:236
+			OperatableStateMachine.add('wait2sCamDelay',
+										WaitState(wait_time=2),
 										transitions={'done': 'StartPVMDetect'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:30 y:487
-			OperatableStateMachine.add('waitPickupTarget',
+			# x:29 y:488
+			OperatableStateMachine.add('waitPickupTarget3s',
 										WaitState(wait_time=3),
 										transitions={'done': 'dec1'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:396 y:361
-			OperatableStateMachine.add('waitTargetStable5s',
+			# x:250 y:458
+			OperatableStateMachine.add('waitTargetStable2s',
 										WaitState(wait_time=2),
-										transitions={'done': 'armPickupPVM'},
+										transitions={'done': 'checkPickupSolar'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:28 y:571
-			OperatableStateMachine.add('DetectFailed',
-										PublishHeader(seq=0, frame_id="install_detect_pick"),
-										transitions={'done': 'waitPickupTarget'},
-										autonomy={'done': Autonomy.Off})
+			# x:249 y:315
+			OperatableStateMachine.add('StartPVMDetect',
+										self.use_behavior(StartPVMDetectSM, 'StartPVMDetect'),
+										transitions={'finished': 'waitTargetStable2s'},
+										autonomy={'finished': Autonomy.Inherit})
 
 
 		return _state_machine

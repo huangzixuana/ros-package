@@ -18,7 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   message_generation
   visualization_msgs
-  ackermann_msgs
 )
 find_package(yaml-cpp REQUIRED) 
 IF(YamlCpp_FOUND) 
@@ -47,7 +46,6 @@ generate_messages(
   std_msgs
   nav_msgs
   sensor_msgs
-  ackermann_msgs
 )
 
 catkin_package(
@@ -60,8 +58,6 @@ catkin_package(
   message_runtime
   message_generation
   visualization_msgs
-  ackermann_msgs
-  yaml-cpp
 )
 
 # include directories
@@ -95,6 +91,9 @@ add_executable(heart_cmd_node  src/heart_cmd_node.cpp)
 add_dependencies(heart_cmd_node  ${catkin_EXPORTED_TARGETS}  ${PROJECT_NAME}_generate_messages_cpp)
 target_link_libraries(heart_cmd_node   ${catkin_LIBRARIES}  )
 
+add_executable(cmd_vel_obstacle  src/cmd_vel_obstacle.cpp)
+add_dependencies(cmd_vel_obstacle  ${catkin_EXPORTED_TARGETS}  ${PROJECT_NAME}_generate_messages_cpp)
+target_link_libraries(cmd_vel_obstacle   ${catkin_LIBRARIES}  )
 
 install(TARGETS ${PROJECT_NAME}_node 
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

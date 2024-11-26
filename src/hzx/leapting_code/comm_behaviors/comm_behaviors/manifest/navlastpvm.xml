@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="NavLastPVM">
+
+	<executable package_path="comm_behaviors.navlastpvm_sm" class="NavLastPVMSM" />
+	<tagstring>nav_lastPVM</tagstring>
+	<author>zcx</author>
+	<date>Sun Feb 25 2024</date>
+	<description>
+		nav or not after installing the last pvm
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="fromPlace2Pick" />
+	<contains name="CupOff" />
+
+	<!-- Available Parameters -->
+	<params>
+
+		<param type="numeric" name="pick_solar_x" default="0.0" label="pick_solar_x" hint="Sets the pick_solar_x">
+			<min value="0" />
+			<max value="5" />
+		</param>
+
+		<param type="numeric" name="pick_solar_y" default="0.0" label="pick_solar_y" hint="Sets the pick_solar_y">
+			<min value="0" />
+			<max value="5" />
+		</param>
+
+		<param type="numeric" name="pick_solar_z" default="0.0" label="pick_solar_z" hint="Sets the pick_solar_z">
+			<min value="0" />
+			<max value="5" />
+		</param>
+
+	</params>
+
+
+</behavior>
